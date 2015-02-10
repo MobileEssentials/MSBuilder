@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>MSBuilder.Run</id>
+        <version>0.1</version>
+        <title>MSBuilder: Run</title>
+        <authors>Daniel Cazzulino, kzu</authors>
+        <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Runs an executable with optional arguments, and returns the standard output as an output parameter.
+		
+Usage: 
+	&lt;Run Exe="$(Git)" Args="log HEAD" WorkingDir="$(MSBuildProjectDirectory)"&gt;
+		&lt;Output TaskParameter="Output" PropertyName="HeadSha"&gt;
+	&lt;Run&gt;</description>
+        <copyright>Copyright 2015</copyright>
+        <tags>msbuild execute run inline</tags>
+        <dependencies>
+            <dependency id="MSBuilder.CodeTaskAssembly" />
+        </dependencies>
+    </metadata>
+</package>
