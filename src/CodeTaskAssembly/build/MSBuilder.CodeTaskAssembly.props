@@ -24,14 +24,20 @@
 -->
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
 
-	<!-- This file exposes the CodeTaskAssembly property so it works on all versions of MSBuild, for inline tasks authoring -->
-
+	<!--
+    ============================================================
+              CodeTaskAssembly Property
+	
+	Locates the right Microsoft.Build.Tasks to use with inline 
+	tasks.
+	============================================================
+	-->
 	<PropertyGroup>
-		<CodeTaskAssembly Condition="'$(MSBuildAssemblyVersion)' == ''">$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll</CodeTaskAssembly>
+		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == ''">$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll</CodeTaskAssembly>
 		<!-- In VS2013, the assembly contains the VS version. -->
-		<CodeTaskAssembly Condition="'$(MSBuildAssemblyVersion)' == '12.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll</CodeTaskAssembly>
+		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '12.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll</CodeTaskAssembly>
 		<!-- In VS2015+, the assembly was renamed, hopefully this will be the last condition! -->
-		<CodeTaskAssembly Condition="'$(MSBuildAssemblyVersion)' != '' and '$(MSBuildAssemblyVersion)' &gt;= '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</CodeTaskAssembly>
+		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' != '' And '$(MSBuildAssemblyVersion)' &gt;= '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</CodeTaskAssembly>
 	</PropertyGroup>
 
 </Project>

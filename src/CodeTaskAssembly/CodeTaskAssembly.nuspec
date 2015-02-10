@@ -2,8 +2,8 @@
 <package>
     <metadata>
         <id>MSBuilder.CodeTaskAssembly</id>
-        <version>0.1</version>
-        <title>MSBuilder: CodeTaskAssembly Locator</title>
+        <version>0.1.2</version>
+        <title>MSBuilder: CodeTaskAssembly Property</title>
         <authors>Daniel Cazzulino, kzu</authors>
         <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
