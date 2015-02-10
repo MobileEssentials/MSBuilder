@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>build</id>
+        <version>1.0</version>
+        <title>Ultimate Cross Platform Build and NuGet Restore</title>
+        <authors>Daniel Cazzulino, kzu</authors>
+        <licenseUrl>https://github.com/kzu/oss/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/kzu/oss/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Automates build and NuGet package restore for Visual Studio/MSBuild and Xamarin Studio/XBuild.
+        
+This package provides a simple and straightforward way to build solutions and nuget packages via command line or IDE builds,
+with automatic NuGet package restore without impacting build performance or requiring custom build scripts in your project or solution files.
+
+To use this package for an entire repository or solution, please install this package in your repository root from the command line 
+using the command: `nuget install build -excludeversion`.
+
+This will add the `build` folder at the repository root, and you can just copy the sample solution and build script from the build\sample folder.
+Updating the package is achieved by just executing the install command again.</description>
+        <releaseNotes />
+        <copyright>Copyright 2015</copyright>
+        <tags>oss kzu</tags>
+    </metadata>
+    <files>
+		<file src="build.targets" />
+		<file src="nuget.targets" />
+		<file src="packages.config" />
+		<file src="..\build.proj" target="sample" />
+		<file src="sample\appveyor.yml" target="sample\appveyor.yml" />
+		<file src="..\src\Blank.sln" target="sample\src" />
+		<file src="..\src\Before.Blank.sln.targets" target="sample\src" />
+    </files>
+</package>
