@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>MSBuilder.CodeTaskAssembly</id>
+        <version>0.1</version>
+        <title>MSBuilder: CodeTaskAssembly Locator</title>
+        <authors>Daniel Cazzulino, kzu</authors>
+        <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Provides the $(CodeTaskAssembly) which properly locates the right assembly depending on the currently executing MSBuild engine.</description>
+        <copyright>Copyright 2015</copyright>
+        <tags>msbuild inline</tags>
+    </metadata>
+</package>

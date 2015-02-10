@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+
+	<PropertyGroup>
+		<CodeTaskAssembly Condition="'$(MSBuildAssemblyVersion)' == ''">$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll</CodeTaskAssembly>
+		<!-- In VS2013, the assembly contains the VS version. -->
+		<CodeTaskAssembly Condition="'$(MSBuildAssemblyVersion)' == '12.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll</CodeTaskAssembly>
+		<!-- In VS2015+, the assembly was renamed, hopefully this will be the last condition! -->
+		<CodeTaskAssembly Condition="'$(MSBuildAssemblyVersion)' != '' and '$(MSBuildAssemblyVersion)' &gt;= '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</CodeTaskAssembly>
+	</PropertyGroup>
+
+</Project>
