@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
 
+	<!-- This file exposes the CodeTaskAssembly property so it works on all versions of MSBuild, for inline tasks authoring -->
+
 	<PropertyGroup>
 		<CodeTaskAssembly Condition="'$(MSBuildAssemblyVersion)' == ''">$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll</CodeTaskAssembly>
 		<!-- In VS2013, the assembly contains the VS version. -->
