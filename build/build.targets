@@ -44,10 +44,13 @@
 	@(NuGet):
 	NuGet packages to build. Can be a .nuspec or a project file that has an associated .nuspec.
 	NuGet.exe Pack is called on these items after the projects and solutions are built. 
+	Optionally, NuGet items can contain a Version metadata that overrides the value calculated 
+	from $(VersionFormat) as explained below.
 
 	$(VersionFormat):
 	Specifies a SemanticGit provided format string to populate the automatic $(Version) property 
-	during build, which is passed to NuGet.exe when packing. Default value: MAJOR.MINOR.PATCH
+	during build, which is passed to NuGet.exe when packing. Default value: MAJOR.MINOR.PATCH. 
+	If %(NuGet.Version) is provided, it overrides this default value.
 	
     -->
 
@@ -104,10 +107,14 @@
 	</PropertyGroup>
 	
 	<Target Name="BuildPackages" DependsOnTargets="$(BuildPackagesDependsOn)" Condition="'@(NuGet)' != ''">
-		<Exec Command='"$(NuGetExe)" Pack "@(NuGet)" -NoPackageAnalysis -NonInteractive -Version $(Version)'
+		<ItemGroup>
+			<NuGet Condition="'%(NuGet.Version)' == ''">
+				<Version>$(Version)</Version>
+			</NuGet>
+		</ItemGroup>
+	
+		<Exec Command='"$(NuGetExe)" Pack "@(NuGet)" -NoPackageAnalysis -NonInteractive -Version %(Version)'
 			  Condition="'%(Identity)' != ''" />
-
-		<Message Importance="high" Text="Built $(Version)" />
 	</Target>
 
 	<Target Name="FormatVersion">
