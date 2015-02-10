@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>MSBuilder.Git</id>
+        <version>0.1</version>
+        <title>MSBuilder: Git Property</title>
+        <authors>Daniel Cazzulino, kzu</authors>
+        <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Provides the $(Git) property which properly locates the Git executable in the current machine.</description>
+        <copyright>Copyright 2015</copyright>
+        <tags>msbuild git</tags>
+    </metadata>
+</package>
