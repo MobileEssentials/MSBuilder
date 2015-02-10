@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2AF55F73-4FE0-46B1-B5C4-534F028A90C1}"
+	ProjectSection(SolutionItems) = preProject
+		..\build.proj = ..\build.proj
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TaskInliner", "TaskInliner", "{89566076-8D37-4746-A4AE-8D5D183C69CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskInliner.Tasks", "TaskInliner\TaskInliner.Tasks\TaskInliner.Tasks.csproj", "{17C121A7-BE2D-41BA-B2C8-128C5B30FF8D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskInliner.Tests", "TaskInliner\TaskInliner.Tests\TaskInliner.Tests.csproj", "{B346FD53-0E06-4007-8FEB-CE4D31AD71DE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeTaskAssembly", "CodeTaskAssembly", "{C7B69E0E-A4D7-4E36-BB1D-448DD8CFD0E4}"
+	ProjectSection(SolutionItems) = preProject
+		CodeTaskAssembly\CodeTaskAssembly.nuspec = CodeTaskAssembly\CodeTaskAssembly.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{BECA20D6-03D2-4114-9036-403B043016CF}"
+	ProjectSection(SolutionItems) = preProject
+		CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props = CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{17C121A7-BE2D-41BA-B2C8-128C5B30FF8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17C121A7-BE2D-41BA-B2C8-128C5B30FF8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17C121A7-BE2D-41BA-B2C8-128C5B30FF8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17C121A7-BE2D-41BA-B2C8-128C5B30FF8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B346FD53-0E06-4007-8FEB-CE4D31AD71DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B346FD53-0E06-4007-8FEB-CE4D31AD71DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B346FD53-0E06-4007-8FEB-CE4D31AD71DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B346FD53-0E06-4007-8FEB-CE4D31AD71DE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{17C121A7-BE2D-41BA-B2C8-128C5B30FF8D} = {89566076-8D37-4746-A4AE-8D5D183C69CD}
+		{B346FD53-0E06-4007-8FEB-CE4D31AD71DE} = {89566076-8D37-4746-A4AE-8D5D183C69CD}
+		{BECA20D6-03D2-4114-9036-403B043016CF} = {C7B69E0E-A4D7-4E36-BB1D-448DD8CFD0E4}
+	EndGlobalSection
+EndGlobal
