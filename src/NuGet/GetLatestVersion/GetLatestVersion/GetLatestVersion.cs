@@ -99,6 +99,10 @@ namespace MSBuilder.NuGet
 				var doc = XDocument.Load(url);
 				var nav = doc.CreateNavigator(xmlns.NameTable);
 				var raw = (string)nav.Evaluate("string(/f:feed/f:entry/m:properties/d:Version/text())", xmlns);
+
+				if (raw.Length == 0)
+					raw = "0.0.0";
+
 				var match = semVer.Match(raw);
 
 				if (!match.Success)

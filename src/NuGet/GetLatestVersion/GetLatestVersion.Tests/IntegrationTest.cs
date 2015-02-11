@@ -29,7 +29,26 @@ namespace MSBuilder.NuGet
 
 			Assert.True(task.Execute());
 
-			Assert.NotEqual("0.0", task.PackageVersion);
+			Assert.NotEqual("0.0.0", task.PackageVersion);
+		}
+
+        [Fact]
+		public void when_retrieving_latest_version_for_non_existent_package_then_returns_zero()
+		{
+			var task = new GetLatestVersion
+			{
+                BuildEngine = new MockBuildEngine(true),
+                IncludePreRelease = true,
+				PackageId = Guid.NewGuid().ToString()
+			};
+
+			Assert.True(task.Execute());
+
+			Assert.Equal("0.0.0", task.PackageVersion);
+			Assert.Equal("0.0.0", task.SimpleVersion);
+			Assert.Equal(0, task.Major);
+			Assert.Equal(0, task.Minor);
+			Assert.Equal(0, task.Patch);
 		}
 
         [Fact]
