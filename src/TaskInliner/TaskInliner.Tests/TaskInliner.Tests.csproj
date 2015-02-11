@@ -57,9 +57,9 @@
     <None Include="Tasks.tasks" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TaskInliner.Tasks\TaskInliner.Tasks.csproj">
+    <ProjectReference Include="..\TaskInliner\TaskInliner.csproj">
       <Project>{17c121a7-be2d-41ba-b2c8-128c5b30ff8d}</Project>
-      <Name>TaskInliner.Tasks</Name>
+      <Name>TaskInliner</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

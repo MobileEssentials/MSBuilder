@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TaskInliner", "TaskInliner", "{89566076-8D37-4746-A4AE-8D5D183C69CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskInliner.Tasks", "TaskInliner\TaskInliner.Tasks\TaskInliner.Tasks.csproj", "{17C121A7-BE2D-41BA-B2C8-128C5B30FF8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskInliner", "TaskInliner\TaskInliner\TaskInliner.csproj", "{17C121A7-BE2D-41BA-B2C8-128C5B30FF8D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskInliner.Tests", "TaskInliner\TaskInliner.Tests\TaskInliner.Tests.csproj", "{B346FD53-0E06-4007-8FEB-CE4D31AD71DE}"
 EndProject

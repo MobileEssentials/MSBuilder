@@ -35,11 +35,11 @@ namespace MSBuilder.TaskInliner
 			{
 				BuildEngine = new MockBuildEngine(),
 				OutputFile = outputFile,
-				References = XDocument.Load(@"..\..\..\TaskInliner.Tasks\TaskInliner.Tasks.csproj")
+				References = XDocument.Load(@"..\..\..\TaskInliner\TaskInliner.Tasks.csproj")
 					.Root.Descendants(xmlns + "Reference")
 					.Select(x => x.Attribute("Include").Value)
 					.Select(x => new TaskItem(x)).ToArray(),
-				SourceTasks = new ITaskItem[] { new TaskItem(@"..\..\..\TaskInliner.Tasks\GenerateTasksFile.cs") },
+				SourceTasks = new ITaskItem[] { new TaskItem(@"..\..\..\TaskInliner\GenerateTasksFile.cs") },
 			};
 
 			Assert.True(task.Execute());
@@ -77,10 +77,10 @@ namespace MSBuilder.TaskInliner
 
 			Assert.True(proc.ExitCode == 0, output);
 
-			if (File.Exists(@"..\..\..\TaskInliner.Tasks\build\MSBuilder.TaskInliner.tasks"))
-				File.Delete(@"..\..\..\TaskInliner.Tasks\build\MSBuilder.TaskInliner.tasks");
+			if (File.Exists(@"..\..\..\TaskInliner\build\MSBuilder.TaskInliner.tasks"))
+				File.Delete(@"..\..\..\TaskInliner\build\MSBuilder.TaskInliner.tasks");
 
-			File.Copy(outputFile, @"..\..\..\TaskInliner.Tasks\build\MSBuilder.TaskInliner.tasks");
+			File.Copy(outputFile, @"..\..\..\TaskInliner\build\MSBuilder.TaskInliner.tasks");
 		}
 	}
 }
