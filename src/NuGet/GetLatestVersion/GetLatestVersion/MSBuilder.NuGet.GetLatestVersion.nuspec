@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>MSBuilder.NuGet.GetLatestVersion</id>
+        <version>0.1</version>
+        <title>MSBuilder: NuGet - Get Latest Version of a Package</title>
+        <authors>Daniel Cazzulino, kzu</authors>
+        <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Provides the GetLatestVersion task, which retrieves the latest published version of a given nuget package from nuget.org, and provides easy access to its various SemVer components.</description>
+        <copyright>Copyright 2015</copyright>
+        <tags>msbuild inline nuget task</tags>
+		<dependencies>
+			<dependency id="MSBuilder.CodeTaskAssembly" />
+		</dependencies>
+    </metadata>
+	<files>
+		<file src="Readme.txt" />
+		<file src="bin\MSBuilder.NuGet.GetLatestVersion.tasks" target="build" />
+		<file src="bin\MSBuilder.NuGet.GetLatestVersion.targets" target="build" />
+	</files>
+</package>
