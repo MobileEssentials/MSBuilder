@@ -1,4 +1,4 @@
-MSBuilder : Reusable MSBuild Building Blocks
+MSBuilder : Reusable Build Blocks
 ===
 
 MSBuilder's goal is to provide fine-grained nuget packages that can be installed when only a certain 
