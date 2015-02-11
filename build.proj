@@ -52,13 +52,15 @@
 		<BuildPackagesDependsOn>
 			$(BuildPackagesDependsOn);
 			GetHeadSha;
-			CalculatePackageVersions;
-			RemoveUnchangedPackages;
+			AddPackageMetadata;
+			FilterPackages;
 		</BuildPackagesDependsOn>
 	</PropertyGroup>
 
-	<Target Name="RemoveUnchangedPackages">
+	<Target Name="FilterPackages">
 
+		
+		
 		<ItemGroup>
 			<UnchagedNuGet Include="@(NuGet)" Condition="%(NuGet.Commits) == '0' And %(NuGet.IsHead) != 'true'" />
 		</ItemGroup>
@@ -80,7 +82,7 @@
 
 	</Target>
 	
-	<Target Name="CalculatePackageVersions" Inputs="@(NuGet)" Outputs="%(NuGet.Identity)-BATCH">
+	<Target Name="AddPackageMetadata" Inputs="@(NuGet)" Outputs="%(NuGet.Identity)-BATCH">
 
 		<PropertyGroup>
 			<NuSpec>%(NuGet.Identity)</NuSpec>
@@ -99,6 +101,11 @@
 		</Run>
 
 		<XmlPeek XmlInputPath="$(NuSpec)"
+				 Query="/package/metadata/id/text()">
+			<Output TaskParameter="Result" PropertyName="NuSpecId" />
+		</XmlPeek>
+
+		<XmlPeek XmlInputPath="$(NuSpec)"
 				 Query="/package/metadata/version/text()">
 			<Output TaskParameter="Result" PropertyName="NuSpecVersion" />
 		</XmlPeek>
@@ -114,6 +121,7 @@
 		
 		<ItemGroup>
 			<NuGet>
+				<Id>$(NuSpecId)</Id>
 				<IsHead>$(IsHead)</IsHead>
 				<Commits>$(NuSpecCommits)</Commits>
 				<Version>$(NuSpecVersion)</Version>
@@ -194,9 +202,28 @@
 		</ParameterGroup>
 
 		<Task>
-			<Using Namespace="System.Diagnostics"/>
 			<Code Type="Fragment" Language="cs">
 				<![CDATA[
+				var version = new Version(Version);
+				Result = new Version(version.Major, version.Minor, (version.Build != -1 ? version.Build : 0) + Commits).ToString();
+]]>
+			</Code>
+		</Task>
+
+	</UsingTask>
+
+	<UsingTask TaskName="GetLatestVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)">
+
+		<ParameterGroup>
+			<PackageId Required="true" />
+			<Version Output="true" />
+		</ParameterGroup>
+
+		<Task>
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+				// https://www.nuget.org/api/v2/FindPackagesById()?$filter=IsLatestVersion&id='MSBuilder.Run'
+				var doc = XDocument.Load("https://www.nuget.org/api/v2/FindPackagesById()?$filter=IsLatestVersion&id='MSBuilder.Run'");
 				var version = new Version(Version);
 				Result = new Version(version.Major, version.Minor, (version.Build != -1 ? version.Build : 0) + Commits).ToString();
 ]]>

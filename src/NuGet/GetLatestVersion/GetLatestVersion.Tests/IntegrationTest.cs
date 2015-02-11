@@ -12,7 +12,7 @@ using Xunit;
 
 namespace MSBuilder.NuGet
 {
-    public class Test
+    public class IntegrationTest
     {
         const string xmlns = "{http://schemas.microsoft.com/developer/msbuild/2003}";
         static readonly string MSBuildPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0", "MSBuildToolsPath", @"C:\Program Files (x86)\MSBuild\12.0\bin\");

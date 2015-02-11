@@ -40,7 +40,7 @@
     <Compile Include="GetLatestVersion.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="MSBuilder.NuGet.GetLatestVersion.nuspec" />
+    <None Include="GetLatestVersion.nuspec" />
     <None Include="MSBuilder.NuGet.GetLatestVersion.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
