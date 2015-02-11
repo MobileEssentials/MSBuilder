@@ -2,8 +2,8 @@
 <package>
     <metadata>
         <id>MSBuilder.NuGet.GetLatestVersion</id>
-        <version>0.1</version>
-        <title>MSBuilder: NuGet - Get Latest Version of a Package</title>
+        <version>0.1.1</version>
+        <title>MSBuilder: NuGet - Get Latest Version of Package</title>
         <authors>Daniel Cazzulino, kzu</authors>
         <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
