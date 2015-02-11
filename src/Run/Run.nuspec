@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>MSBuilder.Run</id>
-        <version>0.1</version>
+        <version>0.1.2</version>
         <title>MSBuilder: Run</title>
         <authors>Daniel Cazzulino, kzu</authors>
         <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
