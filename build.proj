@@ -139,26 +139,6 @@
 
 	</UsingTask>
 
-	<UsingTask TaskName="GetLatestVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)">
-
-		<ParameterGroup>
-			<PackageId Required="true" />
-			<Version Output="true" />
-		</ParameterGroup>
-
-		<Task>
-			<Code Type="Fragment" Language="cs">
-				<![CDATA[
-				// https://www.nuget.org/api/v2/FindPackagesById()?$filter=IsLatestVersion&id='MSBuilder.Run'
-				var doc = XDocument.Load("https://www.nuget.org/api/v2/FindPackagesById()?$filter=IsLatestVersion&id='MSBuilder.Run'");
-				var version = new Version(Version);
-				Result = new Version(version.Major, version.Minor, (version.Build != -1 ? version.Build : 0) + Commits).ToString();
-]]>
-			</Code>
-		</Task>
-
-	</UsingTask>
-
 	<UsingTask TaskName="IsGreater" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)">
 
 		<ParameterGroup>
