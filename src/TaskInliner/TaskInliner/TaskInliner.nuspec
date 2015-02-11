@@ -20,7 +20,7 @@ Unit testing your custom tasks becomes straight-forward while maintaining the tr
     </metadata>
 	<files>
 		<file src="Readme.txt" />
-		<file src="build\MSBuilder.TaskInliner.tasks" target="build" />
-		<file src="build\MSBuilder.TaskInliner.targets" target="build" />
+		<file src="bin\MSBuilder.TaskInliner.tasks" target="build" />
+		<file src="bin\MSBuilder.TaskInliner.targets" target="build" />
 	</files>
 </package>

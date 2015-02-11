@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props" Condition="Exists('..\..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -18,7 +19,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
-    <TasksFile>build\$(AssemblyName).tasks</TasksFile>
+    <NuGetPackageImportStamp>000318cc</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -41,22 +42,21 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Readme.txt" />
+    <None Include="packages.config" />
     <None Include="TaskInliner.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="build\MSBuilder.TaskInliner.targets" />
-    <None Include="build\MSBuilder.TaskInliner.tasks" />
+    <None Include="MSBuilder.TaskInliner.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- By making this import conditional on the tasks file, we can easily re-generate it if it 
-       becomes broken for whatever reason. This project will continue to compile just fine, avoiding 
-	   the catch-22 situation that would arise otherwise.
-  -->
-  <Import Project="build\MSBuilder.TaskInliner.targets" Condition="Exists('build\MSBuilder.TaskInliner.tasks')" />
-  <Target Name="AfterBuild">
-    <!-- Don't clean it, since we expect it to be checked-in with our project :) -->
-    <ItemGroup>
-      <FileWrites Remove="$(TasksFile)" />
-    </ItemGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props'))" />
+    <Error Condition="!Exists('..\..\packages\MSBuilder.TaskInliner.0.1.4\build\MSBuilder.TaskInliner.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuilder.TaskInliner.0.1.4\build\MSBuilder.TaskInliner.targets'))" />
   </Target>
+  <Import Project="..\..\packages\MSBuilder.TaskInliner.0.1.4\build\MSBuilder.TaskInliner.targets" Condition="Exists('..\..\packages\MSBuilder.TaskInliner.0.1.4\build\MSBuilder.TaskInliner.targets')" />
 </Project>

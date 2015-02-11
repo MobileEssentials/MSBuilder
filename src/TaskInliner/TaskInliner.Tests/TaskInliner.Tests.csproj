@@ -50,7 +50,7 @@
     <Compile Include="GenerateTasksFileTests.cs" />
     <Compile Include="MockBuildEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TasksUpdater.cs" />
+    <Compile Include="IntegrationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
