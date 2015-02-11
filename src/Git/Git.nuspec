@@ -3,7 +3,7 @@
     <metadata>
         <id>MSBuilder.Git</id>
         <version>0.1.0</version>
-        <title>MSBuilder: Git Property</title>
+        <title>MSBuilder: Git Executable Property</title>
         <authors>Daniel Cazzulino, kzu</authors>
         <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>

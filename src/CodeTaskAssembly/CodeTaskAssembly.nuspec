@@ -10,6 +10,6 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Provides the $(CodeTaskAssembly) property which properly locates the right assembly to use for inline tasks depending on the currently executing MSBuild engine.</description>
         <copyright>Copyright 2015</copyright>
-        <tags>msbuild inline</tags>
+        <tags>msbuild inline codetask</tags>
     </metadata>
 </package>
