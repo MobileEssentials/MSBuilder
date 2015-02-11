@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Build.Construction;
+using Microsoft.Build.Evaluation;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Logging;
+using Microsoft.Build.Utilities;
+using System;
 using System.IO;
 using System.Linq;
-using System.Text;
-using Microsoft.Build.Utilities;
-using Xunit;
-using TaskInliner.Tasks;
-using Microsoft.Build.Framework;
-using System.Xml.Linq;
-using Moq;
 using System.Xml;
-using Microsoft.Build.Construction;
-using Microsoft.Build.Evaluation;
-using Microsoft.Build.Logging;
+using System.Xml.Linq;
+using Xunit;
 
-namespace TaskInliner.Tests
+namespace MSBuilder.TaskInliner
 {
 	public class GenerateTasksFileTests : IDisposable
 	{
@@ -32,7 +28,7 @@ namespace TaskInliner.Tests
 		}
 
 		[Fact]
-		public void when_task_file_does_not_contain_public_class_then_logs_error()
+		public void when_task_file_does_not_contain_public_class_then_logs_warning()
 		{
 			var content = @"
 using System;
@@ -47,8 +43,23 @@ namespace Test
 
 			var task = CreateTask(content);
 	
-			Assert.False(task.Execute());
-			Assert.Equal(1, buildEngine.LoggedErrorEvents.Count);
+			Assert.True(task.Execute());
+			Assert.Equal(1, buildEngine.LoggedWarningEvents.Count);
+		}
+
+		[Fact]
+		public void when_task_file_does_not_contain_task_class_then_logs_error()
+		{
+			var content = @"
+using System;
+
+[assembly: AssemblyTitle(""Title"")]
+";
+
+			var task = CreateTask(content);
+	
+			Assert.True(task.Execute());
+			Assert.Equal(1, buildEngine.LoggedWarningEvents.Count);
 		}
 
 		[Fact]
@@ -116,8 +127,6 @@ namespace TaskInliner.Tests
 
 			var expectedRefs = new string[] 
 			{
-				"Microsoft.Build.Framework",
-				"Microsoft.Build.Utilities.v4.0",
 				"System",
 				"System.Core",
 				"Microsoft.CSharp",
@@ -125,6 +134,60 @@ namespace TaskInliner.Tests
 			};
 
 			var task = CreateTask(content, expectedRefs);
+	
+			Assert.True(task.Execute());
+			Assert.Equal(1, task.OutputTasks.Length);
+
+			var actualRefs = task.XmlTasks[0]
+				.Descendants(xmlns + "Reference")
+				.Select(x => x.Attribute("Include"))
+				.Where(x => x != null)
+				.Select(x => x.Value)
+				.ToArray();
+
+			Assert.Equal(expectedRefs, actualRefs);
+		}
+
+		[Fact]
+		public void when_specifying_references_then_generated_xml_skips_built_in_msbuild_references()
+		{
+			var content = @"
+using System;
+using System.Collections.Generic;
+using Microsoft.Build.Utilities;
+using Microsoft.Build.Framework;
+using Xunit;
+
+namespace TaskInliner.Tests
+{
+	public class MyTask : Task
+	{
+		public override bool Execute ()
+		{
+			return true;
+		}	
+	}
+}
+";
+
+			var addedRefs = new string[] 
+			{
+				"Microsoft.Build.Framework",
+				"Microsoft.Build.Utilities.v4.0",
+				"System",
+				"System.Core",
+				"Microsoft.CSharp",
+				"System.Xml"
+			};
+			var expectedRefs = new string[] 
+			{
+				"System",
+				"System.Core",
+				"Microsoft.CSharp",
+				"System.Xml"
+			};
+
+			var task = CreateTask(content, addedRefs);
 	
 			Assert.True(task.Execute());
 			Assert.Equal(1, task.OutputTasks.Length);
@@ -355,6 +418,91 @@ namespace Test
 
 			CreateTask(content).Execute();
 	
+			Assert.True(BuildProject());
+		}
+
+		[Fact]
+		public void when_task_has_documentation_then_generates_header_information()
+		{
+			var content = @"
+using System;
+
+namespace Test
+{
+	/// <summary>
+	/// Class summary
+	/// over two lines.
+	/// </summary>
+	/// <remarks>A remark</remarks>
+	public class MyTask : Task
+	{
+		/// <summary>
+		/// Some property summary
+		/// </summary>
+		[Required]
+		public string File { get; set; }		
+
+		/// <summary>
+		/// Output property summary
+		/// </summary>
+		[Output]
+		public string Result { get; set; }		
+
+		public override bool Execute ()
+		{
+			Result = File;
+
+			Log.LogMessage(File);
+			Log.LogMessage(Result);
+
+			return true;
+		}	
+	}
+}
+";
+
+			CreateTask(content).Execute();
+
+			Assert.True(BuildProject());
+
+			var contents = File.ReadAllText(outputFile);
+
+			Assert.Contains("Class summary", contents);
+			Assert.Contains("over two lines.", contents);
+			Assert.Contains("Some property summary", contents);
+			Assert.Contains("Output property summary", contents);
+		}
+
+		[Fact]
+		public void when_task_has_generic_property_then_it_is_ignored()
+		{
+			var content = @"
+using System;
+
+namespace Test
+{
+	public class MyTask : Task
+	{
+		public KeyValue<string, string> Pair { get; set; }		
+
+		public override bool Execute ()
+		{
+			Console.WriteLine(""Hello World"");
+
+			return true;
+		}	
+	}
+}
+";
+
+			var task = CreateTask(content);
+
+			Assert.True(task.Execute());
+		}
+
+
+		private bool BuildProject(LoggerVerbosity verbosity = LoggerVerbosity.Quiet)
+		{
 			var xmlProject = ProjectRootElement.Create();
 			xmlProject.AddImport(outputFile);
 			xmlProject.AddTarget("Build")
@@ -366,7 +514,7 @@ namespace Test
 
 			var buildProject = ProjectCollection.GlobalProjectCollection.LoadProject(tempFile);
 
-			Assert.True(buildProject.Build("Build", new [] { new ConsoleLogger(LoggerVerbosity.Detailed) }));
+			return buildProject.Build("Build", new [] { new ConsoleLogger(verbosity) });
 		}
 
 		private TestGenerateTasksFile CreateTask(string taskContent, params string[] references)

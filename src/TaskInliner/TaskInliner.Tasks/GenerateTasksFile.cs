@@ -8,43 +8,94 @@ using System.Xml.Linq;
 using System.IO;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Construction;
+using System.Xml;
 
-namespace TaskInliner.Tasks
+namespace MSBuilder.TaskInliner
 {
+	/// <summary>
+	/// Generates an MSBuild file containing an inline task version of the 
+	/// specified compiled source tasks.
+	/// </summary>
 	public class GenerateTasksFile : Task
 	{
+		/// <summary>
+		/// The output tasks file to generate.
+		/// </summary>
 		[Required]
 		public string OutputFile { get; set; }
 
+		/// <summary>
+		/// Assembly references required to compile the source tasks.
+		/// </summary>
 		[Required]
-		public ITaskItem[] References { get; set; }
+		public Microsoft.Build.Framework.ITaskItem[] References { get; set; }
 
+		/// <summary>
+		/// Source files for the tasks to embed as inline tasks.
+		/// </summary>
 		[Required]
-		public ITaskItem[] SourceTasks { get; set; }
+		public Microsoft.Build.Framework.ITaskItem[] SourceTasks { get; set; }
 
+		/// <summary>
+		/// An augmented version of <see cref="SourceTasks">SourceTasks</see> containing the 
+		/// <c>Xml</c> metadata with the generated fragment for each source 
+		/// task.
+		/// </summary>
 		[Output]
-		public ITaskItem[] OutputTasks { get; set; }
+		public Microsoft.Build.Framework.ITaskItem[] OutputTasks { get; set; }
 
+		/// <summary>
+		/// Generates the inline tasks output file.
+		/// </summary>
 		public override bool Execute()
 		{
 			var xmlns = "{http://schemas.microsoft.com/developer/msbuild/2003}";
-			var usingsExpr = new Regex(@"using (?<using>[^;\s]+);");
-			var taskNameExpr = new Regex(@"public class (?<name>[^\s]+)");
-       	    var propertyExpr = new Regex(@"(?<required>\[Required\].*?)?(?<output>\[Output\].*?)?public (?<type>[^\s]+) (?<name>[^\s]+) { get; set; }", RegexOptions.Singleline);
-			var codeExpr = new Regex(@"public override bool Execute.+{(?<code>.*)return true;.+}", RegexOptions.Singleline);
+			var usingsExpr = new Regex(@"using (?<using>[\w\.]+);");
+			var taskNameExpr = new Regex(@"public class (?<name>[\w]+) : Task");
+			var propertyExpr = new Regex(@"(?<required>\[Required\].*?)?(?<output>\[Output\].*?)?public (?<type>[\w\.\[\]]+) (?<name>[\w]+) { get; set; }", RegexOptions.Singleline);
+			var codeExpr = new Regex(@"public override bool Execute.+?{(?<code>.*)return true;.+}", RegexOptions.Singleline);
+			var classSummaryExpr = new Regex(@"(?<summary>\t*\b*/// .*?)\s+public class", RegexOptions.Singleline);
+			var propSummaryExpr = new Regex(@"(?<summary>t*\b*/// [^{]*?)\s+" + propertyExpr.ToString(), RegexOptions.Singleline);
 
 			var project = ProjectRootElement.Create();
+			project.ToolsVersion = "4.0";
 			var properties = project.AddPropertyGroup();
 
-			properties.AddProperty("CodeTaskAssembly", @"$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll")
-				.Condition = "'$(MSBuildAssemblyVersion)' == ''";
-			properties.AddProperty("CodeTaskAssembly", @"$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll")
-				.Condition = "'$(MSBuildAssemblyVersion)' == '12.0'";
-			properties.AddProperty("CodeTaskAssembly", @"$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll")
-				.Condition = "'$(MSBuildAssemblyVersion)' != '' and '$(MSBuildAssemblyVersion)' >= '14.0'";
+			properties.AddProperty("CodeTaskAssembly", "$" + @"(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll")
+				.Condition = "'$" + "(CodeTaskAssembly)' == '' And '$" + "(MSBuildAssemblyVersion)' == ''";
+			properties.AddProperty("CodeTaskAssembly", "$" + @"(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll")
+				.Condition = "'$" + "(CodeTaskAssembly)' == '' And '$" + "(MSBuildAssemblyVersion)' == '12.0'";
+			properties.AddProperty("CodeTaskAssembly", "$" + @"(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll")
+				.Condition = "'$" + "(CodeTaskAssembly)' == '' And '$" + "(MSBuildAssemblyVersion)' != '' and '$" + "(MSBuildAssemblyVersion)' >= '14.0'";
 
 			var projectXml = XDocument.Parse(project.RawXml);
 			var tasks = new List<ITaskItem>();
+
+			projectXml.Root.AddFirst(new XComment(@" Typically provided by MSBuilder.CodeTaskAssembly already. "));
+
+			// Helper function to get clean strings from XML doc comments.
+			Func<string, string, string> indentedSummary = (indent, summary) =>
+			{
+				if (summary.Trim().Length == 0)
+					return indent;
+
+				var xml = string.Join(Environment.NewLine,
+					summary.Trim().Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+						.Select(line => line.Trim().Substring(3).TrimStart()));
+
+				var reader = XmlReader.Create(new StringReader(xml), new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment });
+				var doc = new XDocument(new XElement("doc"));
+				using (var writer = doc.Root.CreateWriter())
+				{
+					writer.WriteNode(reader, false);
+				}
+
+				return string.Join(Environment.NewLine, 
+					doc.Root.Value.Trim()
+						.Split(new[] { Environment.NewLine, '\n'.ToString() }, StringSplitOptions.None)
+						.Select(line => indent + line.Trim()));
+			};
+
 
 			foreach (var task in SourceTasks)
 			{
@@ -52,17 +103,42 @@ namespace TaskInliner.Tasks
 				var taskNameMatch = taskNameExpr.Match(content);
 				if (!taskNameMatch.Success)
 				{
-					Log.LogError("Task source '{0}' does not contain a class declaration of the form: public class [TypeName] : Task", task.ItemSpec);
-					return false;
+					Log.LogWarning("Task source '{0}' does not contain a class declaration of the form: public class [TypeName] : Task", task.ItemSpec);
+					continue;
 				}
 
 				var taskName = taskNameMatch.Groups["name"].Value;
-				var usings = usingsExpr.Matches(content).Cast<Match>().Select(x => x.Groups["using"].Value).ToArray();
+				var usings = usingsExpr.Matches(content).Cast<Match>().Select(x => x.Groups["using"].Value)
+					.OrderBy(x => x).ToArray();
+
+				var taskSummary = indentedSummary("    ", classSummaryExpr.Match(content).Groups["summary"].Value) + @"
+
+    Properties:";
+				foreach (var propSummary in propSummaryExpr.Matches(content).Cast<Match>())
+				{
+					taskSummary += Environment.NewLine +
+						"    - " + propSummary.Groups["name"].Value + ": " +
+						propSummary.Groups["type"].Value + " (" + 
+						(propSummary.Groups["output"].Success ? "Output" : "Input") +
+						(propSummary.Groups["required"].Success ? ", Required" : "") + ")" +
+						Environment.NewLine +
+						indentedSummary("        ", propSummary.Groups["summary"].Value) + 
+						Environment.NewLine;
+
+				}
+
+				var summaryXml = new XComment(string.Format(@"
+    ============================================================
+              {0} Task
+	
+{1}
+	============================================================
+  ", taskName, taskSummary));
 
 				var taskXml = new XElement(xmlns + "UsingTask",
 					new XAttribute("TaskName", taskName),
 					new XAttribute("TaskFactory", "CodeTaskFactory"),
-					new XAttribute("AssemblyFile", "$(CodeTaskAssembly)"));
+					new XAttribute("AssemblyFile", "$" + "(CodeTaskAssembly)"));
 
 				var paramGroup = new XElement(xmlns + "ParameterGroup");
 				taskXml.Add(paramGroup);
@@ -74,6 +150,7 @@ namespace TaskInliner.Tasks
 					if (property.Groups["type"].Value != "string")
 						propXml.Add(new XAttribute("ParameterType", property.Groups["type"].Value));
 
+					// A property cannot be simultaneously a required input and an output.
 					if (property.Groups["required"].Success)
 						propXml.Add(new XAttribute("Required", "true"));
 					else if (property.Groups["output"].Success)
@@ -82,13 +159,20 @@ namespace TaskInliner.Tasks
 					paramGroup.Add(propXml);
 				}
 
-				var taskNode = new XElement(xmlns + "Task",
-					References.Select(x =>
-						new XElement(xmlns + "Reference",
-							new XAttribute("Include", x.ItemSpec)))
+				var references = References
+					.Select(x => x.ItemSpec)
+					// Skip references that are already built-in, so that the 
+					// runtime compilation takes precedence as to which version 
+					// of these assemblies to use for compiling the task.
+					.Where(x => !x.StartsWith("Microsoft.Build."))
+					.OrderBy(x => x);
+
+				var taskNode = new XElement(xmlns + "Task", references
+					.Select(x => new XElement(xmlns + "Reference",
+						new XAttribute("Include", x)))
 					.Concat(
-						usings.Select(x => 
-							new XElement(xmlns + "Using", 
+						usings.Select(x =>
+							new XElement(xmlns + "Using",
 								new XAttribute("Namespace", x)))
 					));
 
@@ -97,16 +181,22 @@ namespace TaskInliner.Tasks
 				taskNode.Add(new XElement(xmlns + "Code",
 					new XAttribute("Type", "Fragment"),
 					new XAttribute("Language", "cs"),
-					new XCData(codeExpr.Match(content).Groups["code"].Value.TrimEnd() + Environment.NewLine)));
+					new XCData(codeExpr.Match(content).Groups["code"].Value.TrimEnd() + Environment.NewLine + "      ")));
 
+				// Just in case some other code needs to inspect the XML we're generating for 
+				// each fragment, we emit these as output items.
 				var taskItem = new TaskItem(task);
 				taskItem.SetMetadata("Xml", taskXml.ToString());
 				tasks.Add(taskItem);
 
-				projectXml.Root.Add(taskXml);
+				// We add in reverse order so that the PropertyGroup is at the bottom, 
+				// avoiding clutter somewhat at the top of the file.
+				projectXml.Root.AddFirst(taskXml);
+				projectXml.Root.AddFirst(summaryXml);
 			}
 
 			OutputTasks = tasks.ToArray();
+
 			projectXml.Save(OutputFile);
 
 			return true;

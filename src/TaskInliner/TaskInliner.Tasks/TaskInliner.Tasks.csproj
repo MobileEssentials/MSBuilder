@@ -7,27 +7,24 @@
     <ProjectGuid>{17C121A7-BE2D-41BA-B2C8-128C5B30FF8D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TaskInliner.Tasks</RootNamespace>
-    <AssemblyName>TaskInliner.Tasks</AssemblyName>
+    <RootNamespace>MSBuilder.TaskInliner</RootNamespace>
+    <AssemblyName>MSBuilder.TaskInliner</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath>bin\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
+    <TasksFile>build\$(AssemblyName).tasks</TasksFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build" />
@@ -41,14 +38,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GenerateTasksFile.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Readme.txt" />
+    <None Include="TaskInliner.nuspec" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="build\MSBuilder.TaskInliner.targets" />
+    <None Include="build\MSBuilder.TaskInliner.tasks" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
+  <!-- By making this import conditional on the tasks file, we can easily re-generate it if it 
+       becomes broken for whatever reason. This project will continue to compile just fine, avoiding 
+	   the catch-22 situation that would arise otherwise.
   -->
+  <Import Project="build\MSBuilder.TaskInliner.targets" Condition="Exists('build\MSBuilder.TaskInliner.tasks')" />
+  <Target Name="AfterBuild">
+    <!-- Don't clean it, since we expect it to be checked-in with our project :) -->
+    <ItemGroup>
+      <FileWrites Remove="$(TasksFile)" />
+    </ItemGroup>
+  </Target>
 </Project>

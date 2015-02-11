@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>MSBuilder.TaskInliner</id>
+        <version>0.1</version>
+        <title>MSBuilder: Inline Code Tasks Generator</title>
+        <authors>Daniel Cazzulino, kzu</authors>
+        <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Authoring inline code tasks in C# in an XML file can be incredibly frustrating, without intellisense, compilation safety, tests, etc.
+		
+This package automatically converts Task-derived classes in your project into inline tasks file you can import directly from your targets. 
+Unit testing your custom tasks becomes straight-forward while maintaining the transparency and easy of deployment (and fixing!) of loose tasks files.</description>
+        <copyright>Copyright 2015</copyright>
+        <tags>msbuild inline</tags>
+    </metadata>
+	<files>
+		<file src="Readme.txt" />
+		<file src="build\MSBuilder.TaskInliner.tasks" />
+		<file src="build\MSBuilder.TaskInliner.targets" />
+	</files>
+</package>

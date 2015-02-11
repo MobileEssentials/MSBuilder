@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TaskInliner.Tests
+namespace Microsoft.Build.Framework
 {
 	public class MockBuildEngine : IBuildEngine
 	{
