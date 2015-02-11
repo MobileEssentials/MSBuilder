@@ -127,9 +127,9 @@ namespace TaskInliner.Tests
 
 			var expectedRefs = new string[] 
 			{
+				"Microsoft.CSharp",
 				"System",
 				"System.Core",
-				"Microsoft.CSharp",
 				"System.Xml"
 			};
 
@@ -181,9 +181,9 @@ namespace TaskInliner.Tests
 			};
 			var expectedRefs = new string[] 
 			{
+				"Microsoft.CSharp",
 				"System",
 				"System.Core",
-				"Microsoft.CSharp",
 				"System.Xml"
 			};
 
