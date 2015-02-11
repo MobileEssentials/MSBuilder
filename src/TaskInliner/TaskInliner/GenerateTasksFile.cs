@@ -146,9 +146,20 @@ namespace MSBuilder.TaskInliner
 				foreach (var property in propertyExpr.Matches(content).Cast<Match>())
 				{
 					var propXml = new XElement(xmlns + property.Groups["name"].Value);
-					// We only explicitly add parameter type when it's not the default value of "string"
-					if (property.Groups["type"].Value != "string")
-						propXml.Add(new XAttribute("ParameterType", property.Groups["type"].Value));
+                    // We only explicitly add parameter type when it's not the default value of "string"
+                    if (property.Groups["type"].Value != "string")
+                    {
+                        // Cover commonly used C# aliases
+                        var paramType = property.Groups["type"].Value;
+                        if (paramType == "bool")
+                            paramType = "System.Boolean";
+                        else if (paramType == "int")
+                            paramType = "System.Int32";
+                        else if (paramType == "long")
+                            paramType = "System.Int64";
+
+                        propXml.Add(new XAttribute("ParameterType", paramType));
+                    }
 
 					// A property cannot be simultaneously a required input and an output.
 					if (property.Groups["required"].Success)

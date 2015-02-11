@@ -3,6 +3,7 @@ using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Logging;
 using Microsoft.Build.Utilities;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,16 +19,17 @@ namespace MSBuilder.TaskInliner
 	public class TasksUpdater
 	{
 		const string xmlns = "{http://schemas.microsoft.com/developer/msbuild/2003}";
+        static readonly string MSBuildPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0", "MSBuildToolsPath", @"C:\Program Files (x86)\MSBuild\12.0\bin\");
 
-		/// <summary>
-		/// Manually run this "test" using TD.NET if you need to re-generate the TaskInliner.tasks 
-		/// file with an updated version of itself. 
-		/// Optionally delete the TaskInliner.tasks file from the Tasks project root (so that the 
-		/// library can build successfully without using the old version) and run this. 
-		/// A new version of the file will only be overwritten if after generation to a temp file, 
-		/// a project importing it can successfully import the tasks file and invoke the task.
-		/// </summary>
-		public void UpdateTasksFile()
+        /// <summary>
+        /// Manually run this "test" using TD.NET if you need to re-generate the TaskInliner.tasks 
+        /// file with an updated version of itself. 
+        /// Optionally delete the TaskInliner.tasks file from the Tasks project root (so that the 
+        /// library can build successfully without using the old version) and run this. 
+        /// A new version of the file will only be overwritten if after generation to a temp file, 
+        /// a project importing it can successfully import the tasks file and invoke the task.
+        /// </summary>
+        public void UpdateTasksFile()
 		{
 			var outputFile = Path.GetTempFileName();
 
@@ -63,8 +65,8 @@ namespace MSBuilder.TaskInliner
 				UseShellExecute = false,
 				RedirectStandardOutput = true,
 				RedirectStandardError = true,
-				FileName = @"C:\Program Files (x86)\MSBuild\12.0\bin\MSBuild.exe",
-				Arguments = tempFile
+                FileName = Path.Combine(MSBuildPath, "MSBuild.exe"),
+                Arguments = tempFile
 			};
 
 			var proc = Process.Start(psi);
