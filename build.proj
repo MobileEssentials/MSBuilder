@@ -60,10 +60,16 @@
 	<Target Name="RemoveUnchangedPackages">
 
 		<ItemGroup>
+			<UnchagedNuGet Include="@(NuGet)" Condition="%(NuGet.Commits) == '0' And %(NuGet.IsHead) != 'true'" />
+		</ItemGroup>
+
+		<Message Text="Removing unchanged NuGet: %(UnchagedNuGet.Identity)" Importance="high" />
+
+		<ItemGroup>
 			<NuGet Remove="@(NuGet)" Condition="%(Commits) == '0' And %(IsHead) != 'true'" />
 		</ItemGroup>
 		
-		<Message Text="NuGet=%(NuGet.Identity), Version=%(NuGet.Version), Commits=%(NuGet.Commits)" Importance="high" />
+		<Message Text="Changed NuGet: %(NuGet.Identity), Version=%(NuGet.Version), Commits=%(NuGet.Commits)" Importance="high" />
 	</Target>
 
 	<Target Name="GetHeadSha">
