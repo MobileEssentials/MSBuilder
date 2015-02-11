@@ -55,35 +55,29 @@
 		<!-- We overwrite the prop since we don't want FormatVersion at all -->
 		<BuildPackagesDependsOn>
 			$(BuildPackagesDependsOn);
-			GetHeadSha;
 			AddPackageMetadata;
 			FilterPackages;
 		</BuildPackagesDependsOn>
 	</PropertyGroup>
 
-	<Target Name="FilterPackages">
-		
-		<ItemGroup>
-			<UnchagedNuGet Include="@(NuGet)" Condition="%(NuGet.Commits) == '0' And %(NuGet.IsHead) != 'true'" />
-		</ItemGroup>
+	<Target Name="FilterPackages" Inputs="@(NuGet)" Outputs="%(NuGet.Identity)-BATCH">
 
-		<Message Text="Removing unchanged NuGet: %(UnchagedNuGet.Identity)" Importance="high" />
+		<GetLatestVersion PackageId="%(NuGet.Id)" IncludePreRelease="true">
+			<Output TaskParameter="SimpleVersion" PropertyName="LatestVersion" />
+		</GetLatestVersion>
+
+		<IsGreater Current="%(NuGet.Version)" Latest="$(LatestVersion)">
+			<Output TaskParameter="Result" PropertyName="IsNewer" />
+		</IsGreater>
+
+		<Message Text="Skipping '%(NuGet.Id)': %(NuGet.Version) &lt;= $(LatestVersion) (current &lt;= latest)" Importance="normal" Condition="'$(IsNewer)' == 'false'" />
+		<Message Text="Updated '%(NuGet.Id)': %(NuGet.Version) &gt; $(LatestVersion) (current &gt; latest!)" Importance="high" Condition="'$(IsNewer)' == 'true'" />
 
 		<ItemGroup>
-			<NuGet Remove="@(NuGet)" Condition="%(Commits) == '0' And %(IsHead) != 'true'" />
+			<NuGet Remove="@(NuGet)" Condition="$(IsNewer) == 'false'" />
 		</ItemGroup>
-		
-		<Message Text="Changed NuGet: %(NuGet.Identity), Version=%(NuGet.Version), Commits=%(NuGet.Commits)" Importance="high" />
 	</Target>
 
-	<Target Name="GetHeadSha">
-
-		<Run Exe="$(Git)" Args="rev-parse HEAD" WorkingDir="$(MSBuildProjectDirectory)">
-			<Output TaskParameter="Output" PropertyName="HeadSha" />
-		</Run>
-
-	</Target>
-	
 	<Target Name="AddPackageMetadata" Inputs="@(NuGet)" Outputs="%(NuGet.Identity)-BATCH">
 
 		<PropertyGroup>
@@ -116,15 +110,9 @@
 			<Output TaskParameter="Result" PropertyName="NuSpecVersion" />
 		</IncrementVersion>
 
-		<PropertyGroup>
-			<IsHead Condition="$(NuSpecSha) == $(HeadSha)">true</IsHead>
-			<IsHead Condition="$(NuSpecSha) != $(HeadSha)">false</IsHead>
-		</PropertyGroup>
-		
 		<ItemGroup>
 			<NuGet>
 				<Id>$(NuSpecId)</Id>
-				<IsHead>$(IsHead)</IsHead>
 				<Commits>$(NuSpecCommits)</Commits>
 				<Version>$(NuSpecVersion)</Version>
 			</NuGet>
@@ -171,4 +159,21 @@
 
 	</UsingTask>
 
+	<UsingTask TaskName="IsGreater" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)">
+
+		<ParameterGroup>
+			<Current Required="true"/>
+			<Latest Required="true" />
+			<Result Output="true"/>
+		</ParameterGroup>
+
+		<Task>
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+				Result = (new Version(Current) > new Version(Latest)).ToString().ToLowerInvariant();
+]]>
+			</Code>
+		</Task>
+
+	</UsingTask>
 </Project>
