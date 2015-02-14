@@ -53,13 +53,13 @@
 
 	<Import Project="MSBuilder.TaskInliner.tasks" />
 
-	<Target Name="GenerateInlineTasks" Inputs="@(SourceTask)" Outputs="$(_TasksFile)">
+	<Target Name="GenerateInlineTasks" Inputs="@(SourceTask)" Outputs="$(TasksOutputPath)\$(TasksName).tasks">
 		
 		<GenerateTasksFile TasksName="$(TasksName)" OutputPath="$(TasksOutputPath)"
 						   References="@(Reference)" SourceTasks="@(SourceTask)">
-			<Output TaskParameter="TasksFile" PropertyName="$(_TasksFile)" />
-			<Output TaskParameter="InlineFile" PropertyName="$(_InlineTasksFile)" />
-			<Output TaskParameter="CompiledFile" PropertyName="$(_CompiledTasksFile)" />		
+			<Output TaskParameter="TasksFile" PropertyName="_TasksFile" />
+			<Output TaskParameter="InlineFile" PropertyName="_InlineTasksFile" />
+			<Output TaskParameter="CompiledFile" PropertyName="_CompiledTasksFile" />		
 		</GenerateTasksFile>
 		
 		<ItemGroup>
