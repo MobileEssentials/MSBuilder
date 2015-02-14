@@ -74,7 +74,7 @@
 			<Output TaskParameter="Result" PropertyName="SuggestedVersion" />
 		</IncrementVersion>
 
-		<Message Text="Skipping '%(NuGet.Id)': %(NuGet.Version) &lt;= $(LatestVersion) (current == latest)" Importance="normal" Condition="'$(Comparison)' == '0'" />
+		<Message Text="Skipping '%(NuGet.Id)': %(NuGet.Version) == $(LatestVersion) (current == latest)" Importance="normal" Condition="'$(Comparison)' == '0'" />
 		<Message Text="Updated '%(NuGet.Id)': %(NuGet.Version) &gt; $(LatestVersion) (current &gt; latest!)" Importance="high" Condition="'$(Comparison)' == '1'" />
 		<Error Text="Currently determined package version for '%(NuGet.Id)' is %(NuGet.Version), which is smaller than the latest published version $(LatestVersion). 
 This is an authoring error that typically indicates that a change was made to the .nuspec file without changing the version to be greater than the latest published version.
