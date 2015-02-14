@@ -19,7 +19,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
-    <NuGetPackageImportStamp>000318cc</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>8d0cde14</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Readme.txt" />
+    <None Include="Bootstrap.targets" />
     <None Include="packages.config" />
     <None Include="TaskInliner.nuspec" />
   </ItemGroup>
@@ -56,7 +57,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props'))" />
-    <Error Condition="!Exists('..\..\packages\MSBuilder.TaskInliner.0.1.4\build\MSBuilder.TaskInliner.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuilder.TaskInliner.0.1.4\build\MSBuilder.TaskInliner.targets'))" />
   </Target>
-  <Import Project="..\..\packages\MSBuilder.TaskInliner.0.1.4\build\MSBuilder.TaskInliner.targets" Condition="Exists('..\..\packages\MSBuilder.TaskInliner.0.1.4\build\MSBuilder.TaskInliner.targets')" />
+  <Target Name="AfterBuild">
+	<Exec Command='"$(MSBuildBinPath)\msbuild.exe" Bootstrap.targets /nologo /p:TasksName=$(AssemblyName) /p:OutputPath=$(OutputPath) /p:SourceTask="@(Compile)" /p:Reference="@(Reference)"' 
+          WorkingDirectory='$(MSBuildProjectDirectory)'/>
+  </Target>
 </Project>

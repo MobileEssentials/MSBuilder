@@ -30,7 +30,7 @@
 	
 	$(TasksFile): this property controls the output file name generated 
 	              by the GenerateInlineTasks target after build. 
-				  Defaults to $(OutputPath)$(AssemblyName).tasks
+				  Defaults to $(OutputPath)$(AssemblyName).Inline.tasks
 	
 	@(SourceTask): item group with source files to process for inline 
 	               task generation. Defaults to @(Compile)
@@ -43,7 +43,8 @@
 			GenerateInlineTasks;
 		</BuildDependsOn>
 
-		<TasksFile Condition="$(TasksFile) == ''">$(OutputPath)$(AssemblyName).tasks</TasksFile>
+		<TasksName Condition="'$(TasksName)' == ''">$(AssemblyName)</TasksName>
+		<TasksOutputPath Condition="'$(TasksOutputPath)' == ''">$(OutputPath)</TasksOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'@(SourceTask)' == ''">
@@ -52,11 +53,21 @@
 
 	<Import Project="MSBuilder.TaskInliner.tasks" />
 
-	<Target Name="GenerateInlineTasks">
-		<GenerateTasksFile OutputFile="$(TasksFile)" References="@(Reference)" SourceTasks="@(SourceTask)" />
+	<Target Name="GenerateInlineTasks" Inputs="@(SourceTask)" Outputs="$(_TasksFile)">
+		
+		<GenerateTasksFile TasksName="$(TasksName)" OutputPath="$(TasksOutputPath)"
+						   References="@(Reference)" SourceTasks="@(SourceTask)">
+			<Output TaskParameter="TasksFile" PropertyName="$(_TasksFile)" />
+			<Output TaskParameter="InlineFile" PropertyName="$(_InlineTasksFile)" />
+			<Output TaskParameter="CompiledFile" PropertyName="$(_CompiledTasksFile)" />		
+		</GenerateTasksFile>
+		
 		<ItemGroup>
-			<FileWrites Include="$(TasksFile)" />
+			<FileWrites Include="$(_TasksFile)" />
+			<FileWrites Include="$(_InlineTasksFile)" />
+			<FileWrites Include="$(_CompiledTasksFile)" />
 		</ItemGroup>
+		
 	</Target>
 
 </Project>

@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>MSBuilder.TaskInliner</id>
-        <version>0.1.2</version>
+        <version>0.1.5</version>
         <title>MSBuilder: Inline Code Tasks Generator</title>
         <authors>Daniel Cazzulino, kzu</authors>
         <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -20,7 +20,10 @@ Unit testing your custom tasks becomes straight-forward while maintaining the tr
     </metadata>
 	<files>
 		<file src="Readme.txt" />
-		<file src="bin\MSBuilder.TaskInliner.tasks" target="build" />
+		<file src="bin\MSBuilder.TaskInliner.dll" target="build" />
 		<file src="bin\MSBuilder.TaskInliner.targets" target="build" />
+		<file src="bin\MSBuilder.TaskInliner.tasks" target="build" />
+		<file src="bin\MSBuilder.TaskInliner.Inline.tasks" target="build" />
+		<file src="bin\MSBuilder.TaskInliner.Compiled.tasks" target="build" />
 	</files>
 </package>

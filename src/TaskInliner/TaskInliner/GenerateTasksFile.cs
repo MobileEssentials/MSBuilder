@@ -14,15 +14,25 @@ namespace MSBuilder.TaskInliner
 {
 	/// <summary>
 	/// Generates an MSBuild file containing an inline task version of the 
-	/// specified compiled source tasks.
+	/// specified compiled source tasks, as well as a base tasks file that 
+	/// imports the inline version or compiled version depending on the 
+	/// current operating system (inline for Windows/MSBuild, compiled 
+	/// for Mono/Xbuild).
 	/// </summary>
 	public class GenerateTasksFile : Task
 	{
 		/// <summary>
-		/// The output tasks file to generate.
+		/// Base name of the tasks assembly and file to generate, without 
+		/// a file extension.
 		/// </summary>
 		[Required]
-		public string OutputFile { get; set; }
+		public string TasksName { get; set; }
+
+		[Required]
+		/// <summary>
+		/// The output path where the generated files should be written to.
+		/// </summary>
+		public string OutputPath { get; set; }
 
 		/// <summary>
 		/// Assembly references required to compile the source tasks.
@@ -35,6 +45,32 @@ namespace MSBuilder.TaskInliner
 		/// </summary>
 		[Required]
 		public Microsoft.Build.Framework.ITaskItem[] SourceTasks { get; set; }
+
+		/// <summary>
+		/// Optional license text to wrap in an XML comment at the top 
+		/// of the generated files.
+		/// </summary>
+		public string License { get; set; }
+
+		/// <summary>
+		/// The generated tasks file importing both inline and compiled versions 
+		/// of the tasks. This file is the one imported by targets that need to 
+		/// use the resulting inline or compiled tasks.
+		/// </summary>
+		[Output]
+		public string TasksFile { get; set; }
+
+		/// <summary>
+		/// The generated file containing the inline tasks.
+		/// </summary>
+		[Output]
+		public string InlineFile { get; set; }
+
+		/// <summary>
+		/// The generated file containing a reference to the compiled tasks.
+		/// </summary>
+		[Output]
+		public string CompiledFile { get; set; }
 
 		/// <summary>
 		/// An augmented version of <see cref="SourceTasks">SourceTasks</see> containing the 
@@ -51,6 +87,7 @@ namespace MSBuilder.TaskInliner
 		{
 			var xmlns = "{http://schemas.microsoft.com/developer/msbuild/2003}";
 			var usingsExpr = new Regex(@"using (?<using>[\w\.]+);");
+			var namespaceExpr = new Regex(@"namespace (?<ns>[\w\.]+)");
 			var taskNameExpr = new Regex(@"public class (?<name>[\w]+) : Task");
 			var propertyExpr = new Regex(@"(?<required>\[Required\].*?)?(?<output>\[Output\].*?)?public (?<type>[\w\.\[\]]+) (?<name>[\w]+) { get; set; }", RegexOptions.Singleline);
 			var codeExpr = new Regex(@"public override bool Execute.+?{(?<code>.*)return true;.+}", RegexOptions.Singleline);
@@ -90,12 +127,13 @@ namespace MSBuilder.TaskInliner
 					writer.WriteNode(reader, false);
 				}
 
-				return string.Join(Environment.NewLine, 
+				return string.Join(Environment.NewLine,
 					doc.Root.Value.Trim()
 						.Split(new[] { Environment.NewLine, '\n'.ToString() }, StringSplitOptions.None)
 						.Select(line => indent + line.Trim()));
 			};
 
+			var taskFullNames = new List<string>(SourceTasks.Length);
 
 			foreach (var task in SourceTasks)
 			{
@@ -108,6 +146,12 @@ namespace MSBuilder.TaskInliner
 				}
 
 				var taskName = taskNameMatch.Groups["name"].Value;
+				var taskNs = namespaceExpr.Match(content).Groups["ns"].Value;
+				if (taskNs.Length > 0)
+					taskFullNames.Add(taskNs + "." + taskName);
+				else
+					taskFullNames.Add(taskName);
+
 				var usings = usingsExpr.Matches(content).Cast<Match>().Select(x => x.Groups["using"].Value)
 					.OrderBy(x => x).ToArray();
 
@@ -118,11 +162,11 @@ namespace MSBuilder.TaskInliner
 				{
 					taskSummary += Environment.NewLine +
 						"    - " + propSummary.Groups["name"].Value + ": " +
-						propSummary.Groups["type"].Value + " (" + 
+						propSummary.Groups["type"].Value + " (" +
 						(propSummary.Groups["output"].Success ? "Output" : "Input") +
 						(propSummary.Groups["required"].Success ? ", Required" : "") + ")" +
 						Environment.NewLine +
-						indentedSummary("        ", propSummary.Groups["summary"].Value) + 
+						indentedSummary("        ", propSummary.Groups["summary"].Value) +
 						Environment.NewLine;
 
 				}
@@ -146,20 +190,20 @@ namespace MSBuilder.TaskInliner
 				foreach (var property in propertyExpr.Matches(content).Cast<Match>())
 				{
 					var propXml = new XElement(xmlns + property.Groups["name"].Value);
-                    // We only explicitly add parameter type when it's not the default value of "string"
-                    if (property.Groups["type"].Value != "string")
-                    {
-                        // Cover commonly used C# aliases
-                        var paramType = property.Groups["type"].Value;
-                        if (paramType == "bool")
-                            paramType = "System.Boolean";
-                        else if (paramType == "int")
-                            paramType = "System.Int32";
-                        else if (paramType == "long")
-                            paramType = "System.Int64";
+					// We only explicitly add parameter type when it's not the default value of "string"
+					if (property.Groups["type"].Value != "string")
+					{
+						// Cover commonly used C# aliases
+						var paramType = property.Groups["type"].Value;
+						if (paramType == "bool")
+							paramType = "System.Boolean";
+						else if (paramType == "int")
+							paramType = "System.Int32";
+						else if (paramType == "long")
+							paramType = "System.Int64";
 
-                        propXml.Add(new XAttribute("ParameterType", paramType));
-                    }
+						propXml.Add(new XAttribute("ParameterType", paramType));
+					}
 
 					// A property cannot be simultaneously a required input and an output.
 					if (property.Groups["required"].Success)
@@ -208,7 +252,40 @@ namespace MSBuilder.TaskInliner
 
 			OutputTasks = tasks.ToArray();
 
-			projectXml.Save(OutputFile);
+			if (!string.IsNullOrEmpty(License))
+				projectXml.AddFirst(new XComment(License));
+
+			TasksFile = Path.Combine(OutputPath, TasksName + ".tasks");
+			InlineFile = Path.Combine(OutputPath, TasksName + ".Inline.tasks");
+			CompiledFile = Path.Combine(OutputPath, TasksName + ".Compiled.tasks");
+
+			projectXml.Save(InlineFile);
+
+			// Generate .Compiled.tasks file defining the Using task using the compiled assembly.
+			projectXml.Root.RemoveNodes();
+
+			var tasksAssembly = TasksName + ".dll";
+			foreach (var task in taskFullNames)
+			{
+				projectXml.Root.Add(new XElement(xmlns + "UsingTask",
+					new XAttribute("TaskName", task),
+					new XAttribute("AssemblyFile", tasksAssembly)));
+			}
+
+			projectXml.Save(CompiledFile);
+
+			// Now generate .tasks file importing both inline and compiled tasks.
+			projectXml.Root.RemoveNodes();
+			projectXml.Root.Add(new XElement(xmlns + "Import",
+				new XAttribute("Project", TasksName + ".Inline.tasks"),
+				new XAttribute("Condition", "'$" + "(OS)' == 'Windows_NT'")));
+
+			projectXml.Root.Add(new XElement(xmlns + "Import",
+				new XAttribute("Project", TasksName + ".Compiled.tasks"),
+				new XAttribute("Condition", "'$" + "(OS)' != 'Windows_NT'")));
+
+
+			projectXml.Save(TasksFile);
 
 			return true;
 		}

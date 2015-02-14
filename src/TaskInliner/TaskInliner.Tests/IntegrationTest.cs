@@ -29,7 +29,13 @@ namespace MSBuilder.TaskInliner
 			var task = new GenerateTasksFile
 			{
 				BuildEngine = new MockBuildEngine(),
-				OutputFile = outputFile,
+				TasksName = Path.GetFileNameWithoutExtension(outputFile),
+				OutputPath = Path.GetDirectoryName(outputFile),
+				License = @"
+	The MIT License (MIT)
+
+	Copyright (c) 2015 Daniel Cazzulino
+",
 				References = XDocument.Load(@"..\..\..\TaskInliner\TaskInliner.csproj")
 					.Root.Descendants(xmlns + "Reference")
 					.Select(x => x.Attribute("Include").Value)
@@ -41,15 +47,19 @@ namespace MSBuilder.TaskInliner
 
 			var xmlProject = ProjectRootElement.Create();
 			xmlProject.DefaultTargets = "Build";
-			xmlProject.AddImport(outputFile);
+			xmlProject.AddImport(task.TasksFile);
 			var taskXml = xmlProject.AddTarget("Build")
 				.AddTask("GenerateTasksFile");
 
-			taskXml.SetParameter("OutputFile", Path.GetTempFileName());
+			var prjFile = Path.GetTempFileName();
+
+			taskXml.SetParameter("TasksName", Path.GetFileNameWithoutExtension(prjFile));
+			taskXml.SetParameter("OutputPath", Path.GetDirectoryName(prjFile));
 			taskXml.SetParameter("References", "@(Reference)");
 			taskXml.SetParameter("SourceTasks", "@(Compile)");
 
 			var tempFile = Path.GetTempFileName();
+			Console.WriteLine(tempFile);
 			xmlProject.Save(tempFile);
 
 			var psi = new ProcessStartInfo

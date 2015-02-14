@@ -17,13 +17,17 @@ namespace MSBuilder.TaskInliner
 		const string xmlns = "{http://schemas.microsoft.com/developer/msbuild/2003}";
 
 		string sourceFile;
-		string outputFile;
+		string tasksName;
+		string inlineTask;
+		string compiledTask;
+		string tasksFile;
 		MockBuildEngine buildEngine;
 
 		public GenerateTasksFileTests()
 		{
 			sourceFile = Path.GetTempFileName();
-			outputFile = Path.GetTempFileName();
+			tasksName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
+			inlineTask = Path.GetTempFileName();
 			buildEngine = new MockBuildEngine();
 		}
 
@@ -465,7 +469,7 @@ namespace Test
 
 			Assert.True(BuildProject());
 
-			var contents = File.ReadAllText(outputFile);
+			var contents = File.ReadAllText(inlineTask);
 
 			Assert.Contains("Class summary", contents);
 			Assert.Contains("over two lines.", contents);
@@ -500,11 +504,71 @@ namespace Test
 			Assert.True(task.Execute());
 		}
 
+		[Fact]
+		public void when_task_contains_license_then_adds_it()
+		{
+			var content = @"
+using System;
+
+namespace Test
+{
+	public class MyTask : Task
+	{
+		public override bool Execute ()
+		{
+			return true;
+		}	
+	}
+}
+";
+
+			var task = CreateTask(content);
+			task.License = Guid.NewGuid().ToString();
+	
+			Assert.True(task.Execute());
+
+			var contents = File.ReadAllText(inlineTask);
+
+			Assert.Contains("<!--" + task.License + "-->", contents);
+		}
+
+		[Fact]
+		public void when_task_has_no_namespace_then_usingtask_has_simple_name()
+		{
+			var content = @"
+public class MyTask : Task
+{
+	public override bool Execute ()
+	{
+		return true;
+	}	
+}
+";
+
+			var task = CreateTask(content);
+			task.License = Guid.NewGuid().ToString();
+	
+			Assert.True(task.Execute());
+
+			var contents = File.ReadAllText(compiledTask);
+
+			Assert.Contains("TaskName=\"MyTask\"", contents);
+		}
+
+		[Fact]
+		public void when_action_then_assert()
+		{
+			var v1 = new Version("1.2");
+			var v2 = new Version("1.4");
+
+			Console.WriteLine(v1.CompareTo(v2));
+			Console.WriteLine(v2.CompareTo(v1));
+		}
 
 		private bool BuildProject(LoggerVerbosity verbosity = LoggerVerbosity.Quiet)
 		{
 			var xmlProject = ProjectRootElement.Create();
-			xmlProject.AddImport(outputFile);
+			xmlProject.AddImport(inlineTask);
 			xmlProject.AddTarget("Build")
 				.AddTask("MyTask")
 				.Condition = "'' != ''";
@@ -521,10 +585,11 @@ namespace Test
 		{
 			File.WriteAllText(sourceFile, taskContent);
 
-			var task = new TestGenerateTasksFile
+			var task = new TestGenerateTasksFile(this)
 			{
 				BuildEngine = buildEngine,
-				OutputFile = outputFile,
+				TasksName = tasksName,
+				OutputPath = Path.GetTempPath(),
 				References = references.Select(x => new TaskItem(x)).ToArray(),
 				SourceTasks = new ITaskItem[] { new TaskItem(sourceFile) },
 			};
@@ -536,19 +601,29 @@ namespace Test
 		{
 			if (File.Exists(sourceFile))
 				File.Delete(sourceFile);
-			if (File.Exists(outputFile))
-				File.Delete(outputFile);
+			if (File.Exists(inlineTask))
+				File.Delete(inlineTask);
 		}
 
 		class TestGenerateTasksFile : GenerateTasksFile
 		{
-			public XElement[] XmlTasks { get; private set; }			
+			private GenerateTasksFileTests test;
+
+			public TestGenerateTasksFile(GenerateTasksFileTests test)
+			{
+				this.test = test;
+			}
+			public XElement[] XmlTasks { get; private set; }		
 
 			public override bool Execute()
 			{
 				var executed = base.Execute();
 				if (executed)
 					XmlTasks = OutputTasks.Select(x => XElement.Parse(x.GetMetadata("Xml"))).ToArray();
+
+				test.tasksFile = base.TasksFile;
+				test.inlineTask = base.InlineFile;
+				test.compiledTask = base.InlineFile;
 
 				return executed;
 			}
