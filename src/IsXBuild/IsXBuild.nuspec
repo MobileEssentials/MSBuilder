@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>MSBuilder.IsXBuild</id>
+        <version>0.1.0</version>
+        <title>MSBuilder: IsXBuild Property</title>
+        <authors>Daniel Cazzulino, kzu</authors>
+        <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Provides the $(IsXBuild) property which allows detecting that the current engine is XBuild rather than MSBuild, for conditional execution.</description>
+        <copyright>Copyright 2015</copyright>
+        <tags>msbuild xbuild</tags>
+    </metadata>
+</package>
