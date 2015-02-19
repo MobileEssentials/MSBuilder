@@ -65,6 +65,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{C2825554
 		ThisAssembly.Project\build\MSBuilder.ThisAssembly.Project.targets = ThisAssembly.Project\build\MSBuilder.ThisAssembly.Project.targets
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IsXBuild", "IsXBuild", "{68427448-D664-4D42-A475-AFA7405B94B0}"
+	ProjectSection(SolutionItems) = preProject
+		IsXBuild\IsXBuild.nuspec = IsXBuild\IsXBuild.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{286A7DCF-63D8-4D23-B7AA-F011AFCAA1E2}"
+	ProjectSection(SolutionItems) = preProject
+		IsXBuild\build\MSBuilder.IsXBuild.props = IsXBuild\build\MSBuilder.IsXBuild.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,5 +111,6 @@ Global
 		{D4D4C03B-4D13-4BB5-AC12-B0E0F620CE76} = {ECC6A65D-C88F-4129-A70E-AF30137D1A0E}
 		{68D6213E-A92A-475E-9477-0A4F349EE037} = {ECC6A65D-C88F-4129-A70E-AF30137D1A0E}
 		{C2825554-E452-4128-8780-D7A8D0F4AC56} = {D888192D-396E-453F-8924-D90874289E83}
+		{286A7DCF-63D8-4D23-B7AA-F011AFCAA1E2} = {68427448-D664-4D42-A475-AFA7405B94B0}
 	EndGlobalSection
 EndGlobal
