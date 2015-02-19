@@ -59,7 +59,7 @@
     <Error Condition="!Exists('..\..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props'))" />
   </Target>
   <Target Name="AfterBuild">
-	<Exec Command='"$(MSBuildBinPath)\msbuild.exe" Bootstrap.targets /nologo /p:TasksName=$(AssemblyName) /p:OutputPath=$(OutputPath) /p:SourceTask="@(Compile)" /p:Reference="@(Reference)"' 
+	<Exec Command='"$(MSBuildBinPath)\msbuild.exe" Bootstrap.targets /nologo /p:TasksName=$(AssemblyName) /p:OutputPath=$(OutputPath) /p:SourceTask="GenerateTasksFile.cs" /p:Reference="@(Reference)"' 
           WorkingDirectory='$(MSBuildProjectDirectory)'/>
   </Target>
 </Project>

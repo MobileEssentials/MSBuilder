@@ -28,10 +28,10 @@ namespace MSBuilder.TaskInliner
 		[Required]
 		public string TasksName { get; set; }
 
-		[Required]
 		/// <summary>
 		/// The output path where the generated files should be written to.
 		/// </summary>
+		[Required]
 		public string OutputPath { get; set; }
 
 		/// <summary>
