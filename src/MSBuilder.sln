@@ -62,7 +62,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThisAssembly.Project", "Thi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{C2825554-E452-4128-8780-D7A8D0F4AC56}"
 	ProjectSection(SolutionItems) = preProject
-		ThisAssembly.Project\build\MSBuilder.ThisAssembly.Project.props = ThisAssembly.Project\build\MSBuilder.ThisAssembly.Project.props
+		ThisAssembly.Project\build\MSBuilder.ThisAssembly.Project.targets = ThisAssembly.Project\build\MSBuilder.ThisAssembly.Project.targets
 	EndProjectSection
 EndProject
 Global
