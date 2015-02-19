@@ -34,7 +34,7 @@ namespace MSBuilder.TaskInliner
 				License = @"
 	The MIT License (MIT)
 
-	Copyright (c) 2015 Daniel Cazzulino
+	Copyright (c) 2015 Mobile Essentials
 ",
 				References = XDocument.Load(@"..\..\..\TaskInliner\TaskInliner.csproj")
 					.Root.Descendants(xmlns + "Reference")

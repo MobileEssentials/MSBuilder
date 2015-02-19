@@ -3,7 +3,7 @@ extensions: .cs .cpp .h
 /*
     The MIT License (MIT)
 
-    Copyright (c) 2015 Daniel Cazzulino
+    Copyright (c) 2015 Mobile Essentials
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ extensions:  .xml .config .xsd .resx .html .targets .props .proj
 <!-- 
     The MIT License (MIT)
 
-    Copyright (c) 2015 Daniel Cazzulino
+    Copyright (c) 2015 Mobile Essentials
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal

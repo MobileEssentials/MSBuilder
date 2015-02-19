@@ -2,9 +2,9 @@
 <package>
     <metadata>
         <id>MSBuilder.Run</id>
-        <version>0.1.2</version>
-        <title>MSBuilder: Run</title>
-        <authors>Daniel Cazzulino, kzu</authors>
+        <version>0.2.0</version>
+        <title>MSBuilder: Run Task</title>
+        <authors>Mobile Essentials</authors>
         <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>

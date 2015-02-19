@@ -2,9 +2,9 @@
 <package>
     <metadata>
         <id>MSBuilder.CodeTaskAssembly</id>
-        <version>0.1.2</version>
+        <version>0.2.0</version>
         <title>MSBuilder: CodeTaskAssembly Property</title>
-        <authors>Daniel Cazzulino, kzu</authors>
+        <authors>Mobile Essentials</authors>
         <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
