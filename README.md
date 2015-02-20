@@ -51,3 +51,15 @@ complicated TaskInliner one (which you can use yourself to create blocks contain
 
 
 [![Build status](https://img.shields.io/appveyor/ci/MobileEssentials/MSBuilder.svg)](https://ci.appveyor.com/project/MobileEssentials/msbuilder)
+
+Package | Stats
+--- | ---
+MSBuilder.CodeTaskAssembly | [![NuGet downloads](https://img.shields.io/nuget/dt/MSBuilder.CodeTaskAssembly.svg)](https://www.nuget.org/packages/MSBuilder.CodeTaskAssembly) [![Version](https://img.shields.io/nuget/v/MSBuilder.CodeTaskAssembly.svg)](https://www.nuget.org/packages/MSBuilder.CodeTaskAssembly)
+MSBuilder.Git | [![NuGet downloads](https://img.shields.io/nuget/dt/MSBuilder.Git.svg)](https://www.nuget.org/packages/MSBuilder.Git) [![Version](https://img.shields.io/nuget/v/MSBuilder.Git.svg)](https://www.nuget.org/packages/MSBuilder.Git)
+MSBuilder.IsXBuild | [![NuGet downloads](https://img.shields.io/nuget/dt/MSBuilder.IsXBuild.svg)](https://www.nuget.org/packages/MSBuilder.IsXBuild) [![Version](https://img.shields.io/nuget/v/MSBuilder.IsXBuild.svg)](https://www.nuget.org/packages/MSBuilder.IsXBuild)
+MSBuilder.NuGet.GetLatestVersion | [![NuGet downloads](https://img.shields.io/nuget/dt/MSBuilder.NuGet.GetLatestVersion.svg)](https://www.nuget.org/packages/MSBuilder.NuGet.GetLatestVersion) [![Version](https://img.shields.io/nuget/v/MSBuilder.NuGet.GetLatestVersion.svg)](https://www.nuget.org/packages/MSBuilder.NuGet.GetLatestVersion)
+MSBuilder.Run | [![NuGet downloads](https://img.shields.io/nuget/dt/MSBuilder.Run.svg)](https://www.nuget.org/packages/MSBuilder.Run) [![Version](https://img.shields.io/nuget/v/MSBuilder.Run.svg)](https://www.nuget.org/packages/MSBuilder.Run)
+MSBuilder.TaskInliner | [![NuGet downloads](https://img.shields.io/nuget/dt/MSBuilder.TaskInliner.svg)](https://www.nuget.org/packages/MSBuilder.TaskInliner) [![Version](https://img.shields.io/nuget/v/MSBuilder.TaskInliner.svg)](https://www.nuget.org/packages/MSBuilder.TaskInliner)
+MSBuilder.ThisAssembly.Project | [![NuGet downloads](https://img.shields.io/nuget/dt/MSBuilder.ThisAssembly.Project.svg)](https://www.nuget.org/packages/MSBuilder.ThisAssembly.Project) [![Version](https://img.shields.io/nuget/v/MSBuilder.ThisAssembly.Project.svg)](https://www.nuget.org/packages/MSBuilder.ThisAssembly.Project)
+
+
