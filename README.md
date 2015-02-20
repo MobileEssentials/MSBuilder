@@ -48,3 +48,6 @@ contributors.
 
 You can use one of the existing blocks as inspiration, from the simplest CodeTaskAssembly to the 
 complicated TaskInliner one (which you can use yourself to create blocks containing inline tasks too!).
+
+
+[![Build status](https://img.shields.io/appveyor/ci/MobileEssentials/MSBuilder.svg)](https://ci.appveyor.com/project/MobileEssentials/msbuilder)
