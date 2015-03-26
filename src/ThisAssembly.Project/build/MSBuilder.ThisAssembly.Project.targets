@@ -30,7 +30,7 @@
 			IncludeProjectInfo;
 			$(CompileDependsOn);
 		</CompileDependsOn>
-		<ThisProjectInfoFile "'$(ThisProjectInfoFile)' == ''">$(IntermediateOutputPath)AssemblyInfo.ProjectInfo.g$(DefaultLanguageSourceExtension)</ThisProjectInfoFile>
+		<ThisProjectInfoFile Condition="'$(ThisProjectInfoFile)' == ''">$(IntermediateOutputPath)AssemblyInfo.ProjectInfo.g$(DefaultLanguageSourceExtension)</ThisProjectInfoFile>
 		<_ProjectGuidString Condition="'$(ProjectGuidString)' == ''">$([System.Guid]::Parse($(ProjectGuid)).ToString())</_ProjectGuidString>
 	</PropertyGroup>
 
