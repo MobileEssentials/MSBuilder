@@ -12,7 +12,7 @@ using Xunit;
 
 namespace MSBuilder.NuGet
 {
-    public class IntegrationTest
+    public class GetLatestVersionTests
     {
         const string xmlns = "{http://schemas.microsoft.com/developer/msbuild/2003}";
         static readonly string MSBuildPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0", "MSBuildToolsPath", @"C:\Program Files (x86)\MSBuild\12.0\bin\");
@@ -54,7 +54,7 @@ namespace MSBuilder.NuGet
         [Fact]
         public void when_executing_task_then_succeeds()
         {
-            var tasksFile = new FileInfo(@"..\..\..\GetLatestVersion\bin\MSBuilder.NuGet.GetLatestVersion.targets").FullName;
+            var tasksFile = new FileInfo(@"..\..\..\GetLatestVersion\bin\MSBuilder.NuGet.GetLatestVersion.props").FullName;
 
             var xmlProject = ProjectRootElement.Create();
             xmlProject.DefaultTargets = "Build";
