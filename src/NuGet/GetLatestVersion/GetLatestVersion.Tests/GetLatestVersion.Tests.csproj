@@ -44,7 +44,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MockBuildEngine.cs" />
+    <Compile Include="..\..\..\MockBuildEngine.cs">
+      <Link>MockBuildEngine.cs</Link>
+    </Compile>
     <Compile Include="IntegrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
