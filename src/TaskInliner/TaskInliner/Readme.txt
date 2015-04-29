@@ -5,15 +5,17 @@ This NuGet package will automatically generate an .Inline.tasks file in your out
 containing an inline code task version of your Task-derived classes in the project.
 
 It will also generate a .Compiled.tasks file declaring the tasks in the compiled assembly, 
-as well as a .tasks file that conditionally imports both depending on the target OS, like:
+as well as a .tasks file that conditionally imports both depending on the whether compiled 
+tasks are enabled or not, like:
 
     <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-      <Import Project="MyTasks.Inline.tasks" Condition="'$(OS)' == 'Windows_NT'" />
-      <Import Project="MyTasks.Compiled.tasks" Condition="'$(OS)' != 'Windows_NT'" />
+      <Import Project="MyTasks.Inline.tasks" Condition="'$(UseCompiledTasks)' == 'false' Or '$(UseCompiledTasks)' == ''" />
+      <Import Project="MyTasks.Compiled.tasks" Condition="'$(UseCompiledTasks)' == 'true'" />
     </Project>
 
 This allows this nuget to provide an enhanced experience for Windows/MSBuild/Visual Studio
-users without breaking support for Mac/Xbuild/Xamarin Studio.
+users without breaking support for Mac/Xbuild/Xamarin Studio. By default, the UseCompiledTasks 
+uses the IsXBuild MSBuilder props to default to compiled only on XBuild.
 
 The generated file can be customized by modifying the following extensibility points 
 directly via your MSBuild project file:
