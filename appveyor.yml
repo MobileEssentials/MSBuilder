@@ -2,7 +2,7 @@ init:
   - git config --global core.autocrlf input
 
 build_script:
-  - build.cmd
+  - build.cmd /v:normal
 
 deploy:
   - provider: NuGet
