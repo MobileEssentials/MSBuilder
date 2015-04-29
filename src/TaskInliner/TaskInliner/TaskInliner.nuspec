@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>MSBuilder.TaskInliner</id>
-        <version>0.2.0</version>
+        <version>0.2.1</version>
         <title>MSBuilder: Inline Code Tasks Generator</title>
         <authors>Mobile Essentials</authors>
         <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
