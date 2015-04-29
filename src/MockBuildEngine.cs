@@ -6,15 +6,18 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit.Abstractions;
 
 namespace Microsoft.Build.Framework
 {
     public class MockBuildEngine : IBuildEngine
     {
         bool trace = false;
+		ITestOutputHelper output;
 
-        public MockBuildEngine(bool trace = false)
+        public MockBuildEngine(ITestOutputHelper output, bool trace = false)
         {
+			this.output = output;
             this.trace = trace;
             LoggedCustomEvents = new List<CustomBuildEventArgs>();
             LoggedErrorEvents = new List<BuildErrorEventArgs>();
@@ -72,12 +75,13 @@ namespace Microsoft.Build.Framework
             LoggedWarningEvents.Add(e);
         }
 
-		static void TraceMessage(string message)
+		void TraceMessage(string message)
 		{
 			Console.WriteLine(message);
 			Trace.WriteLine(message);
 			Debug.WriteLine(message);
 			Debugger.Log(0, "", message);
+			output.WriteLine(message);	
 		}
     }
 }

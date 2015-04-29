@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace MSBuilder.NuGet
 {
@@ -17,12 +18,19 @@ namespace MSBuilder.NuGet
         const string xmlns = "{http://schemas.microsoft.com/developer/msbuild/2003}";
         static readonly string MSBuildPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0", "MSBuildToolsPath", @"C:\Program Files (x86)\MSBuild\12.0\bin\");
 
+		MockBuildEngine engine;
+
+		public GetLatestVersionTests(ITestOutputHelper output)
+		{
+			engine = new MockBuildEngine(output);
+		}
+
         [Fact]
 		public void when_retrieving_latest_version_then_succeeds()
 		{
 			var task = new GetLatestVersion
 			{
-                BuildEngine = new MockBuildEngine(true),
+                BuildEngine = engine,
                 IncludePreRelease = true,
 				PackageId = "xunit"
 			};
@@ -37,7 +45,7 @@ namespace MSBuilder.NuGet
 		{
 			var task = new GetLatestVersion
 			{
-                BuildEngine = new MockBuildEngine(true),
+                BuildEngine = engine,
                 IncludePreRelease = true,
 				PackageId = Guid.NewGuid().ToString()
 			};
@@ -94,7 +102,6 @@ namespace MSBuilder.NuGet
             proc.WaitForExit();
 
             Assert.True(proc.ExitCode == 0, output);
-            Console.WriteLine(output);
         }
 
     }

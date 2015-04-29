@@ -42,7 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{9E3B3824-901
 		Git\Git.nuspec = Git\Git.nuspec
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "builder", "builder", "{6ED44350-BD27-46E4-8C02-F4DD3006D1B1}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{6ED44350-BD27-46E4-8C02-F4DD3006D1B1}"
 	ProjectSection(SolutionItems) = preProject
 		Git\build\MSBuilder.Git.props = Git\build\MSBuilder.Git.props
 	EndProjectSection
@@ -75,6 +75,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{286A7DCF
 		IsXBuild\build\MSBuilder.IsXBuild.props = IsXBuild\build\MSBuilder.IsXBuild.props
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MSBuilder", "MSBuilder", "{199324B5-3B13-4333-AA88-352DE5A780EE}"
+	ProjectSection(SolutionItems) = preProject
+		MSBuilder\MSBuilder.nuspec = MSBuilder\MSBuilder.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DownloadFile", "DownloadFile", "{A5F91927-0BA0-4FC7-8697-B7AB32B01A69}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DownloadFile", "DownloadFile\DownloadFile\DownloadFile.csproj", "{62A6DCA7-C950-4570-8767-FE3731BCF7C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DownloadFile.Tests", "DownloadFile\DownloadFile.Tests\DownloadFile.Tests.csproj", "{952ED2B3-9732-472B-8716-CB11559598FF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E45A8587-AF64-47B6-8DD6-0F7D78942490}"
+	ProjectSection(SolutionItems) = preProject
+		MSBuilder\build\MSBuilder.props = MSBuilder\build\MSBuilder.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +113,14 @@ Global
 		{68D6213E-A92A-475E-9477-0A4F349EE037}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68D6213E-A92A-475E-9477-0A4F349EE037}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68D6213E-A92A-475E-9477-0A4F349EE037}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62A6DCA7-C950-4570-8767-FE3731BCF7C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62A6DCA7-C950-4570-8767-FE3731BCF7C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62A6DCA7-C950-4570-8767-FE3731BCF7C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62A6DCA7-C950-4570-8767-FE3731BCF7C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{952ED2B3-9732-472B-8716-CB11559598FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{952ED2B3-9732-472B-8716-CB11559598FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{952ED2B3-9732-472B-8716-CB11559598FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{952ED2B3-9732-472B-8716-CB11559598FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,5 +136,8 @@ Global
 		{68D6213E-A92A-475E-9477-0A4F349EE037} = {ECC6A65D-C88F-4129-A70E-AF30137D1A0E}
 		{C2825554-E452-4128-8780-D7A8D0F4AC56} = {D888192D-396E-453F-8924-D90874289E83}
 		{286A7DCF-63D8-4D23-B7AA-F011AFCAA1E2} = {68427448-D664-4D42-A475-AFA7405B94B0}
+		{62A6DCA7-C950-4570-8767-FE3731BCF7C2} = {A5F91927-0BA0-4FC7-8697-B7AB32B01A69}
+		{952ED2B3-9732-472B-8716-CB11559598FF} = {A5F91927-0BA0-4FC7-8697-B7AB32B01A69}
+		{E45A8587-AF64-47B6-8DD6-0F7D78942490} = {199324B5-3B13-4333-AA88-352DE5A780EE}
 	EndGlobalSection
 EndGlobal

@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Xunit;
+using Xunit.Abstractions;
 using Xunit.Extensions;
 
 namespace MSBuilder.TaskInliner
@@ -21,6 +22,15 @@ namespace MSBuilder.TaskInliner
 	{
 		const string xmlns = "{http://schemas.microsoft.com/developer/msbuild/2003}";
         static readonly string MSBuildPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0", "MSBuildToolsPath", @"C:\Program Files (x86)\MSBuild\12.0\bin\");
+
+		MockBuildEngine engine;
+		ITestOutputHelper output;
+
+		public IntegrationTest(ITestOutputHelper output)
+		{
+			engine = new MockBuildEngine(output);
+			this.output = output;
+		}
 
 		[InlineData(true)]
 		[InlineData(false)]
@@ -31,7 +41,7 @@ namespace MSBuilder.TaskInliner
 
 			var task = new GenerateTasksFile
 			{
-				BuildEngine = new MockBuildEngine(),
+				BuildEngine = engine,
 				TasksName = Path.GetFileNameWithoutExtension(outputFile),
 				OutputPath = Path.GetDirectoryName(outputFile),
 				License = @"
@@ -79,14 +89,14 @@ namespace MSBuilder.TaskInliner
 			};
 
 			var proc = Process.Start(psi);
-			var output = proc.StandardOutput.ReadToEnd().Trim();
+			var stdout = proc.StandardOutput.ReadToEnd().Trim();
 			var errors = proc.StandardError.ReadToEnd().Trim();
 			if (errors.Length > 0)
 				Assert.True(false, errors);
 
 			proc.WaitForExit();
 
-			Assert.True(proc.ExitCode == 0, output);
+			Assert.True(proc.ExitCode == 0, stdout);
 		}
 	}
 }

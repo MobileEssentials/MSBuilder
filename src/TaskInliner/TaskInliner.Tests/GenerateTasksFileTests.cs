@@ -9,6 +9,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace MSBuilder.TaskInliner
 {
@@ -23,12 +24,12 @@ namespace MSBuilder.TaskInliner
 		string tasksFile;
 		MockBuildEngine buildEngine;
 
-		public GenerateTasksFileTests()
+		public GenerateTasksFileTests(ITestOutputHelper output)
 		{
 			sourceFile = Path.GetTempFileName();
 			tasksName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
 			inlineTask = Path.GetTempFileName();
-			buildEngine = new MockBuildEngine();
+			buildEngine = new MockBuildEngine(output);
 		}
 
 		[Fact]
