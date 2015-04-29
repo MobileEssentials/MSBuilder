@@ -1,7 +1,7 @@
 ﻿MSBuilder: NuGet Package GetLatestVersion
 =========================================
 
-This NuGet package provides the GetLatestVersion inline task, which allows 
+This NuGet package provides the GetLatestVersion task, which allows 
 easy retrieval of the latest published version of a NuGet package on 
 nuget.org given its package Id, as well as easily accessing all its SemVer
 components.
