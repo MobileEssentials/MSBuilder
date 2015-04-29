@@ -88,9 +88,10 @@ namespace MSBuilder.NuGet
 			catch (Exception ex)
 			{
 				Log.LogErrorFromException(ex);
+				return false;
 			}
 
-			return !Log.HasLoggedErrors;
+			return true;
 		}
 	}
 }
