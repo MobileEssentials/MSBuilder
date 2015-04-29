@@ -278,11 +278,11 @@ namespace MSBuilder.TaskInliner
 			projectXml.Root.RemoveNodes();
 			projectXml.Root.Add(new XElement(xmlns + "Import",
 				new XAttribute("Project", TasksName + ".Inline.tasks"),
-				new XAttribute("Condition", "'$" + "(OS)' == 'Windows_NT'")));
+				new XAttribute("Condition", "'$" + "(UseCompiledTasks)' == 'false' Or '$" + "(UseCompiledTasks)' == ''")));
 
 			projectXml.Root.Add(new XElement(xmlns + "Import",
 				new XAttribute("Project", TasksName + ".Compiled.tasks"),
-				new XAttribute("Condition", "'$" + "(OS)' != 'Windows_NT'")));
+				new XAttribute("Condition", "'$" + "(UseCompiledTasks)' == 'true'")));
 
 
 			projectXml.Save(TasksFile);

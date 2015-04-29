@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Xunit;
+using Xunit.Extensions;
 
 namespace MSBuilder.TaskInliner
 {
@@ -21,8 +22,10 @@ namespace MSBuilder.TaskInliner
 		const string xmlns = "{http://schemas.microsoft.com/developer/msbuild/2003}";
         static readonly string MSBuildPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0", "MSBuildToolsPath", @"C:\Program Files (x86)\MSBuild\12.0\bin\");
 
-        [Fact]
-        public void when_executing_task_then_succeeds()
+		[InlineData(true)]
+		[InlineData(false)]
+        [Theory]
+        public void when_executing_task_then_succeeds(bool useCompiledTasks)
 		{
 			var outputFile = Path.GetTempFileName();
 
@@ -42,6 +45,8 @@ namespace MSBuilder.TaskInliner
 					.Select(x => new TaskItem(x)).ToArray(),
 				SourceTasks = new ITaskItem[] { new TaskItem(@"..\..\..\TaskInliner\GenerateTasksFile.cs") },
 			};
+
+			File.Copy("MSBuilder.TaskInliner.dll", Path.ChangeExtension(outputFile, ".dll"));
 
 			Assert.True(task.Execute());
 
@@ -69,7 +74,8 @@ namespace MSBuilder.TaskInliner
 				RedirectStandardOutput = true,
 				RedirectStandardError = true,
                 FileName = Path.Combine(MSBuildPath, "MSBuild.exe"),
-                Arguments = tempFile
+                Arguments = (useCompiledTasks ? "/p:UseCompiledTasks=true " : "/p:UseCompiledTasks=false ") +
+					tempFile
 			};
 
 			var proc = Process.Start(psi);

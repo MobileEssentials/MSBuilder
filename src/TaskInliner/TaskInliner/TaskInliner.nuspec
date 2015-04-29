@@ -15,6 +15,7 @@ Unit testing your custom tasks becomes straight-forward while maintaining the tr
         <copyright>Copyright 2015</copyright>
         <tags>msbuild inline</tags>
 		<dependencies>
+			<dependency id="MSBuilder" />
 			<dependency id="MSBuilder.CodeTaskAssembly" />
 		</dependencies>
     </metadata>

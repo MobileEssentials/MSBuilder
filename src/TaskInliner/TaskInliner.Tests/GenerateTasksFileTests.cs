@@ -555,16 +555,6 @@ public class MyTask : Task
 			Assert.Contains("TaskName=\"MyTask\"", contents);
 		}
 
-		[Fact]
-		public void when_action_then_assert()
-		{
-			var v1 = new Version("1.2");
-			var v2 = new Version("1.4");
-
-			Console.WriteLine(v1.CompareTo(v2));
-			Console.WriteLine(v2.CompareTo(v1));
-		}
-
 		private bool BuildProject(LoggerVerbosity verbosity = LoggerVerbosity.Quiet)
 		{
 			var xmlProject = ProjectRootElement.Create();
