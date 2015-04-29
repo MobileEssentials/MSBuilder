@@ -2,7 +2,7 @@
 <package>
 	<metadata>
 		<id>MSBuilder.NuGet.GetLatestVersion</id>
-		<version>0.2.1</version>
+		<version>0.2.2</version>
 		<title>MSBuilder: NuGet - GetLatestVersion Task</title>
 		<authors>Mobile Essentials</authors>
 		<licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -18,7 +18,7 @@
 	</metadata>
 	<files>
 		<file src="Readme.txt" />
-		<file src="bin\MSBuilder.NuGet.GetLatestVersion.props" target="build" />
+		<file src="bin\MSBuilder.NuGet.GetLatestVersion.targets" target="build" />
 		<file src="bin\MSBuilder.NuGet.GetLatestVersion.tasks" target="build" />
 		<file src="bin\MSBuilder.NuGet.GetLatestVersion.dll" target="build" />
 		<file src="bin\MSBuilder.NuGet.GetLatestVersion.Inline.tasks" target="build" />

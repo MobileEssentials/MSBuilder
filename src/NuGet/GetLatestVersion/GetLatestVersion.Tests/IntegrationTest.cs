@@ -54,7 +54,7 @@ namespace MSBuilder.NuGet
         [Fact]
         public void when_executing_task_then_succeeds()
         {
-            var tasksFile = new FileInfo(@"..\..\..\GetLatestVersion\bin\MSBuilder.NuGet.GetLatestVersion.props").FullName;
+            var tasksFile = new FileInfo(@"..\..\..\GetLatestVersion\bin\MSBuilder.NuGet.GetLatestVersion.targets").FullName;
 
             var xmlProject = ProjectRootElement.Create();
             xmlProject.DefaultTargets = "Build";

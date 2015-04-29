@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GetLatestVersion.nuspec" />
-    <None Include="MSBuilder.NuGet.GetLatestVersion.props">
+    <None Include="MSBuilder.NuGet.GetLatestVersion.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
