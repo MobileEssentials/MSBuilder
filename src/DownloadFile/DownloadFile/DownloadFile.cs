@@ -35,6 +35,12 @@ namespace MSBuilder.NuGet
 		public string DestinationFolder { get; set; }
 
 		/// <summary>
+		/// Whether the target file should be overwritten if 
+		/// it exists. Defaults to false.
+		/// </summary>
+		public bool Overwrite { get; set; }
+
+		/// <summary>
 		/// The file that was successfully downloaded.
 		/// </summary>
 		[Output]
@@ -61,6 +67,11 @@ namespace MSBuilder.NuGet
 				Log.LogError(@"Could not download to the destination file ""{0}"", because the destination is a folder instead of a file.
  To download the source file into a folder, consider using the DestinationFolder parameter instead of DestinationFile.", DestinationFile);
 				return false;
+			}
+			if (DestinationFile != null && File.Exists(DestinationFile) && !Overwrite)
+			{ 
+				Log.LogMessage(MessageImportance.Low, @"Destination file ""{0}"" already exists, and Overwrite was not specified. Skipping download.", DestinationFile);
+				return true;
 			}
 
 			try

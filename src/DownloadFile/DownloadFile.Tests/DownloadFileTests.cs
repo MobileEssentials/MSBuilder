@@ -122,12 +122,29 @@ namespace MSBuilder.NuGet
 			var task = new DownloadFile
 			{
 				BuildEngine = engine,
+				Overwrite = true,
 				DestinationFile = Path.GetTempFileName(),
 				SourceUrl = "https://www.nuget.org/api/v2/package/MSBuilder/0.1.0",
 			};
 
 			Assert.True(task.Execute());
 			Assert.Equal(File.ReadAllBytes(expected), File.ReadAllBytes(task.DownloadedFile));
+		}
+
+		[Fact]
+		public void when_destination_file_exists_and_not_overwrite_then_skips_download()
+		{
+			var expected = Path.GetTempFileName();
+
+			var task = new DownloadFile
+			{
+				BuildEngine = engine,
+				DestinationFile = Path.GetTempFileName(),
+				Overwrite = false,
+				SourceUrl = "https://www.foo.bar/baz",
+			};
+
+			Assert.True(task.Execute());
 		}
     }
 }
