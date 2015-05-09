@@ -14,27 +14,33 @@ namespace MSBuilder
 	public abstract class TaskInlinerTest
 	{
 		const string xmlns = "{http://schemas.microsoft.com/developer/msbuild/2003}";
-        static readonly string MSBuildPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0", "MSBuildToolsPath", @"C:\Program Files (x86)\MSBuild\12.0\bin\");
+		static readonly string MSBuildPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0", "MSBuildToolsPath", @"C:\Program Files (x86)\MSBuild\12.0\bin\");
 
-		protected abstract string TargetsFile { get; }
-
-		protected abstract void AddTask(ProjectTargetElement buildTarget);
-
-        protected void Build(bool useCompiledTasks)
+		protected void Build(bool useCompiledTasks, Action<ProjectTargetElement> targetBuilder, params string[] importTargets)
 		{
 			var outputFile = Path.GetTempFileName();
 
-			foreach (var file in Directory.EnumerateFiles(Path.GetDirectoryName(TargetsFile)))
+			// This copying over avoids locking the source assemblies if the compiled 
+			// vesion is used, as well as other binary dependencies.
+			foreach (var import in importTargets)
 			{
-				File.Copy(file, Path.Combine(Path.GetTempPath(), Path.GetFileName(file)), true);
+				foreach (var file in Directory.EnumerateFiles(Path.GetDirectoryName(import)))
+				{
+					File.Copy(file, Path.Combine(Path.GetTempPath(), Path.GetFileName(file)), true);
+				}
 			}
 
 			var xmlProject = ProjectRootElement.Create();
 			xmlProject.DefaultTargets = "Build";
-			xmlProject.AddImport(Path.GetFileName(TargetsFile));
+
+			foreach (var import in importTargets)
+			{
+				xmlProject.AddImport(Path.GetFileName(import));
+			}
+
 			var targetXml = xmlProject.AddTarget("Build");
 
-			AddTask(targetXml);
+			targetBuilder(targetXml);
 
 			var tempFile = Path.GetTempFileName();
 
@@ -47,8 +53,8 @@ namespace MSBuilder
 				UseShellExecute = false,
 				RedirectStandardOutput = true,
 				RedirectStandardError = true,
-                FileName = Path.Combine(MSBuildPath, "MSBuild.exe"),
-                Arguments = (useCompiledTasks ? "/p:UseCompiledTasks=true " : "/p:UseCompiledTasks=false ") +
+				FileName = Path.Combine(MSBuildPath, "MSBuild.exe"),
+				Arguments = (useCompiledTasks ? "/p:UseCompiledTasks=true " : "/p:UseCompiledTasks=false ") +
 					tempFile
 			};
 

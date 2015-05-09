@@ -1,4 +1,4 @@
-﻿MSBuilder: NuGet Package DownloadFile
+﻿MSBuilder: DownloadFile
 =========================================
 
 This NuGet package provides the DownloadFile task, which downloads 

@@ -26,21 +26,15 @@ namespace MSBuilder
 		[Theory]
 		public void when_building_then_succeeds(bool useCompiledTasks)
 		{
-			Build(useCompiledTasks);
+			Build(useCompiledTasks, buildTarget => 
+			{
+				var taskXml = buildTarget.AddTask("DownloadFile");
+				taskXml.SetParameter("DestinationFolder", Path.GetTempPath());
+				taskXml.SetParameter("SourceUrl", "https://www.nuget.org/favicon.ico");
+			}, 
+			@"..\..\..\DownloadFile\bin\MSBuilder.DownloadFile.targets");
 
 			Assert.True(File.Exists(output), "Expected file to be downloaded to " + output + " but it wasn't.");
-		}
-
-		protected override string TargetsFile
-		{
-			get { return @"..\..\..\DownloadFile\bin\MSBuilder.DownloadFile.targets"; }
-		}
-
-		protected override void AddTask(ProjectTargetElement buildTarget)
-		{
-			var taskXml = buildTarget.AddTask("DownloadFile");
-			taskXml.SetParameter("DestinationFolder", Path.GetTempPath());
-			taskXml.SetParameter("SourceUrl", "https://www.nuget.org/favicon.ico");
 		}
 	}
 }

@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Net;
 
-namespace MSBuilder.NuGet
+namespace MSBuilder
 {
 	/// <summary>
 	/// Downloads a file from a URL to a destination directory 

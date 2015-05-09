@@ -2,8 +2,8 @@
 <package>
 	<metadata>
 		<id>MSBuilder.DownloadFile</id>
-		<version>0.1.0</version>
-		<title>MSBuilder: NuGet - DownloadFile Task</title>
+		<version>0.1.4</version>
+		<title>MSBuilder: DownloadFile Task</title>
 		<authors>Mobile Essentials</authors>
 		<licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
 		<projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>

@@ -1,0 +1,6 @@
+﻿/* LICENSE */
+
+public class Foo
+{
+    public const string Bar = "Bar"
+}

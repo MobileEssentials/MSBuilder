@@ -5,14 +5,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{952ED2B3-9732-472B-8716-CB11559598FF}</ProjectGuid>
+    <ProjectGuid>{3D6B461F-5135-49A6-806A-6FB0E556FE18}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MSBuilder</RootNamespace>
-    <AssemblyName>MSBuilder.DownloadFile.Tests</AssemblyName>
+    <AssemblyName>MSBuilder.RegexReplace.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>b88ef7cf</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>4fec3375</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,7 +38,6 @@
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
@@ -61,18 +60,23 @@
     <Compile Include="..\..\TaskInliner\TaskInliner.Tests\TaskInlinerTest.cs">
       <Link>TaskInlinerTest.cs</Link>
     </Compile>
-    <Compile Include="DownloadFileTests.cs" />
     <Compile Include="IntegrationTest.cs" />
+    <Compile Include="RegexReplaceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DownloadFile\DownloadFile.csproj">
-      <Project>{62a6dca7-c950-4570-8767-fe3731bcf7c2}</Project>
-      <Name>DownloadFile</Name>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RegexReplace\RegexReplace.csproj">
+      <Project>{3fbbbb44-cc83-49f2-bc04-4450a813172f}</Project>
+      <Name>RegexReplace</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Content Include="Sample.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

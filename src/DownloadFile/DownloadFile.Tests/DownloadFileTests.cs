@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace MSBuilder.NuGet
+namespace MSBuilder
 {
     public class DownloadFileTests
     {
