@@ -99,9 +99,9 @@ namespace MSBuilder.TaskInliner
 			var properties = project.AddPropertyGroup();
 
 			properties.AddProperty("CodeTaskAssembly", "$" + @"(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll")
-				.Condition = "'$" + "(CodeTaskAssembly)' == '' And '$" + "(MSBuildAssemblyVersion)' == '' And Exists('$" + "(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')";
+				.Condition = "'$" + "(CodeTaskAssembly)' == '' And '$" + "(MSBuildAssemblyVersion)' == '' And Exists('$" + @"(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')";
 			properties.AddProperty("CodeTaskAssembly", "$" + @"(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll")
-				.Condition = "'$" + "(CodeTaskAssembly)' == '' And '$" + "(MSBuildAssemblyVersion)' == '' And Exists('$" + "(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll')";
+				.Condition = "'$" + "(CodeTaskAssembly)' == '' And '$" + "(MSBuildAssemblyVersion)' == '' And Exists('$" + @"(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll')";
 			properties.AddProperty("CodeTaskAssembly", "$" + @"(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll")
 				.Condition = "'$" + "(CodeTaskAssembly)' == '' And '$" + "(MSBuildAssemblyVersion)' == '12.0'";
 			properties.AddProperty("CodeTaskAssembly", "$" + @"(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll")
