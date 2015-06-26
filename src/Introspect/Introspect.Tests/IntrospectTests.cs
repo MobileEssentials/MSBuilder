@@ -31,17 +31,17 @@ namespace MSBuilder
 			var project = BuildManager.DefaultBuildManager.GetProjectInstanceForBuild(new Project("IntrospectTests.targets"));
 			IDictionary<string, TargetResult> outputs; 
 
-			var result = project.Build(new [] { "GetTargets" }, new[] { logger }, out outputs);
+			var result = project.Build(new [] { "IntrospectTargets" }, new[] { logger }, out outputs);
 
 			Assert.True(result);
-			Assert.True(outputs.ContainsKey("GetTargets"));
-			Assert.Equal(1, outputs["GetTargets"].Items.Length);
+			Assert.True(outputs.ContainsKey("IntrospectTargets"));
+			Assert.Equal(1, outputs["IntrospectTargets"].Items.Length);
 
-			var target = outputs["GetTargets"].Items[0];
+			var target = outputs["IntrospectTargets"].Items[0];
 
-			Assert.Equal("IntrospectTests.targets", Path.GetFileName(target.GetMetadata("File")));
+			Assert.Equal("MSBuilder.Introspect.targets", Path.GetFileName(target.GetMetadata("File")));
 			Assert.Equal(3, int.Parse(target.GetMetadata("Column")));
-			Assert.Equal(12, int.Parse(target.GetMetadata("Line")));
+			Assert.Equal(34, int.Parse(target.GetMetadata("Line")));
 			Assert.Contains(target.GetMetadata("Line"), target.GetMetadata("Location"));
 			Assert.Contains(target.GetMetadata("Column"), target.GetMetadata("Location"));
 			Assert.Contains(target.GetMetadata("File"), target.GetMetadata("Location"));
@@ -53,13 +53,13 @@ namespace MSBuilder
 			var project = BuildManager.DefaultBuildManager.GetProjectInstanceForBuild(new Project("IntrospectTests.targets"));
 			IDictionary<string, TargetResult> outputs;
 			
-			var result = project.Build(new [] { "GetProperties" }, new[] { logger }, out outputs);
+			var result = project.Build(new [] { "IntrospectProperties" }, new[] { logger }, out outputs);
 
 			Assert.True(result);
-			Assert.True(outputs.ContainsKey("GetProperties"));
-			Assert.Equal(1, outputs["GetProperties"].Items.Length);
+			Assert.True(outputs.ContainsKey("IntrospectProperties"));
+			Assert.Equal(1, outputs["IntrospectProperties"].Items.Length);
 
-			var target = outputs["GetProperties"].Items[0];
+			var target = outputs["IntrospectProperties"].Items[0];
 			var metadata = new HashSet<string>(target.MetadataNames.OfType<string>());
 
 			Assert.True(metadata.Contains("MSBuildBinPath"));
@@ -75,7 +75,7 @@ namespace MSBuilder
 			project.SetProperty("PropertyName", "MSBuildRuntimeVersion");
 			var result = project.Build(new [] { "GetDynamicValue" }, new[] { logger }, out outputs);
 
-			Assert.True(result);
+			Assert.True(result); 
 			Assert.True(outputs.ContainsKey("GetDynamicValue"));
 			Assert.Equal(1, outputs["GetDynamicValue"].Items.Length);
 

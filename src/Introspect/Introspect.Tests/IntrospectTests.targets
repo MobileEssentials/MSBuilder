@@ -3,25 +3,13 @@
 
   <Import Project="MSBuilder.Introspect.targets"/>
 
-  <Target Name="GetProperties" Returns="@(Properties)">
-    <Introspect>
-      <Output TaskParameter="Properties" ItemName="Properties" />
-    </Introspect>
-  </Target>
-
-  <Target Name="GetTargets" Returns="@(Targets)">
-    <Introspect>
-      <Output TaskParameter="Targets" ItemName="Targets" />
-    </Introspect>
-  </Target>
-
   <PropertyGroup>
     <Foo>Bar</Foo>
   </PropertyGroup>
 
-  <Target Name="GetDynamicValue" Returns="$(PropertyValue)" DependsOnTargets="GetProperties">
+  <Target Name="GetDynamicValue" Returns="$(PropertyValue)" DependsOnTargets="IntrospectProperties">
     <PropertyGroup>
-      <PropertyValue>@(Properties -> Metadata("$(PropertyName)"))</PropertyValue>
+      <PropertyValue>@(IntrospectedProperties -> Metadata("$(PropertyName)"))</PropertyValue>
     </PropertyGroup>
   </Target>
   

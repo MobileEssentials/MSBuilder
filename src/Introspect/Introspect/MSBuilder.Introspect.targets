@@ -22,6 +22,18 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 -->
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <UsingTask TaskName="Introspect" AssemblyFile="MSBuilder.Introspect.dll" />
+
+  <Target Name="IntrospectProperties" Returns="@(IntrospectedProperties)">
+    <Introspect>
+      <Output TaskParameter="Properties" ItemName="IntrospectedProperties" />
+    </Introspect>
+  </Target>
+
+  <Target Name="IntrospectTargets" Returns="@(IntrospectedTargets)">
+    <Introspect>
+      <Output TaskParameter="Targets" ItemName="IntrospectedTargets" />
+    </Introspect>
+  </Target>
 </Project>
