@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\MSBuilder.CodeTaskAssembly.0.2.3\build\MSBuilder.CodeTaskAssembly.props" Condition="Exists('..\..\packages\MSBuilder.CodeTaskAssembly.0.2.3\build\MSBuilder.CodeTaskAssembly.props')" />
   <Import Project="..\..\packages\MSBuilder.0.1.0\build\MSBuilder.props" Condition="Exists('..\..\packages\MSBuilder.0.1.0\build\MSBuilder.props')" />
   <Import Project="..\..\packages\MSBuilder.IsXBuild.0.2.0\build\MSBuilder.IsXBuild.props" Condition="Exists('..\..\packages\MSBuilder.IsXBuild.0.2.0\build\MSBuilder.IsXBuild.props')" />
-  <Import Project="..\..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props" Condition="Exists('..\..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -21,7 +21,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
-    <NuGetPackageImportStamp>f86534e8</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>02143be0</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -58,9 +58,9 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props'))" />
     <Error Condition="!Exists('..\..\packages\MSBuilder.IsXBuild.0.2.0\build\MSBuilder.IsXBuild.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuilder.IsXBuild.0.2.0\build\MSBuilder.IsXBuild.props'))" />
     <Error Condition="!Exists('..\..\packages\MSBuilder.0.1.0\build\MSBuilder.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuilder.0.1.0\build\MSBuilder.props'))" />
+    <Error Condition="!Exists('..\..\packages\MSBuilder.CodeTaskAssembly.0.2.3\build\MSBuilder.CodeTaskAssembly.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuilder.CodeTaskAssembly.0.2.3\build\MSBuilder.CodeTaskAssembly.props'))" />
   </Target>
   <Target Name="AfterBuild">
     <Exec Command="&quot;$(MSBuildBinPath)\msbuild.exe&quot; Bootstrap.targets /nologo /p:TasksName=$(AssemblyName) /p:OutputPath=$(OutputPath) /p:SourceTask=&quot;GenerateTasksFile.cs&quot; /p:Reference=&quot;@(Reference)&quot;" WorkingDirectory="$(MSBuildProjectDirectory)" />

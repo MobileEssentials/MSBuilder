@@ -38,8 +38,28 @@
     <NuGet>nuget</NuGet>
   </PropertyGroup>
 
-  <Target Name="_CheckPrerequisites" DependsOnTargets="_GetNuGet" Condition=" Exists('packages.config') ">
+  <PropertyGroup>
+    <_CanIntrospect Condition=" Exists('$(PackagesPath)\MSBuilder.Introspect\build\MSBuilder.Introspect.dll') ">true</_CanIntrospect>
+    <_CheckPrerequisitesDependsOn Condition=" Exists('packages.config') ">
+      _GetNuGet;
+      _DetectMissingPackages;
+      _InstallMissingPackages;
+      _RestartBuild
+    </_CheckPrerequisitesDependsOn>
+    <_RestartBuildDependsOn />
+    <!--<_CheckPrerequisitesDependsOn Condition=" '$(_CanIntrospect)' == 'true' ">
+      $(_CheckPrerequisitesDependsOn);
+      _RestartBuild
+    </_CheckPrerequisitesDependsOn>-->
+  </PropertyGroup>
+  
+  <Target Name="_CheckPrerequisites" DependsOnTargets="$(_CheckPrerequisitesDependsOn)">
 
+    <!--<CallTarget Targets="_RestartBuild" Condition=" '@(MissingPackage)' != '' " />-->
+    
+  </Target>
+
+  <Target Name="_DetectMissingPackages" Condition=" Exists('packages.config') ">
     <XmlPeek XmlInputPath="packages.config" Query="/packages/package/@id">
       <Output TaskParameter="Result" ItemName="PackageId" />
     </XmlPeek>
@@ -51,25 +71,36 @@
     <Message Importance="normal" Text="All build-time packages are already installed."
              Condition=" '@(MissingPackage)' != '' " />
 
-    <Message Importance="high" Text="Build-time packages were missing: @(MissingPackage). Restoring and re-running the build."
+    <Message Importance="high" Text="Build-time packages were missing: @(MissingPackage)."
              Condition=" '@(MissingPackage)' != '' " />
+  </Target>
 
-    <PropertyGroup Condition=" '@(MissingPackage)' != '' ">
+  <Target Name="_InstallMissingPackages" Condition=" '@(MissingPackage)' != '' ">
+    <MakeDir Directories="$(PackagesPath)" Condition=" !Exists($(PackagesPath)) " />
+    <Exec Command="&quot;$(NuGet)&quot; Install packages.config -OutputDirectory $(PackagesPath) -ExcludeVersion"
+          Condition=" Exists('packages.config') " />
+
+    <PropertyGroup>
+      <!-- Since we did install missing packages, we need to schedule a restart of the build -->
+      <_RestartBuildDependsOn>
+        $(_RestartBuildDependsOn);
+        _IntrospectAndRestartBuild
+      </_RestartBuildDependsOn>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="_RestartBuild" DependsOnTargets="$(_RestartBuildDependsOn)" />
+  
+  <Target Name="_IntrospectAndRestartBuild">
+    <PropertyGroup>
+      <!-- Clear BuildDependsOn so that CoreBuild isn't run in the currently executing build -->
       <BuildDependsOn />
       <BuildProject>$(MSBuildProjectFullPath)</BuildProject>
     </PropertyGroup>
-    
-    <MakeDir Directories="$(PackagesPath)" Condition=" !Exists($(PackagesPath)) " />
-    <Exec Command="&quot;$(NuGet)&quot; Install packages.config -OutputDirectory $(PackagesPath) -ExcludeVersion"
-          Condition=" Exists('packages.config') And '@(MissingPackage)' != '' " />
-    
-    <CallTarget Targets="_RestartBuild" Condition=" '@(MissingPackage)' != '' " />
-  </Target>
 
-  <Target Name="_RestartBuild">
     <!-- Regardless of it being in packages.config, we need MSBuilder.Introspect to re-run ourselves if restoring was necessary -->
     <Exec Command="&quot;$(NuGet)&quot; Install MSBuilder.Introspect -OutputDirectory $(PackagesPath) -ExcludeVersion"
-          Condition=" !Exists('$(PackagesPath)\MSBuilder.Introspect') And '@(MissingPackage)' != '' " />
+          Condition=" '$(CanIntrospect)' != 'true' " />
 
     <Introspect>
       <Output TaskParameter="Targets" ItemName="CurrentTargets" />
