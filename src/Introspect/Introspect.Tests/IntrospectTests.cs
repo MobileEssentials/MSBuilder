@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 
 namespace MSBuilder
 {
-    public class IntrospectTests
+    public class IntrospectTests : IDisposable
     {
 		ITestOutputHelper output;
 		TestOutputLogger logger;
@@ -51,8 +51,8 @@ namespace MSBuilder
 		public void when_introspecting_then_retrieves_properties()
 		{
 			var project = BuildManager.DefaultBuildManager.GetProjectInstanceForBuild(new Project("IntrospectTests.targets"));
-			IDictionary<string, TargetResult> outputs; 
-
+			IDictionary<string, TargetResult> outputs;
+			
 			var result = project.Build(new [] { "GetProperties" }, new[] { logger }, out outputs);
 
 			Assert.True(result);
@@ -83,6 +83,12 @@ namespace MSBuilder
 			var expected = project.GetPropertyValue("MSBuildRuntimeVersion");
 
 			Assert.Equal(expected, target.ItemSpec);
+		}
+
+		public void Dispose()
+		{
+			ProjectCollection.GlobalProjectCollection.UnloadAllProjects();
+			BuildManager.DefaultBuildManager.ResetCaches();
 		}
 	}
 }
