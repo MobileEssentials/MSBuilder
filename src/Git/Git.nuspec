@@ -5,8 +5,8 @@
         <version>0.2.0</version>
         <title>MSBuilder: Git Executable Property</title>
         <authors>Mobile Essentials</authors>
-        <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
-        <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+        <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Provides the $(Git) property which properly locates the Git executable in the current machine.</description>
         <copyright>Copyright 2015</copyright>

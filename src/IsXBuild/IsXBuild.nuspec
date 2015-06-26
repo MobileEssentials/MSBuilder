@@ -5,8 +5,8 @@
         <version>0.2.0</version>
         <title>MSBuilder: IsXBuild Property</title>
         <authors>Mobile Essentials</authors>
-        <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
-        <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+        <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Provides the $(IsXBuild) property which allows detecting that the current engine is XBuild rather than MSBuild, for conditional execution.</description>
         <copyright>Copyright 2015</copyright>

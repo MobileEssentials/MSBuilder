@@ -2,11 +2,11 @@
 <package>
     <metadata>
         <id>MSBuilder.ThisAssembly.Project</id>
-        <version>0.2.0</version>
+        <version>0.2.2</version>
         <title>MSBuilder: ThisAssembly.Project Information</title>
         <authors>Mobile Essentials</authors>
-        <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
-        <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+        <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Generates the ThisAssembly partial class and adds a Project property containing properties from the source project file. These might be useful for conditional behaviors, diagnostics and tracing, and more.
         

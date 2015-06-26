@@ -2,11 +2,11 @@
 <package>
 	<metadata>
 		<id>MSBuilder.NuGet.GetLatestVersion</id>
-		<version>0.2.2</version>
+		<version>0.2.3</version>
 		<title>MSBuilder: NuGet - GetLatestVersion Task</title>
 		<authors>Mobile Essentials</authors>
-		<licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
-		<projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>Provides the GetLatestVersion task, which retrieves the latest published version of a given nuget package from nuget.org, and provides easy access to its various SemVer components.</description>
 		<copyright>Copyright 2015</copyright>

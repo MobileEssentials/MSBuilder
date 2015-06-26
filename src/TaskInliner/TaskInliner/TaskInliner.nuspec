@@ -2,11 +2,11 @@
 <package>
     <metadata>
         <id>MSBuilder.TaskInliner</id>
-        <version>0.2.1</version>
+        <version>0.2.5</version>
         <title>MSBuilder: Inline Code Tasks Generator</title>
         <authors>Mobile Essentials</authors>
-        <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
-        <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+        <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Authoring inline code tasks in C# in an XML file can be incredibly frustrating, without intellisense, compilation safety, tests, etc.
 		

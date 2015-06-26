@@ -5,8 +5,8 @@
 		<version>0.1.0</version>
 		<title>MSBuilder: Introspect Task</title>
 		<authors>Mobile Essentials</authors>
-		<licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
-		<projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>Allows retrieving the current project's properties and currently building 
 targets as items and metadata, effectivey allowing retrieval of property 

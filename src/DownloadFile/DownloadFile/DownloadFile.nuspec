@@ -5,8 +5,8 @@
 		<version>0.1.4</version>
 		<title>MSBuilder: DownloadFile Task</title>
 		<authors>Mobile Essentials</authors>
-		<licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
-		<projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>Downloads a file from a URL to a destination directory or file path.</description>
 		<copyright>Copyright 2015</copyright>

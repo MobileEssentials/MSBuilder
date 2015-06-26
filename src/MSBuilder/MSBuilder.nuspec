@@ -5,8 +5,8 @@
         <version>0.1.0</version>
         <title>MSBuilder: Core</title>
         <authors>Mobile Essentials</authors>
-        <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
-        <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+        <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Provides the $(UseCompiledTasks) property, which is used by all other 
 MSBuilder components to determine whether inline or compiled tasks will be used (both versions 

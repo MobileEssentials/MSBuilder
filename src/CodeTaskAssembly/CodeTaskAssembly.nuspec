@@ -2,11 +2,11 @@
 <package>
     <metadata>
         <id>MSBuilder.CodeTaskAssembly</id>
-        <version>0.2.0</version>
+        <version>0.2.3</version>
         <title>MSBuilder: CodeTaskAssembly Property</title>
         <authors>Mobile Essentials</authors>
-        <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
-        <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+        <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Provides the $(CodeTaskAssembly) property which properly locates the right assembly to use for inline tasks depending on the currently executing MSBuild engine.</description>
         <copyright>Copyright 2015</copyright>
