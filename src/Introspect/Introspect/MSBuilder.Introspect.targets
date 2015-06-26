@@ -23,7 +23,7 @@
 	SOFTWARE.
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <UsingTask TaskName="Introspect" AssemblyFile="MSBuilder.Introspect.dll" />
+  <Import Project="MSBuilder.Introspect.tasks" />
 
   <Target Name="IntrospectProperties" Returns="@(IntrospectedProperties)">
     <Introspect>

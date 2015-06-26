@@ -53,9 +53,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\TaskInliner\TaskInliner.Tests\TaskInlinerTest.cs">
+      <Link>TaskInlinerTest.cs</Link>
+    </Compile>
     <Compile Include="..\..\TestOutputLogger.cs">
       <Link>TestOutputLogger.cs</Link>
     </Compile>
+    <Compile Include="IntegrationTest.cs" />
     <Compile Include="IntrospectTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

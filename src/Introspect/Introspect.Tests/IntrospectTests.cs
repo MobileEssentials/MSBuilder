@@ -39,12 +39,7 @@ namespace MSBuilder
 
 			var target = outputs["IntrospectTargets"].Items[0];
 
-			Assert.Equal("MSBuilder.Introspect.targets", Path.GetFileName(target.GetMetadata("File")));
-			Assert.Equal(3, int.Parse(target.GetMetadata("Column")));
-			Assert.Equal(34, int.Parse(target.GetMetadata("Line")));
-			Assert.Contains(target.GetMetadata("Line"), target.GetMetadata("Location"));
-			Assert.Contains(target.GetMetadata("Column"), target.GetMetadata("Location"));
-			Assert.Contains(target.GetMetadata("File"), target.GetMetadata("Location"));
+			Assert.Equal("IntrospectTargets", target.ItemSpec);
 		}
 
 		[Fact]

@@ -2,7 +2,7 @@
 <package>
 	<metadata>
 		<id>MSBuilder.Introspect</id>
-		<version>0.1.0</version>
+		<version>0.1.3</version>
 		<title>MSBuilder: Introspect Task</title>
 		<authors>Mobile Essentials</authors>
 		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -28,7 +28,10 @@ Usage:
 	</metadata>
 	<files>
 		<file src="Readme.txt" />
-		<file src="bin\MSBuilder.Introspect.targets" target="build" />
-		<file src="bin\MSBuilder.Introspect.dll" target="build" />
-	</files>
+    <file src="bin\MSBuilder.Introspect.dll" target="build" />
+    <file src="bin\MSBuilder.Introspect.targets" target="build" />
+    <file src="bin\MSBuilder.Introspect.tasks" target="build" />
+    <file src="bin\MSBuilder.Introspect.Inline.tasks" target="build" />
+    <file src="bin\MSBuilder.Introspect.Compiled.tasks" target="build" />
+  </files>
 </package>
