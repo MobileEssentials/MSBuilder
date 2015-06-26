@@ -58,6 +58,7 @@ namespace MSBuilder
 
 			var targetNames = ((IEnumerable<object>)targets)
 				.Select(entry => entry.AsDynamicReflection())
+				.Where(entry => !project.InitialTargets.Contains((string)entry.Name))
 				.Select(entry => new TaskItem((string)entry.Name, new Dictionary<string, string>
 					{
 						{ "File", (string)entry.ReferenceLocation.File },

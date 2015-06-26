@@ -85,6 +85,19 @@ namespace MSBuilder
 			Assert.Equal(expected, target.ItemSpec);
 		}
 
+		[Fact]
+		public void when_getting_targets_then_does_not_include_initial_targets()
+		{
+			var project = BuildManager.DefaultBuildManager.GetProjectInstanceForBuild(new Project("IntrospectTests.targets"));
+			IDictionary<string, TargetResult> outputs; 
+
+			var result = project.Build(new string[0], new[] { logger }, out outputs);
+
+			Assert.True(result);
+			Assert.True(outputs.ContainsKey("Build"));
+			Assert.True(!outputs["Build"].Items.Select(t => t.ItemSpec).Contains("Startup"));
+		}
+
 		public void Dispose()
 		{
 			ProjectCollection.GlobalProjectCollection.UnloadAllProjects();

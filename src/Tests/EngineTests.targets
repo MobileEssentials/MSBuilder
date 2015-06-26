@@ -1,78 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0"
-         DefaultTargets="Build;Foo;Bar"
-         InitialTargets="RestoreNuGets"
-         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
-  <Import Project="..\..\..\CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props"/>
-  <Import Project="..\..\..\DumpItems\build\MSBuilder.DumpItems.targets"/>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+<Project ToolsVersion="12.0" DefaultTargets="Build" InitialTargets="_CheckPrerequisites" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <!-- NOTE: we default to 'build' rather than 'packages' to avoid 
-         confusing NuGet in case a build-time package is also used 
-         in projects in a solution, and the packages folder happens 
-         to also be alongside this build script. In such case, 
+    <NuGetPath Condition=" '$(NuGetPath)' == '' ">$(MSBuildThisFileDirectory).nuget</NuGetPath>
+    <!-- NOTE: we default to the folder where nuget itself is, '.nuget' 
+         rather than 'packages' to avoid confusing NuGet in case a build-time 
+         package is also used in projects in a solution, and the packages 
+         folder happens to also be alongside this build script. In such case, 
          NuGet can't distinguish an unversioned installation from a 
          versioned one, and would therefore result in broken references 
          from projects inside VS/XS since they always install packages 
          in versioned folders.
+         
+         In addition, .nuget folder is usually already ignored in scc repos.
     -->
-    <BuildPackagesPath Condition=" '$(BuildPackagesPath)' == '' ">build</BuildPackagesPath>
+    <PackagesPath Condition=" '$(PackagesPath)' == '' ">$(NuGetPath)</PackagesPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <BuildDependsOn>
+      CoreBuild
+    </BuildDependsOn>
   </PropertyGroup>
   
-  <UsingTask TaskName="TestTask" AssemblyFile="MSBuilder.Tests.dll" />
+  <Target Name="Build" DependsOnTargets="$(BuildDependsOn)" />
 
-  <Target Name="Build">
-    <TestTask>
-      <Output TaskParameter="Targets" ItemName="targets" />
-      <Output TaskParameter="Project" ItemName="project" />
-    </TestTask>
-
-    <DumpItems Items="@(targets)" />
-    <DumpItems Items="@(project)" />
+  <Target Name="CoreBuild">
+    <Message Text="CoreBuild!" Importance="high" />
   </Target>
   
-  <Target Name="Foo" />
-  <Target Name="Bar" />
-
-  <Target Name="Download">
-    
-    <Exec Command="&quot;$(Ps)&quot; -Command &quot;&amp; { (New-Object System.Net.WebClient).DownloadFile('http://nuget.org/nuget.exe', 'nuget.exe') }&quot;" />
-    
-  </Target>
-
-  <Target Name="GetCurrentTargets" Returns="">
-    
-  </Target>
-
-  <Target Name="GetCurrentProject" Returns="">
-    
-  </Target>
-
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-    <NuGetPath Condition=" '$(NuGetPath)' != '' ">$(MSBuildThisFileDirectory).nuget\</NuGetPath>
-    <NuGet Condition=" '$(NuGetExe)' != '' ">$(NuGetPath)\NuGet.exe</NuGet>
-    <CachedNuGet Condition=" '$(CachedNuGet)' != '' ">$(LocalAppData)\NuGet\NuGet.exe</CachedNuGet>
+    <NuGet Condition=" '$(NuGet)' == '' ">$(NuGetPath)\NuGet.exe</NuGet>
+    <CachedNuGet Condition=" '$(CachedNuGet)' == '' ">$(LocalAppData)\NuGet\NuGet.exe</CachedNuGet>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
-    <NuGetExe>nuget</NuGetExe>
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+    <NuGet>nuget</NuGet>
   </PropertyGroup>
 
-  <Target Name="RestoreNuGets" DependsOnTargets="GetNuGet" Condition="Exists('packages.config')">
-    <Exec Command="&quot;$(NuGet)&quot; Install packages.config -OutputDirectory $(BuildPackagesPath) -ExcludeVersion" Condition="Exists('packages.config')" />
+  <Target Name="_CheckPrerequisites" DependsOnTargets="_GetNuGet" Condition=" Exists('packages.config') ">
+
+    <XmlPeek XmlInputPath="packages.config" Query="/packages/package/@id">
+      <Output TaskParameter="Result" ItemName="PackageId" />
+    </XmlPeek>
+
+    <ItemGroup>
+      <MissingPackage Include="@(PackageId)" Condition=" !Exists('$(PackagesPath)\%(PackageId.Identity)') " />
+    </ItemGroup>
+
+    <Message Importance="normal" Text="All build-time packages are already installed."
+             Condition=" '@(MissingPackage)' != '' " />
+
+    <Message Importance="high" Text="Build-time packages were missing: @(MissingPackage). Restoring and re-running the build."
+             Condition=" '@(MissingPackage)' != '' " />
+
+    <PropertyGroup Condition=" '@(MissingPackage)' != '' ">
+      <BuildDependsOn />
+      <BuildProject>$(MSBuildProjectFullPath)</BuildProject>
+    </PropertyGroup>
+    
+    <MakeDir Directories="$(PackagesPath)" Condition=" !Exists($(PackagesPath)) " />
+    <Exec Command="&quot;$(NuGet)&quot; Install packages.config -OutputDirectory $(PackagesPath) -ExcludeVersion"
+          Condition=" Exists('packages.config') And '@(MissingPackage)' != '' " />
+    
+    <CallTarget Targets="_RestartBuild" Condition=" '@(MissingPackage)' != '' " />
   </Target>
 
-  <Target Name="GetNuGet" Condition="'$(OS)' == 'Windows_NT' And !Exists('$(NuGetExe)')">
+  <Target Name="_RestartBuild">
+    <!-- Regardless of it being in packages.config, we need MSBuilder.Introspect to re-run ourselves if restoring was necessary -->
+    <Exec Command="&quot;$(NuGet)&quot; Install MSBuilder.Introspect -OutputDirectory $(PackagesPath) -ExcludeVersion"
+          Condition=" !Exists('$(PackagesPath)\MSBuilder.Introspect') And '@(MissingPackage)' != '' " />
+
+    <Introspect>
+      <Output TaskParameter="Targets" ItemName="CurrentTargets" />
+    </Introspect>
+
+    <Message Importance="high" Text="Rebuilding targets: @(CurrentTargets)"  Condition=" '@(CurrentTargets)' != '' " />
+
+    <MSBuild Projects="$(BuildProject)" Targets="@(CurrentTargets)" Condition=" '@(CurrentTargets)' != '' " />
+  </Target>
+  
+  <!-- If there aren't any packages to restore or nuspecs to build, we do nothing. -->
+  <Target Name="_GetNuGet" Condition=" Exists('packages.config') And '$(OS)' == 'Windows_NT' And !Exists('$(NuGet)') ">
     <PropertyGroup>
       <PowerShell Condition=" '$(PowerShell)' == '' ">%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe</PowerShell>
     </PropertyGroup>
 
-    <MakeDir Directories="$(NuGetPath)" Condition="!Exists($(NuGetPath))" />
+    <MakeDir Directories="$(NuGetPath)" Condition=" !Exists($(NuGetPath)) " />
     <Exec Command="&quot;$(PowerShell)&quot; -Command &quot;&amp; { (New-Object System.Net.WebClient).DownloadFile('http://nuget.org/nuget.exe', '$(CachedNuGet)') }&quot;"
-          Condition="!Exists($(NuGet)) And !Exists($(CachedNuGet))" />
+          Condition=" !Exists($(NuGet)) And !Exists($(CachedNuGet)) " />
     <Copy SourceFiles="$(CachedNuGet)" DestinationFolder="$(NuGetPath)" Condition="!Exists($(NuGet))" />
   </Target>
-  
+
+  <UsingTask TaskName="Introspect" 
+             AssemblyFile="$(PackagesPath)\MSBuilder.Introspect\build\MSBuilder.Introspect.dll" 
+             Condition="Exists('$(PackagesPath)\MSBuilder.Introspect\build\MSBuilder.Introspect.dll')" />
+
 </Project>
