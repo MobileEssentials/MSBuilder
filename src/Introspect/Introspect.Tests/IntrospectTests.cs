@@ -28,7 +28,9 @@ namespace MSBuilder
 		[Fact]
 		public void when_introspecting_then_retrieves_current_target()
 		{
-			var project = BuildManager.DefaultBuildManager.GetProjectInstanceForBuild(new Project("IntrospectTests.targets"));
+			var eval = new Project("IntrospectTests.targets");
+			eval.SetGlobalProperty("UseCompiledTasks", "true");
+			var project = BuildManager.DefaultBuildManager.GetProjectInstanceForBuild(eval);
 			IDictionary<string, TargetResult> outputs; 
 
 			var result = project.Build(new [] { "IntrospectTargets" }, new[] { logger }, out outputs);
@@ -45,7 +47,9 @@ namespace MSBuilder
 		[Fact]
 		public void when_introspecting_then_retrieves_properties()
 		{
-			var project = BuildManager.DefaultBuildManager.GetProjectInstanceForBuild(new Project("IntrospectTests.targets"));
+			var eval = new Project("IntrospectTests.targets");
+			eval.SetGlobalProperty("UseCompiledTasks", "true");
+			var project = BuildManager.DefaultBuildManager.GetProjectInstanceForBuild(eval);
 			IDictionary<string, TargetResult> outputs;
 			
 			var result = project.Build(new [] { "IntrospectProperties" }, new[] { logger }, out outputs);
@@ -64,7 +68,9 @@ namespace MSBuilder
 		[Fact]
 		public void when_introspecting_then_retrieves_dynamic_value()
 		{
-			var project = BuildManager.DefaultBuildManager.GetProjectInstanceForBuild(new Project("IntrospectTests.targets"));
+			var eval = new Project("IntrospectTests.targets");
+			eval.SetGlobalProperty("UseCompiledTasks", "true");
+			var project = BuildManager.DefaultBuildManager.GetProjectInstanceForBuild(eval);
 			IDictionary<string, TargetResult> outputs;
 
 			project.SetProperty("PropertyName", "MSBuildRuntimeVersion");
@@ -83,7 +89,9 @@ namespace MSBuilder
 		[Fact]
 		public void when_getting_targets_then_does_not_include_initial_targets()
 		{
-			var project = BuildManager.DefaultBuildManager.GetProjectInstanceForBuild(new Project("IntrospectTests.targets"));
+			var eval = new Project("IntrospectTests.targets");
+			eval.SetGlobalProperty("UseCompiledTasks", "true");
+			var project = BuildManager.DefaultBuildManager.GetProjectInstanceForBuild(eval);
 			IDictionary<string, TargetResult> outputs; 
 
 			var result = project.Build(new string[0], new[] { logger }, out outputs);
