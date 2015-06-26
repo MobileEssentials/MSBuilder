@@ -23,39 +23,5 @@
 	SOFTWARE.
 -->
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
-	<!--
-    ============================================================
-              Dump Items Task
-	
-	Logs all received items and their metadata. Useful for 
-	diagnostics.
-	
-	@Items: input parameter with the items to dump.
-	
-	============================================================
-	-->
-	<UsingTask TaskName="DumpItems" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)">
-
-		<ParameterGroup>
-			<Items ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
-		</ParameterGroup>
-		
-		<Task>
-			<Code Type="Fragment" Language="cs">
-				<![CDATA[
-			foreach (var item in Items)
-			{
-				Log.LogMessage("Item: {0}", item.ItemSpec);
-				foreach (var name in item.MetadataNames.OfType<string>().OrderBy(_ => _))
-				{
-					Log.LogMessage("\t{0}={1}", name, item.GetMetadata(name));
-				}
-			}
-]]>
-			</Code>
-		</Task>
-
-	</UsingTask>
-
+  <UsingTask TaskName="Introspect" AssemblyFile="MSBuilder.Introspect.dll" />
 </Project>

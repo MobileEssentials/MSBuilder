@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0"
+         DefaultTargets="Build;Foo;Bar"
+         InitialTargets="RestoreNuGets"
+         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="..\..\..\CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props"/>
+  <Import Project="..\..\..\DumpItems\build\MSBuilder.DumpItems.targets"/>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <PropertyGroup>
+    <!-- NOTE: we default to 'build' rather than 'packages' to avoid 
+         confusing NuGet in case a build-time package is also used 
+         in projects in a solution, and the packages folder happens 
+         to also be alongside this build script. In such case, 
+         NuGet can't distinguish an unversioned installation from a 
+         versioned one, and would therefore result in broken references 
+         from projects inside VS/XS since they always install packages 
+         in versioned folders.
+    -->
+    <BuildPackagesPath Condition=" '$(BuildPackagesPath)' == '' ">build</BuildPackagesPath>
+  </PropertyGroup>
+  
+  <UsingTask TaskName="TestTask" AssemblyFile="MSBuilder.Tests.dll" />
+
+  <Target Name="Build">
+    <TestTask>
+      <Output TaskParameter="Targets" ItemName="targets" />
+      <Output TaskParameter="Project" ItemName="project" />
+    </TestTask>
+
+    <DumpItems Items="@(targets)" />
+    <DumpItems Items="@(project)" />
+  </Target>
+  
+  <Target Name="Foo" />
+  <Target Name="Bar" />
+
+  <Target Name="Download">
+    
+    <Exec Command="&quot;$(Ps)&quot; -Command &quot;&amp; { (New-Object System.Net.WebClient).DownloadFile('http://nuget.org/nuget.exe', 'nuget.exe') }&quot;" />
+    
+  </Target>
+
+  <Target Name="GetCurrentTargets" Returns="">
+    
+  </Target>
+
+  <Target Name="GetCurrentProject" Returns="">
+    
+  </Target>
+
+  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
+    <NuGetPath Condition=" '$(NuGetPath)' != '' ">$(MSBuildThisFileDirectory).nuget\</NuGetPath>
+    <NuGet Condition=" '$(NuGetExe)' != '' ">$(NuGetPath)\NuGet.exe</NuGet>
+    <CachedNuGet Condition=" '$(CachedNuGet)' != '' ">$(LocalAppData)\NuGet\NuGet.exe</CachedNuGet>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+    <NuGetExe>nuget</NuGetExe>
+  </PropertyGroup>
+
+  <Target Name="RestoreNuGets" DependsOnTargets="GetNuGet" Condition="Exists('packages.config')">
+    <Exec Command="&quot;$(NuGet)&quot; Install packages.config -OutputDirectory $(BuildPackagesPath) -ExcludeVersion" Condition="Exists('packages.config')" />
+  </Target>
+
+  <Target Name="GetNuGet" Condition="'$(OS)' == 'Windows_NT' And !Exists('$(NuGetExe)')">
+    <PropertyGroup>
+      <PowerShell Condition=" '$(PowerShell)' == '' ">%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe</PowerShell>
+    </PropertyGroup>
+
+    <MakeDir Directories="$(NuGetPath)" Condition="!Exists($(NuGetPath))" />
+    <Exec Command="&quot;$(PowerShell)&quot; -Command &quot;&amp; { (New-Object System.Net.WebClient).DownloadFile('http://nuget.org/nuget.exe', '$(CachedNuGet)') }&quot;"
+          Condition="!Exists($(NuGet)) And !Exists($(CachedNuGet))" />
+    <Copy SourceFiles="$(CachedNuGet)" DestinationFolder="$(NuGetPath)" Condition="!Exists($(NuGet))" />
+  </Target>
+  
+</Project>

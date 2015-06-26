@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="MSBuilder.Introspect.targets"/>
+
+  <Target Name="GetProperties" Returns="@(Properties)">
+    <Introspect>
+      <Output TaskParameter="Properties" ItemName="Properties" />
+    </Introspect>
+  </Target>
+
+  <Target Name="GetTargets" Returns="@(Targets)">
+    <Introspect>
+      <Output TaskParameter="Targets" ItemName="Targets" />
+    </Introspect>
+  </Target>
+
+  <PropertyGroup>
+    <Foo>Bar</Foo>
+  </PropertyGroup>
+
+  <Target Name="GetDynamicValue" Returns="$(PropertyValue)" DependsOnTargets="GetProperties">
+    <PropertyGroup>
+      <PropertyValue>@(Properties -> Metadata("$(PropertyName)"))</PropertyValue>
+    </PropertyGroup>
+  </Target>
+  
+</Project>

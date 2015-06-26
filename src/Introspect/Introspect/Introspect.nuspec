@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<package>
+	<metadata>
+		<id>MSBuilder.Introspect</id>
+		<version>0.1.0</version>
+		<title>MSBuilder: Introspect Task</title>
+		<authors>Mobile Essentials</authors>
+		<licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>Allows retrieving the current project's properties and currently building 
+targets as items and metadata, effectivey allowing retrieval of property 
+values dynamically by name.
+
+Usage:
+&lt;Introspect&gt;
+  &lt;Output TaskParameter="Properties" ItemName="CurrentProperties" /&gt;  
+  &lt;Output TaskParameter="Targets" ItemName="CurrentTargets" /&gt;  
+&lt;/Introspect&gt;
+
+&lt;PropertyGroup&gt;
+  &lt;!-- Note that we're using another property as the dynamic property name to evaluate --&gt;
+  &lt;PropertyValue&gt;@(CurrentProperties -&gt; Metadata("$(PropertyName)"))&lt;/PropertyValue&gt;
+&lt;/PropertyGroup&gt;
+</description>
+		<copyright>Copyright 2015</copyright>
+		<tags>msbuild</tags>
+	</metadata>
+	<files>
+		<file src="Readme.txt" />
+		<file src="bin\MSBuilder.Introspect.targets" target="build" />
+		<file src="bin\MSBuilder.Introspect.dll" target="build" />
+	</files>
+</package>
