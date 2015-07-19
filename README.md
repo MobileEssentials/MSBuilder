@@ -1,6 +1,8 @@
 MSBuilder : Reusable Build Blocks
 ===
 
+[![Join the chat at https://gitter.im/MobileEssentials/MSBuilder](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MobileEssentials/MSBuilder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 MSBuilder's goal is to provide fine-grained nuget packages that can be installed when only a certain 
 MSBuild extension (task, property, target) is needed. 
 
@@ -57,7 +59,7 @@ complicated TaskInliner one (which you can use yourself to create blocks contain
 
 
 [![Build status](https://img.shields.io/appveyor/ci/MobileEssentials/MSBuilder.svg)](https://ci.appveyor.com/project/MobileEssentials/msbuilder)
-[![Join the chat at https://gitter.im/MobileEssentials](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MobileEssentials?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/MobileEssentials/MSBuilder](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MobileEssentials/MSBuilder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
 Package | Stats
