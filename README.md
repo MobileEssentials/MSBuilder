@@ -10,7 +10,7 @@ scripts or bring in unnecessary dependencies (if any).
 ## Goals
 
  - No binary tasks assemblies: this makes it easier to upgrade/uninstall without restarting VS, and
-   also makes the intended behavior of the tasks fully transparent.
+   also makes the intended behavior of the tasks fully transparent, "view-source" style.
  - No binary dependencies
  - Single-purpose components
 
@@ -18,14 +18,18 @@ scripts or bring in unnecessary dependencies (if any).
 ## Versioning
 
 Each MSBuilder block has its own folder under `src` and contains its own `.nuspec` file of course. 
-The way we determine the version on CI builds is as follows:
+On each push, AppVeyor CI will automatically build and push a new version of the MSBuilder block 
+as needed. The way we determine the version on CI builds is as follows:
 
 1. Read the .nuspec version attribute
-2. Determine the commit of the last change to the spec
+2. Determine the commit of the last change to the .nuspec file (typically, when its version was 
+   updated)
 3. Determime the number of commits that happened since that commit, within the same block folder
 4. If that count > 0, or if the last spec change is actually the current HEAD, then a new version
    of the nuget needs to be built.
-5. Increment the patch (third component) of the version with the # of commits determined in step 2.
+5. Increment the patch (third component) of the version with the # of commits determined in step 3.
+6. Grab the lastest published version of the corresponding nuget package, and if the verion 
+   determined in step 5. is greater than than, a new version is published.
 
 This ensures that by default, whenever changes are made to any artifacts related to the block, a 
 new version # will automatically be calculated, the corresponding nuget package will be built by 
@@ -39,9 +43,11 @@ contributors.
 > to the last successful build (or published nuget) +1 in the patch component, so that the next 
 > build can successfully build and publish it. 
 > Otherwise, even if the build will be triggered (since the condition on step 4. will detect
-> it matches the HEAD), applying the commit count on top of the last change (zero, since this is 
+> it matches the HEAD), applying the commit count on top of the lastest change (zero, since this is 
 > the actual commit that changes it!) to the patch component may result in a smaller version # than
-> the last one.
+> the lastest published nuget package for the block. This causes a build error with a clear message, 
+> so it's easy to catch, though. Just make sure you build locally at least once to ensure everything 
+> is OK.
 
 
 ## Contributing
