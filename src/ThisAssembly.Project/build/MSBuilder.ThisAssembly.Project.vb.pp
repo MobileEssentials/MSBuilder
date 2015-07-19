@@ -1,17 +1,19 @@
 #Const $NamespaceDefine$ = 1
 
-<Assembly: System.Reflection.AssemblyMetadata("Project.AssemblyName", RootNamespace.ThisAssembly.Project.AssemblyName)>
-<Assembly: System.Reflection.AssemblyMetadata("Project.RootNamespace", RootNamespace.ThisAssembly.Project.RootNamespace)>
-<Assembly: System.Reflection.AssemblyMetadata("Project.ProjectGuid", RootNamespace.ThisAssembly.Project.ProjectGuid)>
-<Assembly: System.Reflection.AssemblyMetadata("Project.TargetFrameworkVersion", RootNamespace.ThisAssembly.Project.TargetFrameworkVersion)>
-<Assembly: System.Reflection.AssemblyMetadata("Project.TargetFrameworkIdentifier", RootNamespace.ThisAssembly.Project.TargetFrameworkIdentifier)>
-<Assembly: System.Reflection.AssemblyMetadata("Project.TargetFrameworkMoniker", RootNamespace.ThisAssembly.Project.TargetFrameworkMoniker)>
-<Assembly: System.Reflection.AssemblyMetadata("Project.TargetPlatformVersion", RootNamespace.ThisAssembly.Project.TargetPlatformVersion)>
-<Assembly: System.Reflection.AssemblyMetadata("Project.TargetPlatformIdentifier", RootNamespace.ThisAssembly.Project.TargetPlatformIdentifier)>
-<Assembly: System.Reflection.AssemblyMetadata("Project.TargetPlatformMoniker", RootNamespace.ThisAssembly.Project.TargetPlatformMoniker)>
+<Assembly: System.Reflection.AssemblyMetadata("Project.AssemblyName", Global.RootNamespace.ThisAssembly.Project.AssemblyName)>
+<Assembly: System.Reflection.AssemblyMetadata("Project.RootNamespace", Global.RootNamespace.ThisAssembly.Project.RootNamespace)>
+<Assembly: System.Reflection.AssemblyMetadata("Project.ProjectGuid", Global.RootNamespace.ThisAssembly.Project.ProjectGuid)>
+<Assembly: System.Reflection.AssemblyMetadata("Project.TargetFrameworkVersion", Global.RootNamespace.ThisAssembly.Project.TargetFrameworkVersion)>
+<Assembly: System.Reflection.AssemblyMetadata("Project.TargetFrameworkIdentifier", Global.RootNamespace.ThisAssembly.Project.TargetFrameworkIdentifier)>
+<Assembly: System.Reflection.AssemblyMetadata("Project.TargetFrameworkMoniker", Global.RootNamespace.ThisAssembly.Project.TargetFrameworkMoniker)>
+<Assembly: System.Reflection.AssemblyMetadata("Project.TargetPlatformVersion", Global.RootNamespace.ThisAssembly.Project.TargetPlatformVersion)>
+<Assembly: System.Reflection.AssemblyMetadata("Project.TargetPlatformIdentifier", Global.RootNamespace.ThisAssembly.Project.TargetPlatformIdentifier)>
+<Assembly: System.Reflection.AssemblyMetadata("Project.TargetPlatformMoniker", Global.RootNamespace.ThisAssembly.Project.TargetPlatformMoniker)>
 
 #If LOCALNAMESPACE
-Namespace _RootNamespace_
+Namespace Global._RootNamespace_
+#Else
+Namespace Global
 #End If
 	Partial Class ThisAssembly
 		Partial Public Class Project
@@ -43,6 +45,4 @@ Namespace _RootNamespace_
 			Public Const TargetPlatformMoniker = "$TargetPlatformMoniker$"
 		End Class
 	End Class
-#If LOCALNAMESPACE
 End Namespace
-#End If
