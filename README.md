@@ -57,6 +57,8 @@ complicated TaskInliner one (which you can use yourself to create blocks contain
 
 
 [![Build status](https://img.shields.io/appveyor/ci/MobileEssentials/MSBuilder.svg)](https://ci.appveyor.com/project/MobileEssentials/msbuilder)
+[![Join the chat at https://gitter.im/MSBuilder](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MSBuilder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 
 Package | Stats
 --- | ---
