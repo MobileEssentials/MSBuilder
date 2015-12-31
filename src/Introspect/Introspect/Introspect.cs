@@ -22,6 +22,14 @@ namespace MSBuilder
 		public Microsoft.Build.Framework.ITaskItem Properties { get; set; }
 
 		/// <summary>
+		/// Returns all the global properties used when evaluating the 
+		/// project as an item, with each property as an item metadata 
+		/// with its evaluated value.
+		/// </summary>
+		[Output]
+		public Microsoft.Build.Framework.ITaskItem GlobalProperties { get; set; }
+
+		/// <summary>
 		/// Returns all current project targets being built as an item list.
 		/// </summary>
 		[Output]
@@ -65,6 +73,9 @@ namespace MSBuilder
 
 			Properties = new TaskItem(project.ProjectFileLocation.File, project.Properties.ToDictionary(
 				prop => prop.Name, prop => prop.EvaluatedValue));
+
+			GlobalProperties = new TaskItem (project.ProjectFileLocation.File, project.GlobalProperties.ToDictionary(
+				pair => pair.Key, pair => pair.Value));
 
 			if (targets.Any())
 			{

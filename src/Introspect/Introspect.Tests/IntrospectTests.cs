@@ -66,6 +66,28 @@ namespace MSBuilder
 		}
 
 		[Fact]
+		public void when_introspecting_then_retrieves_conditioned_properties ()
+		{
+			var eval = new Project ("IntrospectTests.targets");
+			eval.SetGlobalProperty ("UseCompiledTasks", "true");
+			eval.SetGlobalProperty ("Configuration", "Release");
+			var project = BuildManager.DefaultBuildManager.GetProjectInstanceForBuild (eval);
+			IDictionary<string, TargetResult> outputs;
+
+			var result = project.Build (new[] { "IntrospectProperties" }, new[] { logger }, out outputs);
+
+			Assert.True (result);
+			Assert.True (outputs.ContainsKey ("IntrospectProperties"));
+			Assert.Equal (1, outputs["IntrospectProperties"].Items.Length);
+
+			var target = outputs["IntrospectProperties"].Items[0];
+			var metadata = new HashSet<string> (target.MetadataNames.OfType<string> ());
+
+			Assert.True (metadata.Contains ("MSBuildBinPath"));
+			Assert.Equal ("Bar", target.GetMetadata ("Foo"));
+		}
+
+		[Fact]
 		public void when_introspecting_then_retrieves_dynamic_value()
 		{
 			var eval = new Project("IntrospectTests.targets");

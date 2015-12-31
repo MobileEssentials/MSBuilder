@@ -28,6 +28,7 @@
   <Target Name="IntrospectProperties" Returns="@(IntrospectedProperties)">
     <Introspect>
       <Output TaskParameter="Properties" ItemName="IntrospectedProperties" />
+      <Output TaskParameter="GlobalProperties" ItemName="IntrospectedGlobalProperties" />
     </Introspect>
   </Target>
 

@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" InitialTargets="Startup" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Import Project="..\..\..\Introspect\bin\MSBuilder.Introspect.targets"/>
+	<Import Project="..\..\..\Introspect\bin\MSBuilder.Introspect.targets"/>
 
-  <PropertyGroup>
-    <Foo>Bar</Foo>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Foo>Bar</Foo>
+	</PropertyGroup>
 
-  <Target Name="GetDynamicValue" Returns="$(PropertyValue)" DependsOnTargets="IntrospectProperties">
-    <PropertyGroup>
-      <PropertyValue>@(IntrospectedProperties -> Metadata("$(PropertyName)"))</PropertyValue>
-    </PropertyGroup>
-  </Target>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<ShouldCompile>false</ShouldCompile>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+		<ShouldCompile>true</ShouldCompile>
+	</PropertyGroup>
 
-  <Target Name="Build" DependsOnTargets="IntrospectTargets" Returns="@(IntrospectedTargets)" />
+	<ItemGroup>
+		<Compile Include="a.cs" Condition=" '$(ShouldCompile)' == 'true' " />
+	</ItemGroup>
 
-  <Target Name="Startup" />
-  
+	<Target Name="GetDynamicValue" Returns="$(PropertyValue)" DependsOnTargets="IntrospectProperties">
+		<PropertyGroup>
+			<PropertyValue>@(IntrospectedProperties -> Metadata("$(PropertyName)"))</PropertyValue>
+		</PropertyGroup>
+	</Target>
+
+	<Target Name="Build" DependsOnTargets="IntrospectTargets" Returns="@(IntrospectedTargets)" />
+
+	<Target Name="Startup" />
+
 </Project>
