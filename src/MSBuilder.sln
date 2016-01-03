@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2AF55F73-4FE0-46B1-B5C4-534F028A90C1}"
 	ProjectSection(SolutionItems) = preProject
@@ -105,6 +105,22 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Introspect", "Introspect\In
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Introspect.Tests", "Introspect\Introspect.Tests\Introspect.Tests.csproj", "{E8125C3A-8D93-4C63-8658-F087F0DDD616}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Roslyn", "Roslyn", "{F27D9312-4D46-47F0-AF97-3FA7F1232B17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roslyn", "Roslyn\Roslyn\Roslyn.csproj", "{14BA7028-5B05-43BD-9913-39E1940A56FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roslyn.Tests", "Roslyn\Roslyn.Tests\Roslyn.Tests.csproj", "{3ACD0C50-917C-4328-B063-906AC4FC03E9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DumpItems", "DumpItems", "{8B3AD949-9952-4A54-9023-B127123A3132}"
+	ProjectSection(SolutionItems) = preProject
+		DumpItems\DumpItems.nuspec = DumpItems\DumpItems.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{6D4B6CA6-B37B-46F5-82AF-FA03574BC341}"
+	ProjectSection(SolutionItems) = preProject
+		DumpItems\build\MSBuilder.DumpItems.targets = DumpItems\build\MSBuilder.DumpItems.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -155,6 +171,14 @@ Global
 		{E8125C3A-8D93-4C63-8658-F087F0DDD616}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8125C3A-8D93-4C63-8658-F087F0DDD616}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8125C3A-8D93-4C63-8658-F087F0DDD616}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14BA7028-5B05-43BD-9913-39E1940A56FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14BA7028-5B05-43BD-9913-39E1940A56FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14BA7028-5B05-43BD-9913-39E1940A56FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14BA7028-5B05-43BD-9913-39E1940A56FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3ACD0C50-917C-4328-B063-906AC4FC03E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3ACD0C50-917C-4328-B063-906AC4FC03E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3ACD0C50-917C-4328-B063-906AC4FC03E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3ACD0C50-917C-4328-B063-906AC4FC03E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -177,5 +201,8 @@ Global
 		{3D6B461F-5135-49A6-806A-6FB0E556FE18} = {AEFAB238-A3DC-417E-844F-034976323613}
 		{76FA3158-9D25-4BC2-896F-6EEA0A6E427E} = {3D4BAE0B-9EB9-47C1-B113-A1D95881041A}
 		{E8125C3A-8D93-4C63-8658-F087F0DDD616} = {3D4BAE0B-9EB9-47C1-B113-A1D95881041A}
+		{14BA7028-5B05-43BD-9913-39E1940A56FD} = {F27D9312-4D46-47F0-AF97-3FA7F1232B17}
+		{3ACD0C50-917C-4328-B063-906AC4FC03E9} = {F27D9312-4D46-47F0-AF97-3FA7F1232B17}
+		{6D4B6CA6-B37B-46F5-82AF-FA03574BC341} = {8B3AD949-9952-4A54-9023-B127123A3132}
 	EndGlobalSection
 EndGlobal
