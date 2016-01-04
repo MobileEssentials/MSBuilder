@@ -1,6 +1,8 @@
 init:
   - git config --global core.autocrlf input
 
+os: Visual Studio 2015
+
 build_script:
   - build.cmd /v:normal
 
