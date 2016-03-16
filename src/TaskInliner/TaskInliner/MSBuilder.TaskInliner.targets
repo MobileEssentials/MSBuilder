@@ -48,7 +48,7 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="'@(SourceTask)' == ''">
-		<SourceTask Include="@(Compile)" />
+		<SourceTask Include="@(Compile)" Exclude="**\AssemblyInfo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -60,6 +60,8 @@
 	<Import Project="MSBuilder.TaskInliner.tasks" />
 
 	<Target Name="GenerateInlineTasks" Inputs="@(SourceTask)" Outputs="$(TasksOutputPath)\$(TasksName).tasks">
+
+		<Error Condition=" '$(Language)' != 'C#' " Text="Language '$(Language)' is not supported for inline tasks generation." />
 
 		<GenerateTasksFile TasksName="$(TasksName)" OutputPath="$(TasksOutputPath)"
 						   References="@(Reference)" SourceTasks="@(SourceTask)" />
