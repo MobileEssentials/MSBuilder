@@ -39,23 +39,25 @@
 
 		<ParameterGroup>
 			<Items ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+			<ItemName ParameterType="System.String" Required="false" />
 		</ParameterGroup>
-		
+
 		<Task>
 			<Code Type="Fragment" Language="cs">
 				<![CDATA[
+			var itemName = ItemName ?? "Item";
 			foreach (var item in Items)
 			{
-				Log.LogMessage("Item: {0}", item.ItemSpec);
+				Log.LogMessage("{0}: {1}", itemName, item.ItemSpec);
 				foreach (var name in item.MetadataNames.OfType<string>().OrderBy(_ => _))
 				{
-          try 
-          {
-					  Log.LogMessage("\t{0}={1}", name, item.GetMetadata(name));
-          } 
-          catch 
-          {
-          }
+					try 
+					{
+						Log.LogMessage("\t{0}={1}", name, item.GetMetadata(name));
+					} 
+					catch 
+					{
+					}
 				}
 			}
 ]]>
