@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 
 namespace MSBuilder
 {
-	class ProjectLoader : IProjectLoader
+    class ProjectLoader : IProjectLoader
 	{
+        AppDomain appDomain;
+        string[] assemblyFiles;
 		bool initialized;
 		Dictionary<string, string> globalProperties;
 
-		public ProjectLoader(Dictionary<string, string> globalProperties)
+		public ProjectLoader(AppDomain appDomain, string[] assemblyFiles, Dictionary<string, string> globalProperties)
 		{
+            this.appDomain = appDomain;
+            this.assemblyFiles = assemblyFiles;
 			this.globalProperties = globalProperties;
 		}
 
@@ -28,33 +28,21 @@ namespace MSBuilder
 
 			initialized = true;
 
-            var domain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null,
-				Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
-				Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
-				false);
 			var xmlFile = Path.GetTempFileName();
-
 			try
 			{
-                var assemblies = typeof(MSBuildWorkspace).Assembly.GetReferencedAssemblies()
-                    .Select(name => Assembly.Load(name))
-                    .Concat(new[] { typeof(MSBuildWorkspace).Assembly })
-                    .Select(asm => asm.ManifestModule.FullyQualifiedName)
-                    .ToArray();
-
-				domain.CreateInstance(typeof(IsolatedProjectReader).Assembly.FullName, typeof(IsolatedProjectReader).FullName,
-					false, BindingFlags.Default, null, new object[] { assemblies, filePath, globalProperties, xmlFile }, null, null);
+				appDomain.CreateInstance(typeof(IsolatedProjectReader).Assembly.FullName, typeof(IsolatedProjectReader).FullName,
+					false, BindingFlags.Default, null, new object[] { assemblyFiles, filePath, globalProperties, xmlFile }, null, null);
 
 				return File.ReadAllText(xmlFile);
 			}
 			finally
 			{
-				AppDomain.Unload(domain);
 				File.Delete(xmlFile);
 			}
 		}
 
-		public void Dispose()
+        public void Dispose()
 		{
 		}
 	}

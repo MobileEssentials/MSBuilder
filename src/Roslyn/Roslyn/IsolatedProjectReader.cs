@@ -4,19 +4,17 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 
 namespace MSBuilder
 {
-	/// <summary>
-	/// Provides a MBRO that can be used to read an MSBuild project 
-	/// in an isolated AppDomain.
-	/// </summary>
-	[EditorBrowsable(EditorBrowsableState.Never)]
+    /// <summary>
+    /// Provides a MBRO that can be used to read an MSBuild project 
+    /// in an isolated AppDomain.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
 	public class IsolatedProjectReader : MarshalByRefObject
 	{
 		/// <summary>

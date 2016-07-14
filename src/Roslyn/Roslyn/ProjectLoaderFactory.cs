@@ -1,27 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using Microsoft.CodeAnalysis.MSBuild;
 
 namespace MSBuilder
 {
-	class ProjectLoaderFactory : IProjectLoaderFactory
+    class ProjectLoaderFactory : IProjectLoaderFactory
 	{
-		public IProjectLoader Create (IBuildEngine buildEngine)
+        Lazy<AppDomain> appDomain = new Lazy<AppDomain>(() => AppDomain.CreateDomain(Guid.NewGuid().ToString(), null,
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
+                false));
+
+        string[] assemblyFiles;
+
+        public ProjectLoaderFactory()
+        {
+            assemblyFiles = typeof(MSBuildWorkspace).Assembly.GetAllReferences();
+        }
+
+        public IProjectLoader Create (IBuildEngine buildEngine)
 		{
 			// Use introspection to determine the global properties to use for the 
 			// workspace.
 			var globalProperties = GetGlobalProperties (buildEngine);
 
-			return new ProjectLoader (globalProperties);
+			return new ProjectLoader (appDomain.Value, assemblyFiles, globalProperties);
 		}
 
-		Dictionary<string, string> GetGlobalProperties (IBuildEngine buildEngine)
+        public void Dispose()
+        {
+            if (appDomain.IsValueCreated)
+                AppDomain.Unload(appDomain.Value);
+        }
+
+        Dictionary<string, string> GetGlobalProperties (IBuildEngine buildEngine)
 		{
 			var flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
 			var engineType = buildEngine.GetType ();
@@ -52,5 +69,19 @@ namespace MSBuilder
 				.Where (pair => !pair.Key.StartsWith ("_", StringComparison.Ordinal))
 				.ToDictionary (pair => pair.Key, pair => pair.Value);
 		}
-	}
+
+        void PopulateAssemblies(Assembly assembly, HashSet<Assembly> assemblies)
+        {
+            if (assemblies.Contains(assembly))
+                return;
+
+            assemblies.Add(assembly);
+            foreach (var referenced in typeof(MSBuildWorkspace).Assembly
+                .GetReferencedAssemblies()
+                .Select(name => Assembly.Load(name)))
+            {
+                PopulateAssemblies(referenced, assemblies);
+            }
+        }
+    }
 }

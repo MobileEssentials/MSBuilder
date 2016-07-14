@@ -8,13 +8,26 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.MSBuild;
 using Xunit;
 
 namespace MSBuilder
 {
-	public class ProjectLoaderSpec
+	public class ProjectLoaderSpec : IDisposable
 	{
-		[Fact]
+        static readonly string baseDir = Directory.GetCurrentDirectory();
+        Lazy<AppDomain> appDomain = new Lazy<AppDomain>(() => AppDomain.CreateDomain(Guid.NewGuid().ToString(), null,
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
+                false));
+
+        public void Dispose()
+        {
+            if (appDomain.IsValueCreated)
+                AppDomain.Unload(appDomain.Value);
+        }
+
+        [Fact]
 		public void when_loading_project_then_can_retrieve_info()
 		{
 			var props = new Dictionary<string, string>
@@ -23,16 +36,19 @@ namespace MSBuilder
 				{ "CurrentSolutionConfigurationContents",
 					$@"<CurrentSolutionConfigurationContents xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
 						<SolutionConfiguration xmlns=''>
-							<ProjectConfiguration Project='{{F1DB354D-8DB4-476C-9308-08CDC0E411F7}}' AbsolutePath='Content\CsLibrary\CsLibrary.csproj' BuildProjectInSolution='True'>Debug|AnyCPU</ProjectConfiguration>
-							<ProjectConfiguration Project='{{3EDE89EC-A461-4E2C-BE95-05F63B96926C}}' AbsolutePath='Content\PclLibrary\PclLibrary.csproj' BuildProjectInSolution='True'>Debug|AnyCPU</ProjectConfiguration>
+							<ProjectConfiguration Project='{{F1DB354D-8DB4-476C-9308-08CDC0E411F7}}' AbsolutePath='{baseDir}\Content\CsLibrary\CsLibrary.csproj' BuildProjectInSolution='True'>Debug|AnyCPU</ProjectConfiguration>
+							<ProjectConfiguration Project='{{3EDE89EC-A461-4E2C-BE95-05F63B96926C}}' AbsolutePath='{baseDir}\Content\PclLibrary\PclLibrary.csproj' BuildProjectInSolution='True'>Debug|AnyCPU</ProjectConfiguration>
 						</SolutionConfiguration>
 					</CurrentSolutionConfigurationContents>"
 				}
 			};
 
-			var loader = new ProjectLoader(props);
+			var loader = new ProjectLoader(
+                appDomain.Value,
+                typeof(MSBuildWorkspace).Assembly.GetAllReferences(),
+                props);
 
-			var xml = loader.LoadXml(@"Content\CsLibrary\CsLibrary.csproj");
+			var xml = loader.LoadXml(Path.Combine(baseDir, @"Content\CsLibrary\CsLibrary.csproj"));
 			var msbuildProject = XElement.Parse(xml).ToDynamic();
 
 			var info = ProjectInfo.Create(

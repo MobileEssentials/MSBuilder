@@ -1,23 +1,37 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Build.Framework;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.MSBuild;
 using Moq;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace MSBuilder
 {
-    public class SnapshotWorkspaceTests
+    public class SnapshotWorkspaceTests : IDisposable
 	{
         static readonly string baseDir = Directory.GetCurrentDirectory();
-		ITestOutputHelper output;
+
+        Lazy<AppDomain> appDomain = new Lazy<AppDomain>(() => AppDomain.CreateDomain(Guid.NewGuid().ToString(), null,
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
+                false));
+        ITestOutputHelper output;
 
 		public SnapshotWorkspaceTests (ITestOutputHelper output)
 		{
 			this.output = output;
 		}
+
+        public void Dispose()
+        {
+            if (appDomain.IsValueCreated)
+                AppDomain.Unload(appDomain.Value);
+        }
 
 		[Fact]
 		public void when_loading_projects_then_loads_proper_configuration_from_solution ()
@@ -34,7 +48,10 @@ namespace MSBuilder
 
 			var factory = new Mock<IProjectLoaderFactory> ();
 			factory.Setup (x => x.Create (It.IsAny<IBuildEngine> ()))
-				.Returns (() => new ProjectLoader (properties));
+				.Returns (() => new ProjectLoader (
+                    appDomain.Value,
+                    typeof(MSBuildWorkspace).Assembly.GetAllReferences(),
+                    properties));
 			var workspace = new SnapshotWorkspace (factory.Object);
 
 			var project = workspace.GetOrAddProject (Mock.Of<IBuildEngine> (), Path.Combine(baseDir, @"Content\CsLibrary\CsLibrary.csproj"));
@@ -60,7 +77,10 @@ namespace MSBuilder
 		{
 			var factory = new Mock<IProjectLoaderFactory> ();
 			factory.Setup (x => x.Create (It.IsAny<IBuildEngine> ()))
-				.Returns (() => new ProjectLoader (new Dictionary<string, string> ()));
+				.Returns (() => new ProjectLoader (
+                    appDomain.Value,
+                    typeof(MSBuildWorkspace).Assembly.GetAllReferences(),
+                    new Dictionary<string, string> ()));
 			var workspace = new SnapshotWorkspace (factory.Object);
 
 			var project = workspace.GetOrAddProject (Mock.Of<IBuildEngine> (), Path.Combine(baseDir, @"Content\CsLibrary\CsLibrary.csproj"));
@@ -86,7 +106,10 @@ namespace MSBuilder
 
 			var factory = new Mock<IProjectLoaderFactory> ();
 			factory.Setup (x => x.Create (It.IsAny<IBuildEngine> ()))
-				.Returns (() => new ProjectLoader (properties));
+				.Returns (() => new ProjectLoader (
+                    appDomain.Value,
+                    typeof(MSBuildWorkspace).Assembly.GetAllReferences(),
+                    properties));
 			var workspace = new SnapshotWorkspace (factory.Object);
 
 			var project = workspace.GetOrAddProject (Mock.Of<IBuildEngine> (), Path.Combine(baseDir, @"Content\CsLibrary\CsLibrary.csproj"));

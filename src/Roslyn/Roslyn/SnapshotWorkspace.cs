@@ -2,18 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Host.Mef;
-using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Text;
 
 namespace MSBuilder
 {
-	internal class SnapshotWorkspace : Workspace, IWorkspace
+    internal class SnapshotWorkspace : Workspace, IWorkspace
 	{
 		readonly IProjectLoaderFactory loaderFactory;
 
@@ -28,7 +25,12 @@ namespace MSBuilder
 			this.loaderFactory = loaderFactory;
 		}
 
-		public override bool CanApplyChange (ApplyChangesKind feature)
+        protected override void Dispose(bool finalize)
+        {
+            loaderFactory.Dispose();
+        }
+
+        public override bool CanApplyChange (ApplyChangesKind feature)
 		{
 			switch (feature) {
 				case ApplyChangesKind.AddProject:

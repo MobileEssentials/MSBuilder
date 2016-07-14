@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Build.Framework;
+﻿using Microsoft.Build.Framework;
 using Microsoft.CodeAnalysis;
 using MSBuilder;
 
 namespace Microsoft.Build.Utilities
 {
-	/// <summary>
-	/// Provides extensions for <see cref="Task"/> that allows 
-	/// to efficiently access and reuse a Roslyn <see cref="Workspace"/> 
-	/// and loaded <see cref="Project"/>s across a build.
-	/// </summary>
-	public static class TaskExtensions
+    /// <summary>
+    /// Provides extensions for <see cref="Task"/> that allows 
+    /// to efficiently access and reuse a Roslyn <see cref="Workspace"/> 
+    /// and loaded <see cref="Project"/>s across a build.
+    /// </summary>
+    public static class TaskExtensions
 	{
 		/// <summary>
 		/// Gets the reusable <see cref="Workspace"/> for the 
