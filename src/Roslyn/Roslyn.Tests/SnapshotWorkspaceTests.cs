@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Build.Framework;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.MSBuild;
 using Moq;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace MSBuilder
 {
-	public class SnapshotWorkspaceTests
+    public class SnapshotWorkspaceTests
 	{
+        static readonly string baseDir = Directory.GetCurrentDirectory();
 		ITestOutputHelper output;
 
 		public SnapshotWorkspaceTests (ITestOutputHelper output)
@@ -27,14 +22,12 @@ namespace MSBuilder
 		[Fact]
 		public void when_loading_projects_then_loads_proper_configuration_from_solution ()
 		{
-			var currentDir = Directory.GetCurrentDirectory ();
-
 			var properties = new Dictionary<string, string> {
 				{ "CurrentSolutionConfigurationContents", @"<SolutionConfiguration>
-<ProjectConfiguration Project=""{f1db354d-8db4-476c-9308-08cdc0e411f7}"" AbsolutePath=""" + currentDir + @"\Content\CsLibrary\CsLibrary.csproj"">Debug|AnyCPU</ProjectConfiguration>
-<ProjectConfiguration Project=""{a8ea2d18-4125-4cfd-a9de-6112f38df636}"" AbsolutePath=""" + currentDir + @"\Content\VbLibrary\VbLibrary.vbproj"">Debug|AnyCPU</ProjectConfiguration>
-<ProjectConfiguration Project=""{3ede89ec-a461-4e2c-be95-05f63b96926c}"" AbsolutePath=""" + currentDir + @"\Content\PclLibrary\PclLibrary.csproj"">Release|AnyCPU</ProjectConfiguration>
-<ProjectConfiguration Project=""{b7009850-92bd-4926-a2a6-1208f1dcd645}"" AbsolutePath=""" + currentDir + @"\Content\FsLibrary\FsLibrary.fsproj"">Debug|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{f1db354d-8db4-476c-9308-08cdc0e411f7}"" AbsolutePath=""" + baseDir + @"\Content\CsLibrary\CsLibrary.csproj"">Debug|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{a8ea2d18-4125-4cfd-a9de-6112f38df636}"" AbsolutePath=""" + baseDir + @"\Content\VbLibrary\VbLibrary.vbproj"">Debug|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{3ede89ec-a461-4e2c-be95-05f63b96926c}"" AbsolutePath=""" + baseDir + @"\Content\PclLibrary\PclLibrary.csproj"">Release|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{b7009850-92bd-4926-a2a6-1208f1dcd645}"" AbsolutePath=""" + baseDir + @"\Content\FsLibrary\FsLibrary.fsproj"">Debug|AnyCPU</ProjectConfiguration>
 </SolutionConfiguration>" 
 				}, 
 			};
@@ -44,7 +37,7 @@ namespace MSBuilder
 				.Returns (() => new ProjectLoader (properties));
 			var workspace = new SnapshotWorkspace (factory.Object);
 
-			var project = workspace.GetOrAddProject (Mock.Of<IBuildEngine> (), @"Content\CsLibrary\CsLibrary.csproj");
+			var project = workspace.GetOrAddProject (Mock.Of<IBuildEngine> (), Path.Combine(baseDir, @"Content\CsLibrary\CsLibrary.csproj"));
 
 			// Configuration for the main project is Debug in the selected solution configuration.
 			Assert.Equal ("Debug", new DirectoryInfo (Path.GetDirectoryName (project.OutputFilePath)).Name);
@@ -70,7 +63,7 @@ namespace MSBuilder
 				.Returns (() => new ProjectLoader (new Dictionary<string, string> ()));
 			var workspace = new SnapshotWorkspace (factory.Object);
 
-			var project = workspace.GetOrAddProject (Mock.Of<IBuildEngine> (), @"Content\CsLibrary\CsLibrary.csproj");
+			var project = workspace.GetOrAddProject (Mock.Of<IBuildEngine> (), Path.Combine(baseDir, @"Content\CsLibrary\CsLibrary.csproj"));
 			var reference = project.Solution.GetProject (project.ProjectReferences.First ().ProjectId);
 
 			// Because there is no solution configuration, PclLibrary defaults to Debug configuration, and the 
@@ -81,13 +74,12 @@ namespace MSBuilder
 		[Fact]
 		public void when_loading_projects_then_loads_documents ()
 		{
-			var currentDir = Directory.GetCurrentDirectory ();
 			var properties = new Dictionary<string, string> {
 				{ "CurrentSolutionConfigurationContents", @"<SolutionConfiguration>
-<ProjectConfiguration Project=""{f1db354d-8db4-476c-9308-08cdc0e411f7}"" AbsolutePath=""" + currentDir + @"\Content\CsLibrary\CsLibrary.csproj"">Debug|AnyCPU</ProjectConfiguration>
-<ProjectConfiguration Project=""{a8ea2d18-4125-4cfd-a9de-6112f38df636}"" AbsolutePath=""" + currentDir + @"\Content\VbLibrary\VbLibrary.vbproj"">Debug|AnyCPU</ProjectConfiguration>
-<ProjectConfiguration Project=""{3ede89ec-a461-4e2c-be95-05f63b96926c}"" AbsolutePath=""" + currentDir + @"\Content\PclLibrary\PclLibrary.csproj"">Release|AnyCPU</ProjectConfiguration>
-<ProjectConfiguration Project=""{b7009850-92bd-4926-a2a6-1208f1dcd645}"" AbsolutePath=""" + currentDir + @"\Content\FsLibrary\FsLibrary.fsproj"">Debug|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{f1db354d-8db4-476c-9308-08cdc0e411f7}"" AbsolutePath=""" + baseDir + @"\Content\CsLibrary\CsLibrary.csproj"">Debug|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{a8ea2d18-4125-4cfd-a9de-6112f38df636}"" AbsolutePath=""" + baseDir + @"\Content\VbLibrary\VbLibrary.vbproj"">Debug|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{3ede89ec-a461-4e2c-be95-05f63b96926c}"" AbsolutePath=""" + baseDir + @"\Content\PclLibrary\PclLibrary.csproj"">Release|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{b7009850-92bd-4926-a2a6-1208f1dcd645}"" AbsolutePath=""" + baseDir + @"\Content\FsLibrary\FsLibrary.fsproj"">Debug|AnyCPU</ProjectConfiguration>
 </SolutionConfiguration>" 
 				}, 
 			};
@@ -97,7 +89,7 @@ namespace MSBuilder
 				.Returns (() => new ProjectLoader (properties));
 			var workspace = new SnapshotWorkspace (factory.Object);
 
-			var project = workspace.GetOrAddProject (Mock.Of<IBuildEngine> (), @"Content\CsLibrary\CsLibrary.csproj");
+			var project = workspace.GetOrAddProject (Mock.Of<IBuildEngine> (), Path.Combine(baseDir, @"Content\CsLibrary\CsLibrary.csproj"));
 			var reference = project.Solution.GetProject (project.ProjectReferences.First ().ProjectId);
 
 			Assert.True (project.Documents.Any (doc => Path.GetFileName (doc.FilePath) == "Class1.cs"));

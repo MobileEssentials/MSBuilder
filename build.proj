@@ -60,6 +60,35 @@
 		</BuildPackagesDependsOn>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<XunitBuildDir>$([System.IO.Path]::Combine('packages', 'xunit.runner.msbuild', 'build'))</XunitBuildDir>
+		<XunitPlatformDir Condition=" Exists('$(XunitBuildDir)') ">$([System.IO.Directory]::GetDirectories($(XunitBuildDir))[0])</XunitPlatformDir>
+		<XunitProps>$([System.IO.Path]::Combine($(XunitPlatformDir), 'xunit.runner.msbuild.props'))</XunitProps>
+	</PropertyGroup>
+	<Import Project="$(XunitProps)" Condition="Exists('$(XunitProps)')"/>
+
+	<Target Name="Test" DependsOnTargets="CoreBuild" AfterTargets="CoreBuild">
+		<ItemGroup>
+			<TestProject Include="$(SourceDir)**\*.Tests.csproj" Condition=" '$(TestProject)' == '' " />
+			<TestProject Include="$(TestProject)" Condition=" '$(TestProject)' != '' " />
+		</ItemGroup>
+		<MSBuild Projects="@(TestProject)" BuildInParallel="true" Properties="Configuration=$(Configuration)" Targets="GetTargetPath">
+			<Output TaskParameter="TargetOutputs" ItemName="_TestAssembly" />
+		</MSBuild>
+
+		<ItemGroup>
+			<TestAssembly Include="@(_TestAssembly)" Condition=" Exists('%(_TestAssembly.FullPath)') " />
+		</ItemGroup>
+
+		<MakeDir Directories="out" Condition="!Exists('out')" />
+
+		<xunit Assemblies="@(TestAssembly)"
+			   Html="out\tests.html"
+			   Xml="out\tests.xml"
+			   ParallelizeAssemblies="$(ParallelizeAssemblies)"
+			   ParallelizeTestCollections="$(ParallelizeTestCollections)" />
+	</Target>
+	
 	<Target Name="FilterPackages" Inputs="@(NuGet)" Outputs="%(NuGet.Identity)-BATCH">
 
 		<GetLatestVersion PackageId="%(NuGet.Id)" IncludePreRelease="true">
