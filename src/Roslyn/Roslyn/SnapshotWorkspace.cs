@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Microsoft.CodeAnalysis;
@@ -67,42 +68,36 @@ namespace MSBuilder
 			// factory, which looks up the project by ID and determines 
 			// the configuration/platform to load.
 			using (var loader = loaderFactory.Create (buildEngine)) {
-				var msbuildProject = loader.Initialize (projectPath);
+				var msbuildProject = XElement.Parse (loader.LoadXml (projectPath)).ToDynamic();
 
 				// Use the msbuild project to add a new project to the current solution of the workspace
-				OnProjectAdded (
-					ProjectInfo.Create (
-						msbuildProject.Id,
-						msbuildProject.Version,
-						msbuildProject.Name,
-						msbuildProject.AssemblyName,
-						msbuildProject.Language,
-						msbuildProject.FilePath,
-						outputFilePath: msbuildProject.OutputFilePath,
-						compilationOptions: msbuildProject.CompilationOptions,
-						projectReferences: msbuildProject.ProjectReferences,
-						metadataReferences: msbuildProject.MetadataReferences));
-
+				OnProjectAdded(
+					ProjectInfo.Create(
+						ProjectId.CreateFromSerialized(new Guid((string)msbuildProject.Id)),
+						VersionStamp.Default,
+						(string)msbuildProject.Name,
+						(string)msbuildProject.AssemblyName,
+						(string)msbuildProject.Language,
+						(string)msbuildProject.FilePath,
+						outputFilePath: (string)msbuildProject.OutputFilePath,
+						metadataReferences: ((XElement)msbuildProject.MetadataReferences).Elements("FilePath").Select(e => MetadataReference.CreateFromFile(e.Value))));
+				
 				// Add the documents to the workspace
-				foreach (var document in msbuildProject.Documents)
-					AddDocument (msbuildProject.FilePath, document.FilePath, false);
-				foreach (var document in msbuildProject.AdditionalDocuments)
-					AddDocument (msbuildProject.FilePath, document.FilePath, true);
+				foreach (var document in ((XElement)msbuildProject.Documents).Elements("FilePath").Select(e => e.Value))
+					AddDocument ((string)msbuildProject.FilePath, document, false);
+				foreach (var document in ((XElement)msbuildProject.AdditionalDocuments).Elements("FilePath").Select(e => e.Value))
+					AddDocument ((string)msbuildProject.FilePath, document, true);
 
 				// Fix references
 				// Iterate the references of the msbuild project
 				var referencesToAdd = new List<ProjectReference> ();
-				foreach (var msBuildProjectReference in msbuildProject.ProjectReferences) {
-					var msbuildReferencedProject = msbuildProject.Solution.GetProject (msBuildProjectReference.ProjectId);
-					if (msbuildReferencedProject != null) {
-						var referencedProject = GetOrAddProject(buildEngine, msbuildReferencedProject.FilePath);
-
-						referencesToAdd.Add (new ProjectReference (referencedProject.Id));
-					}
+				foreach (var referencePath in ((XElement)msbuildProject.ProjectReferences).Elements("FilePath").Select(e => e.Value)) {
+					var referencedProject = GetOrAddProject(buildEngine, referencePath);
+					referencesToAdd.Add (new ProjectReference (referencedProject.Id));
 				}
 
 				if (referencesToAdd.Count > 0) {
-					var addedProject = FindProjectByPath (msbuildProject.FilePath);
+					var addedProject = FindProjectByPath ((string)msbuildProject.FilePath);
 
 					TryApplyChanges (CurrentSolution.WithProjectReferences (addedProject.Id, referencesToAdd));
 				}

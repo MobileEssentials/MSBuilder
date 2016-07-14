@@ -21,7 +21,7 @@ namespace MSBuilder
 			return new ProjectLoader (globalProperties);
 		}
 
-		IDictionary<string, string> GetGlobalProperties (IBuildEngine buildEngine)
+		Dictionary<string, string> GetGlobalProperties (IBuildEngine buildEngine)
 		{
 			var flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
 			var engineType = buildEngine.GetType ();

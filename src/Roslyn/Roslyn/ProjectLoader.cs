@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -12,43 +14,56 @@ namespace MSBuilder
 	class ProjectLoader : IProjectLoader
 	{
 		bool initialized;
-		IDictionary<string,string> globalProperties;
-		MSBuildWorkspace workspace;
+		Dictionary<string, string> globalProperties;
 
-		public ProjectLoader (IDictionary<string, string> globalProperties)
+		public ProjectLoader(Dictionary<string, string> globalProperties)
 		{
 			this.globalProperties = globalProperties;
 		}
 
-		public Project Initialize (string projectFilePath)
+		public string LoadXml(string filePath)
 		{
 			if (initialized)
-				throw new InvalidOperationException ("Already initialized with a project.");
+				throw new InvalidOperationException("Already initialized with a project.");
 
-			// Detect the project configuration and platform 
-			if (globalProperties.ContainsKey ("CurrentSolutionConfigurationContents")) {
-				var xml = XElement.Parse (globalProperties["CurrentSolutionConfigurationContents"]);
-				var config = xml.Elements ()
-					.Where (x => x.Attribute ("AbsolutePath").Value.Equals (projectFilePath, StringComparison.OrdinalIgnoreCase))
-					.Select (x => x.Value)
-					.FirstOrDefault ();
-				if (config != null) {
-					// Debug|AnyCPU
-					var configPlat = config.Split ('|');
-					globalProperties["Configuration"] = configPlat[0];
-					globalProperties["Platform"] = configPlat[1];
-				}
-			}
-
-			workspace = MSBuildWorkspace.Create (globalProperties);
 			initialized = true;
 
-			return workspace.OpenProjectAsync (projectFilePath).Result;
+			//var domain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null, 
+			//	new AppDomainSetup
+			//	{
+			//		ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase,
+			//		PrivateBinPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
+			//		PrivateBinPathProbe = Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
+			//		ConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile,
+			//	});
+			var domain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null,
+				Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
+				Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
+				false);
+
+			var xmlFile = Path.GetTempFileName();
+			try
+			{
+                var assemblies = typeof(MSBuildWorkspace).Assembly.GetReferencedAssemblies()
+                    .Select(name => Assembly.Load(name))
+                    .Concat(new[] { typeof(MSBuildWorkspace).Assembly })
+                    .Select(asm => asm.ManifestModule.FullyQualifiedName)
+                    .ToArray();
+
+				domain.CreateInstance(typeof(IsolatedProjectReader).Assembly.FullName, typeof(IsolatedProjectReader).FullName,
+					false, BindingFlags.Default, null, new object[] { assemblies, filePath, globalProperties, xmlFile }, null, null);
+
+				return File.ReadAllText(xmlFile);
+			}
+			finally
+			{
+				AppDomain.Unload(domain);
+				File.Delete(xmlFile);
+			}
 		}
 
-		public void Dispose ()
+		public void Dispose()
 		{
-			workspace.Dispose ();
 		}
 	}
 }

@@ -9,6 +9,6 @@ namespace MSBuilder
 {
 	interface IProjectLoader : IDisposable
 	{
-		Project Initialize (string projectFilePath);
+		string LoadXml (string filePath);
 	}
 }
