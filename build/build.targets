@@ -93,7 +93,7 @@
 
 	<Target Name="Rebuild" DependsOnTargets="$(RebuildDependsOn)" />
 
-	<Import Project="nuget.targets" />
+	<Import Project="..\src\NuGet.Restore.targets" />
 
 	<Target Name="CoreBuild">
 		<MSBuild Projects="@(Project)" />
@@ -113,14 +113,12 @@
 			</NuGet>
 		</ItemGroup>
 	
-		<Exec Command='"$(NuGetExe)" Pack "@(NuGet)" -NoPackageAnalysis -NonInteractive -Version %(Version)'
+		<Exec Command='"$(NuGet)" Pack "@(NuGet)" -NoPackageAnalysis -NonInteractive -Version %(Version)'
 			  Condition="'%(Identity)' != ''" />
 	</Target>
 
 	<Target Name="FormatVersion">
-		<Exec Command='"$(NuGetExe)" Install "$(MSBuildThisFileDirectory)packages.config" -OutputDirectory "$(MSBuildThisFileDirectory)packages" -ExcludeVersion' />
-
-		<MSBuild Projects="$(MSBuildThisFileDirectory)packages\SemanticGit\build\SemanticGit.targets"
+		<MSBuild Projects="$(MSBuildThisFileDirectory)..\packages\SemanticGit\build\SemanticGit.targets"
 				 Targets="SemanticGit:FormatVersion"
 				 Properties="VersionFormat=$(VersionFormat);GenerateAssemblyInfo=false">
 			<Output PropertyName="Version" TaskParameter="TargetOutputs"/>
