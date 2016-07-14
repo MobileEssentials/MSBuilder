@@ -28,20 +28,12 @@ namespace MSBuilder
 
 			initialized = true;
 
-			//var domain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null, 
-			//	new AppDomainSetup
-			//	{
-			//		ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase,
-			//		PrivateBinPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
-			//		PrivateBinPathProbe = Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
-			//		ConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile,
-			//	});
-			var domain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null,
+            var domain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null,
 				Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
 				Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
 				false);
-
 			var xmlFile = Path.GetTempFileName();
+
 			try
 			{
                 var assemblies = typeof(MSBuildWorkspace).Assembly.GetReferencedAssemblies()

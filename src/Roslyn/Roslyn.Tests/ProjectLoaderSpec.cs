@@ -46,10 +46,10 @@ namespace MSBuilder
 				projectReferences: ((XElement)msbuildProject.ProjectReferences).Elements("Project").Select(e => new ProjectReference(ProjectId.CreateFromSerialized(new Guid(e.Attribute("Id").Value)))),
 				metadataReferences: ((XElement)msbuildProject.MetadataReferences).Elements("FilePath").Select(e => MetadataReference.CreateFromFile(e.Value)));
 
-			File.WriteAllText(@"C:\Delete\roslyn.xml", xml);
-			Process.Start(@"C:\Delete\roslyn.xml");
+			//File.WriteAllText(@"C:\Delete\roslyn.xml", xml);
+			//Process.Start(@"C:\Delete\roslyn.xml");
 
-			Assert.Equal("1234", (string)msbuildProject["Id"]);
+			//Assert.Equal("1234", (string)msbuildProject["Id"]);
 		}
 	}
 
