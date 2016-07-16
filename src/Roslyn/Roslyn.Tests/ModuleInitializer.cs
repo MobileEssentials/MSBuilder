@@ -6,7 +6,7 @@ namespace MSBuilder
 	{
 		public static string BaseDirectory { get; private set; }
 
-		internal static void Run()
+		public static void Initialize()
 		{
 			BaseDirectory = Directory.GetCurrentDirectory();
 		}

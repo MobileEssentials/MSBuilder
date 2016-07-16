@@ -11,7 +11,7 @@
           "lib/net45/Castle.Core.dll": {}
         }
       },
-      "InjectModuleInitializer/1.5.0": {},
+      "Fody/1.29.2": {},
       "Microsoft.CodeAnalysis/1.1.1": {
         "dependencies": {
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "[1.1.1]",
@@ -110,6 +110,11 @@
           "lib/portable-net45+win8+wp8+wpa81/System.Composition.Hosting.dll": {},
           "lib/portable-net45+win8+wp8+wpa81/System.Composition.Runtime.dll": {},
           "lib/portable-net45+win8+wp8+wpa81/System.Composition.TypedParts.dll": {}
+        }
+      },
+      "ModuleInit.Fody/1.5.9": {
+        "dependencies": {
+          "Fody": "1.29.2"
         }
       },
       "Moq/4.5.13": {
@@ -370,7 +375,7 @@
           "lib/net45/Castle.Core.dll": {}
         }
       },
-      "InjectModuleInitializer/1.5.0": {},
+      "Fody/1.29.2": {},
       "Microsoft.CodeAnalysis/1.1.1": {
         "dependencies": {
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "[1.1.1]",
@@ -469,6 +474,11 @@
           "lib/portable-net45+win8+wp8+wpa81/System.Composition.Hosting.dll": {},
           "lib/portable-net45+win8+wp8+wpa81/System.Composition.Runtime.dll": {},
           "lib/portable-net45+win8+wp8+wpa81/System.Composition.TypedParts.dll": {}
+        }
+      },
+      "ModuleInit.Fody/1.5.9": {
+        "dependencies": {
+          "Fody": "1.29.2"
         }
       },
       "Moq/4.5.13": {
@@ -745,17 +755,25 @@
         "readme.txt"
       ]
     },
-    "InjectModuleInitializer/1.5.0": {
-      "sha512": "94lvm9SdsP+4VzuNDMXlcQCGIa2vAc6Sn55aeph9MqS4Svn26GWbYsjxQ03hN5V/kCn5kdgrBWaaShPhMa6kBQ==",
+    "Fody/1.29.2": {
+      "sha512": "7SoewNkJQFedmOiJHD5P1akJ1fRow+tFjj/M4QlJ5M5RTHdnDXxEnuSKF2t22aSxTmn9+4wO3FbtOrJYy31xmA==",
       "type": "package",
       "files": [
-        "InjectModuleInitializer.1.5.0.nupkg.sha512",
-        "InjectModuleInitializer.nuspec",
-        "content/ModuleInitializer.cs.pp",
-        "readme.txt",
-        "tools/InjectModuleInitializer.exe",
-        "tools/install.ps1",
-        "tools/uninstall.ps1"
+        "Content/FodyWeavers.xml",
+        "Fody.1.29.2.nupkg.sha512",
+        "Fody.dll",
+        "Fody.nuspec",
+        "Fody.pdb",
+        "FodyCommon.dll",
+        "FodyCommon.pdb",
+        "FodyIsolated.dll",
+        "FodyIsolated.pdb",
+        "Mono.Cecil.Mdb.dll",
+        "Mono.Cecil.Pdb.dll",
+        "Mono.Cecil.Rocks.dll",
+        "Mono.Cecil.dll",
+        "build/dotnet/Fody.targets",
+        "build/portable-net+sl+win+wpa+wp/Fody.targets"
       ]
     },
     "Microsoft.CodeAnalysis/1.1.1": {
@@ -879,6 +897,19 @@
         "lib/portable-net45+win8+wp8+wpa81/System.Composition.Runtime.dll",
         "lib/portable-net45+win8+wp8+wpa81/System.Composition.TypedParts.XML",
         "lib/portable-net45+win8+wp8+wpa81/System.Composition.TypedParts.dll"
+      ]
+    },
+    "ModuleInit.Fody/1.5.9": {
+      "sha512": "99d/C854RL79XNLgnUw3RDqtP1sZhk1dYgxzT+t5BmdzTbJNwaMvuJmJdH61xozld1f2wfYXU+xb385fvTsCkA==",
+      "type": "package",
+      "files": [
+        "Content/ModuleInitializer.cs",
+        "ModuleInit.Fody.1.5.9.nupkg.sha512",
+        "ModuleInit.Fody.dll",
+        "ModuleInit.Fody.nuspec",
+        "ModuleInit.Fody.pdb",
+        "Tools/install.ps1",
+        "Tools/uninstall.ps1"
       ]
     },
     "Moq/4.5.13": {
@@ -1742,8 +1773,8 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "InjectModuleInitializer >= 1.5.0",
       "Microsoft.CodeAnalysis >= 1.1.1",
+      "ModuleInit.Fody >= 1.5.9",
       "Moq >= 4.5.13",
       "xunit >= 2.1.0"
     ],
