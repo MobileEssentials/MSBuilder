@@ -53,7 +53,7 @@
 				{
 					try 
 					{
-						Log.LogMessage("\t{0}={1}", name, item.GetMetadata(name));
+						Log.LogMessage(MessageImportance.High, "\t{0}={1}", name, item.GetMetadata(name));
 					} 
 					catch 
 					{
