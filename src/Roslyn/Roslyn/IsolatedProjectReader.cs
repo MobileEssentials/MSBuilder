@@ -10,22 +10,19 @@ using Microsoft.CodeAnalysis.MSBuild;
 
 namespace MSBuilder
 {
-    /// <summary>
-    /// Provides a MBRO that can be used to read an MSBuild project 
-    /// in an isolated AppDomain.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
+	/// <summary>
+	/// Provides a MBRO that can be used to read an MSBuild project 
+	/// in an isolated AppDomain.
+	/// </summary>
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public class IsolatedProjectReader : MarshalByRefObject
 	{
 		/// <summary>
 		/// 
 		/// </summary>
-		public IsolatedProjectReader(string[] assemblies, string filePath, Dictionary<string, string> properties, string xmlFile)
+		public IsolatedProjectReader(string filePath, Dictionary<string, string> properties, string xmlFile)
 		{
-			using (new AssemblyResolver(AppDomain.CurrentDomain, assemblies))
-			{
-				File.WriteAllText(xmlFile, ReadXml(filePath, properties));
-			}
+			File.WriteAllText(xmlFile, ReadXml(filePath, properties));
 		}
 
 		/// <summary>
@@ -69,34 +66,6 @@ namespace MSBuilder
 				new XElement("Documents", project.Documents.Select(x => new XElement("FilePath", x.FilePath))),
 				new XElement("AdditionalDocuments", project.AdditionalDocuments.Select(x => new XElement("FilePath", x.FilePath)))
 			).ToString();
-		}
-
-		class AssemblyResolver : MarshalByRefObject, IDisposable
-		{
-			AppDomain appDomain;
-            Dictionary<string, string> assemblies;
-
-			public AssemblyResolver(AppDomain appDomain, string[] assemblies)
-			{
-				this.appDomain = appDomain;
-                this.assemblies = assemblies.ToDictionary(x => Path.GetFileNameWithoutExtension(x));
-				appDomain.AssemblyResolve += OnAssemblyResolve;
-			}
-
-			Assembly OnAssemblyResolve(object sender, ResolveEventArgs args)
-			{
-				var assemblyFile = args.Name.Substring(0, args.Name.IndexOf(',')).Trim();
-				if (assemblies.ContainsKey(assemblyFile))
-					return Assembly.LoadFrom(assemblies[assemblyFile]);
-
-				return null;
-			}
-
-			public void Dispose()
-			{
-				appDomain.AssemblyResolve -= OnAssemblyResolve;
-				appDomain = null;
-			}
 		}
 	}
 }

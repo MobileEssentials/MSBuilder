@@ -50,7 +50,6 @@ namespace MSBuilder
 			factory.Setup (x => x.Create (It.IsAny<IBuildEngine> ()))
 				.Returns (() => new ProjectLoader (
                     appDomain.Value,
-                    typeof(MSBuildWorkspace).Assembly.GetAllReferences(),
                     properties));
 			var workspace = new SnapshotWorkspace (factory.Object);
 
@@ -79,7 +78,6 @@ namespace MSBuilder
 			factory.Setup (x => x.Create (It.IsAny<IBuildEngine> ()))
 				.Returns (() => new ProjectLoader (
                     appDomain.Value,
-                    typeof(MSBuildWorkspace).Assembly.GetAllReferences(),
                     new Dictionary<string, string> ()));
 			var workspace = new SnapshotWorkspace (factory.Object);
 
@@ -108,7 +106,6 @@ namespace MSBuilder
 			factory.Setup (x => x.Create (It.IsAny<IBuildEngine> ()))
 				.Returns (() => new ProjectLoader (
                     appDomain.Value,
-                    typeof(MSBuildWorkspace).Assembly.GetAllReferences(),
                     properties));
 			var workspace = new SnapshotWorkspace (factory.Object);
 

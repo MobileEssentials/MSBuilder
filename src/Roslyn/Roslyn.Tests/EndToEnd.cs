@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.Build.Evaluation;
@@ -14,6 +15,7 @@ namespace MSBuilder
 {
 	public class EndToEnd
 	{
+		static readonly string baseDir = Directory.GetCurrentDirectory();
 		ITestOutputHelper output;
 
 		public EndToEnd(ITestOutputHelper output)
@@ -24,13 +26,10 @@ namespace MSBuilder
 		[Fact]
 		public void when_building_then_succeeds()
 		{
-			var project = new Project(@"Content\CodeGen\CodeGen.csproj");
+			var project = new Project(Path.Combine(baseDir, @"Content\CodeGen\CodeGen.csproj"));
 			var built = project.Build("CodeGen", new[] { new TestOutputLogger(output) });
 
 			Assert.True(built);
-
-			// Ensure we tear down to avoid locking assemblies.
-			//Process.GetCurrentProcess().Kill();
 		}
 	}
 

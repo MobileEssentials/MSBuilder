@@ -1,5 +1,6 @@
 ﻿{
   "dependencies": {
+    "System.IO.FileSystem": "4.0.1",
     "Microsoft.CodeAnalysis": "1.1.1"
   },
   "frameworks": {

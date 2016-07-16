@@ -45,7 +45,6 @@ namespace MSBuilder
 
 			var loader = new ProjectLoader(
                 appDomain.Value,
-                typeof(MSBuildWorkspace).Assembly.GetAllReferences(),
                 props);
 
 			var xml = loader.LoadXml(Path.Combine(baseDir, @"Content\CsLibrary\CsLibrary.csproj"));
