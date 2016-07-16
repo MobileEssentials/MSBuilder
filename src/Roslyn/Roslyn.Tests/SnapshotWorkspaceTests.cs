@@ -14,8 +14,6 @@ namespace MSBuilder
 {
     public class SnapshotWorkspaceTests : IDisposable
 	{
-        static readonly string baseDir = Directory.GetCurrentDirectory();
-
         Lazy<AppDomain> appDomain = new Lazy<AppDomain>(() => AppDomain.CreateDomain(Guid.NewGuid().ToString(), null,
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
@@ -38,10 +36,10 @@ namespace MSBuilder
 		{
 			var properties = new Dictionary<string, string> {
 				{ "CurrentSolutionConfigurationContents", @"<SolutionConfiguration>
-<ProjectConfiguration Project=""{f1db354d-8db4-476c-9308-08cdc0e411f7}"" AbsolutePath=""" + baseDir + @"\Content\CsLibrary\CsLibrary.csproj"">Debug|AnyCPU</ProjectConfiguration>
-<ProjectConfiguration Project=""{a8ea2d18-4125-4cfd-a9de-6112f38df636}"" AbsolutePath=""" + baseDir + @"\Content\VbLibrary\VbLibrary.vbproj"">Debug|AnyCPU</ProjectConfiguration>
-<ProjectConfiguration Project=""{3ede89ec-a461-4e2c-be95-05f63b96926c}"" AbsolutePath=""" + baseDir + @"\Content\PclLibrary\PclLibrary.csproj"">Release|AnyCPU</ProjectConfiguration>
-<ProjectConfiguration Project=""{b7009850-92bd-4926-a2a6-1208f1dcd645}"" AbsolutePath=""" + baseDir + @"\Content\FsLibrary\FsLibrary.fsproj"">Debug|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{f1db354d-8db4-476c-9308-08cdc0e411f7}"" AbsolutePath=""" + ModuleInitializer.BaseDirectory + @"\Content\CsLibrary\CsLibrary.csproj"">Debug|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{a8ea2d18-4125-4cfd-a9de-6112f38df636}"" AbsolutePath=""" + ModuleInitializer.BaseDirectory + @"\Content\VbLibrary\VbLibrary.vbproj"">Debug|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{3ede89ec-a461-4e2c-be95-05f63b96926c}"" AbsolutePath=""" + ModuleInitializer.BaseDirectory + @"\Content\PclLibrary\PclLibrary.csproj"">Release|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{b7009850-92bd-4926-a2a6-1208f1dcd645}"" AbsolutePath=""" + ModuleInitializer.BaseDirectory + @"\Content\FsLibrary\FsLibrary.fsproj"">Debug|AnyCPU</ProjectConfiguration>
 </SolutionConfiguration>" 
 				}, 
 			};
@@ -53,7 +51,7 @@ namespace MSBuilder
                     properties));
 			var workspace = new SnapshotWorkspace (factory.Object);
 
-			var project = workspace.GetOrAddProject (Mock.Of<IBuildEngine> (), Path.Combine(baseDir, @"Content\CsLibrary\CsLibrary.csproj"));
+			var project = workspace.GetOrAddProject (Mock.Of<IBuildEngine> (), Path.Combine(ModuleInitializer.BaseDirectory, @"Content\CsLibrary\CsLibrary.csproj"));
 
 			// Configuration for the main project is Debug in the selected solution configuration.
 			Assert.Equal ("Debug", new DirectoryInfo (Path.GetDirectoryName (project.OutputFilePath)).Name);
@@ -81,7 +79,7 @@ namespace MSBuilder
                     new Dictionary<string, string> ()));
 			var workspace = new SnapshotWorkspace (factory.Object);
 
-			var project = workspace.GetOrAddProject (Mock.Of<IBuildEngine> (), Path.Combine(baseDir, @"Content\CsLibrary\CsLibrary.csproj"));
+			var project = workspace.GetOrAddProject (Mock.Of<IBuildEngine> (), Path.Combine(ModuleInitializer.BaseDirectory, @"Content\CsLibrary\CsLibrary.csproj"));
 			var reference = project.Solution.GetProject (project.ProjectReferences.First ().ProjectId);
 
 			// Because there is no solution configuration, PclLibrary defaults to Debug configuration, and the 
@@ -94,10 +92,10 @@ namespace MSBuilder
 		{
 			var properties = new Dictionary<string, string> {
 				{ "CurrentSolutionConfigurationContents", @"<SolutionConfiguration>
-<ProjectConfiguration Project=""{f1db354d-8db4-476c-9308-08cdc0e411f7}"" AbsolutePath=""" + baseDir + @"\Content\CsLibrary\CsLibrary.csproj"">Debug|AnyCPU</ProjectConfiguration>
-<ProjectConfiguration Project=""{a8ea2d18-4125-4cfd-a9de-6112f38df636}"" AbsolutePath=""" + baseDir + @"\Content\VbLibrary\VbLibrary.vbproj"">Debug|AnyCPU</ProjectConfiguration>
-<ProjectConfiguration Project=""{3ede89ec-a461-4e2c-be95-05f63b96926c}"" AbsolutePath=""" + baseDir + @"\Content\PclLibrary\PclLibrary.csproj"">Release|AnyCPU</ProjectConfiguration>
-<ProjectConfiguration Project=""{b7009850-92bd-4926-a2a6-1208f1dcd645}"" AbsolutePath=""" + baseDir + @"\Content\FsLibrary\FsLibrary.fsproj"">Debug|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{f1db354d-8db4-476c-9308-08cdc0e411f7}"" AbsolutePath=""" + ModuleInitializer.BaseDirectory + @"\Content\CsLibrary\CsLibrary.csproj"">Debug|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{a8ea2d18-4125-4cfd-a9de-6112f38df636}"" AbsolutePath=""" + ModuleInitializer.BaseDirectory + @"\Content\VbLibrary\VbLibrary.vbproj"">Debug|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{3ede89ec-a461-4e2c-be95-05f63b96926c}"" AbsolutePath=""" + ModuleInitializer.BaseDirectory + @"\Content\PclLibrary\PclLibrary.csproj"">Release|AnyCPU</ProjectConfiguration>
+<ProjectConfiguration Project=""{b7009850-92bd-4926-a2a6-1208f1dcd645}"" AbsolutePath=""" + ModuleInitializer.BaseDirectory + @"\Content\FsLibrary\FsLibrary.fsproj"">Debug|AnyCPU</ProjectConfiguration>
 </SolutionConfiguration>" 
 				}, 
 			};
@@ -109,7 +107,7 @@ namespace MSBuilder
                     properties));
 			var workspace = new SnapshotWorkspace (factory.Object);
 
-			var project = workspace.GetOrAddProject (Mock.Of<IBuildEngine> (), Path.Combine(baseDir, @"Content\CsLibrary\CsLibrary.csproj"));
+			var project = workspace.GetOrAddProject (Mock.Of<IBuildEngine> (), Path.Combine(ModuleInitializer.BaseDirectory, @"Content\CsLibrary\CsLibrary.csproj"));
 			var reference = project.Solution.GetProject (project.ProjectReferences.First ().ProjectId);
 
 			Assert.True (project.Documents.Any (doc => Path.GetFileName (doc.FilePath) == "Class1.cs"));

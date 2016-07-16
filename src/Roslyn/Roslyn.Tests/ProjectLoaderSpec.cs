@@ -15,7 +15,6 @@ namespace MSBuilder
 {
 	public class ProjectLoaderSpec : IDisposable
 	{
-        static readonly string baseDir = Directory.GetCurrentDirectory();
         Lazy<AppDomain> appDomain = new Lazy<AppDomain>(() => AppDomain.CreateDomain(Guid.NewGuid().ToString(), null,
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName),
@@ -36,8 +35,8 @@ namespace MSBuilder
 				{ "CurrentSolutionConfigurationContents",
 					$@"<CurrentSolutionConfigurationContents xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
 						<SolutionConfiguration xmlns=''>
-							<ProjectConfiguration Project='{{F1DB354D-8DB4-476C-9308-08CDC0E411F7}}' AbsolutePath='{baseDir}\Content\CsLibrary\CsLibrary.csproj' BuildProjectInSolution='True'>Debug|AnyCPU</ProjectConfiguration>
-							<ProjectConfiguration Project='{{3EDE89EC-A461-4E2C-BE95-05F63B96926C}}' AbsolutePath='{baseDir}\Content\PclLibrary\PclLibrary.csproj' BuildProjectInSolution='True'>Debug|AnyCPU</ProjectConfiguration>
+							<ProjectConfiguration Project='{{F1DB354D-8DB4-476C-9308-08CDC0E411F7}}' AbsolutePath='{ModuleInitializer.BaseDirectory}\Content\CsLibrary\CsLibrary.csproj' BuildProjectInSolution='True'>Debug|AnyCPU</ProjectConfiguration>
+							<ProjectConfiguration Project='{{3EDE89EC-A461-4E2C-BE95-05F63B96926C}}' AbsolutePath='{ModuleInitializer.BaseDirectory}\Content\PclLibrary\PclLibrary.csproj' BuildProjectInSolution='True'>Debug|AnyCPU</ProjectConfiguration>
 						</SolutionConfiguration>
 					</CurrentSolutionConfigurationContents>"
 				}
@@ -47,7 +46,7 @@ namespace MSBuilder
                 appDomain.Value,
                 props);
 
-			var xml = loader.LoadXml(Path.Combine(baseDir, @"Content\CsLibrary\CsLibrary.csproj"));
+			var xml = loader.LoadXml(Path.Combine(ModuleInitializer.BaseDirectory, @"Content\CsLibrary\CsLibrary.csproj"));
 			var msbuildProject = XElement.Parse(xml).ToDynamic();
 
 			var info = ProjectInfo.Create(

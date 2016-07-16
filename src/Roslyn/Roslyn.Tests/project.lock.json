@@ -11,6 +11,7 @@
           "lib/net45/Castle.Core.dll": {}
         }
       },
+      "InjectModuleInitializer/1.5.0": {},
       "Microsoft.CodeAnalysis/1.1.1": {
         "dependencies": {
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "[1.1.1]",
@@ -369,6 +370,7 @@
           "lib/net45/Castle.Core.dll": {}
         }
       },
+      "InjectModuleInitializer/1.5.0": {},
       "Microsoft.CodeAnalysis/1.1.1": {
         "dependencies": {
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "[1.1.1]",
@@ -741,6 +743,19 @@
         "lib/sl5/Castle.Core.dll",
         "lib/sl5/Castle.Core.xml",
         "readme.txt"
+      ]
+    },
+    "InjectModuleInitializer/1.5.0": {
+      "sha512": "94lvm9SdsP+4VzuNDMXlcQCGIa2vAc6Sn55aeph9MqS4Svn26GWbYsjxQ03hN5V/kCn5kdgrBWaaShPhMa6kBQ==",
+      "type": "package",
+      "files": [
+        "InjectModuleInitializer.1.5.0.nupkg.sha512",
+        "InjectModuleInitializer.nuspec",
+        "content/ModuleInitializer.cs.pp",
+        "readme.txt",
+        "tools/InjectModuleInitializer.exe",
+        "tools/install.ps1",
+        "tools/uninstall.ps1"
       ]
     },
     "Microsoft.CodeAnalysis/1.1.1": {
@@ -1727,6 +1742,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
+      "InjectModuleInitializer >= 1.5.0",
       "Microsoft.CodeAnalysis >= 1.1.1",
       "Moq >= 4.5.13",
       "xunit >= 2.1.0"
