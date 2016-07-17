@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
+using Microsoft.Build.Execution;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 
@@ -52,6 +53,19 @@ namespace MSBuilder
 
 			var workspace = MSBuildWorkspace.Create(properties);
 			var project = workspace.OpenProjectAsync(filePath).Result;
+			var references = project.MetadataReferences.OfType<PortableExecutableReference>().ToList();
+
+			if (references.Count == 0) {
+				var msbproj = new Microsoft.Build.Evaluation.Project(filePath);
+				var result = BuildManager.DefaultBuildManager.Build(new BuildParameters(),
+					new BuildRequestData(filePath, new Dictionary<string, string>(), null, new[] { "ResolveAssemblyReferences" }, null));
+
+				if (result.HasResultsForTarget("ResolveAssemblyReferences"))
+					references = result.ResultsByTarget["ResolveAssemblyReferences"].Items
+						.Select(i => MetadataReference.CreateFromFile(i.GetMetadata("FullPath")))
+						.ToList();
+			}
+
 			return new XElement("Project",
 				new XElement("Id", project.Id.Id),
 				new XElement("Name", project.Name),
@@ -62,7 +76,7 @@ namespace MSBuilder
 				new XElement("ProjectReferences", project.ProjectReferences
 					.Where(x => workspace.CurrentSolution.Projects.Any(p => p.Id == x.ProjectId))
 					.Select(x => new XElement("FilePath", workspace.CurrentSolution.Projects.First(p => p.Id == x.ProjectId).FilePath))),
-				new XElement("MetadataReferences", project.MetadataReferences.OfType<PortableExecutableReference>().Select(x => new XElement("FilePath", x.FilePath))),
+				new XElement("MetadataReferences", references.Select(x => new XElement("FilePath", x.FilePath))),
 				new XElement("Documents", project.Documents.Select(x => new XElement("FilePath", x.FilePath))),
 				new XElement("AdditionalDocuments", project.AdditionalDocuments.Select(x => new XElement("FilePath", x.FilePath)))
 			).ToString();
