@@ -72,6 +72,9 @@ namespace MSBuilder
 				new XElement("AssemblyName", project.AssemblyName),
 				new XElement("Language", project.Language),
 				new XElement("FilePath", project.FilePath),
+				new XElement("CompilationOptions",
+					new XAttribute("OutputKind", project.CompilationOptions.OutputKind.ToString()),
+					new XAttribute("Platform", project.CompilationOptions.Platform.ToString())),
 				new XElement("OutputFilePath", project.OutputFilePath),
 				new XElement("ProjectReferences", project.ProjectReferences
 					.Where(x => workspace.CurrentSolution.Projects.Any(p => p.Id == x.ProjectId))

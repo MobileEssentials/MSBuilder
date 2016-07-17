@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.Text;
 
@@ -82,7 +83,10 @@ namespace MSBuilder
 						(string)msbuildProject.Language,
 						(string)msbuildProject.FilePath,
 						outputFilePath: (string)msbuildProject.OutputFilePath,
-						metadataReferences: ((XElement)msbuildProject.MetadataReferences).Elements("FilePath").Select(e => MetadataReference.CreateFromFile(e.Value))));
+						metadataReferences: ((XElement)msbuildProject.MetadataReferences).Elements("FilePath").Select(e => MetadataReference.CreateFromFile(e.Value)),
+						compilationOptions: new CSharpCompilationOptions(
+							(OutputKind)(Enum.Parse(typeof(OutputKind), (string)msbuildProject.CompilationOptions["OutputKind"])),
+							platform: (Platform)(Enum.Parse(typeof(Platform), (string)msbuildProject.CompilationOptions["Platform"])))));
 				
 				// Add the documents to the workspace
 				foreach (var document in ((XElement)msbuildProject.Documents).Elements("FilePath").Select(e => e.Value))
