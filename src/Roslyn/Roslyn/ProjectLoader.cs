@@ -42,7 +42,7 @@ namespace MSBuilder
 			}
 		}
 
-        public void Dispose()
+		public void Dispose()
 		{
 		}
 	}

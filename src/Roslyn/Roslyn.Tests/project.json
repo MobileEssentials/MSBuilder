@@ -6,7 +6,7 @@
     "xunit": "2.1.0"
   },
   "frameworks": {
-    "net46": {}
+    "net452": {}
   },
   "runtimes": {
     "win": {}

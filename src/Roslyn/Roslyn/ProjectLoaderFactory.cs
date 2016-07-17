@@ -20,6 +20,11 @@ namespace MSBuilder
 			// workspace.
 			var globalProperties = GetGlobalProperties(buildEngine);
 
+			return Create(globalProperties);
+		}
+
+		internal IProjectLoader Create(Dictionary<string, string> globalProperties)
+		{
 			return new ProjectLoader(appDomain.Value, globalProperties);
 		}
 

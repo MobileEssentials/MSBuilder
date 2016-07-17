@@ -2,7 +2,7 @@
 <package>
 	<metadata>
 		<id>MSBuilder.Roslyn</id>
-		<version>0.2.0</version>
+		<version>0.2.1</version>
 		<title>MSBuilder: Roslyn</title>
 		<authors>Mobile Essentials</authors>
 		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -26,8 +26,8 @@ use the two new provided extension methods for Task: GetWorkspace and GetOrAddPr
 	</metadata>
 	<files>
 		<file src="Readme.txt" />
-		<file src="bin\MSBuilder.Roslyn.dll" target="lib\net46" />
-		<file src="bin\MSBuilder.Roslyn.pdb" target="lib\net46" />
-		<file src="bin\MSBuilder.Roslyn.xml" target="lib\net46" />
+		<file src="bin\MSBuilder.Roslyn.dll" target="lib\net45" />
+		<file src="bin\MSBuilder.Roslyn.pdb" target="lib\net45" />
+		<file src="bin\MSBuilder.Roslyn.xml" target="lib\net45" />
 	</files>
 </package>
