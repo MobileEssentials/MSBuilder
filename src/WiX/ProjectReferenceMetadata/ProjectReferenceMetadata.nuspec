@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>MSBuilder.WiX.ProjectReferenceMetadata</id>
+    <version>0.1.0</version>
+    <title>MSBuilder: WiX Project References Metadata</title>
+    <authors>Mobile Essentials</authors>
+    <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>Provides items with metadata for project references, exposing the same values available as defined constants by WiX.</summary>
+    <description>
+      Augments the current project with an item named after each project reference, containing the metadata
+      that would be added as project define constants for WiX. i.e. for a project reference PclProfiles,
+      WiX will add $(var.PclProfiles.TargetDir), which this target exposes to MSBuild as %(PclProfiles.TargetDir).
+    </description>
+    <copyright>Copyright 2016</copyright>
+    <tags>msbuild wix</tags>
+  </metadata>
+</package>

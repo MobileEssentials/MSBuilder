@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	The MIT License (MIT)
+
+	Copyright (c) 2015 Mobile Essentials
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <AddCompilerDefineConstantsDependsOn>
+      $(AddCompilerDefineConstantsDependsOn);
+      AddProjectReferenceMetadata
+    </AddCompilerDefineConstantsDependsOn>
+  </PropertyGroup>
+
+  <!-- Augments the current project with an item named after each project reference, containing the metadata 
+       that would be added as project define constants for WiX. i.e. for a project reference PclProfiles, 
+       WiX will add $(var.PclProfiles.TargetDir), which this target exposes to MSBuild as %(PclProfiles.TargetDir).
+       The conversion from a property to an item (group of 1) is necessary because properties cannot contain 
+       dots, and the item notation for accessing it looks much better than (say) underscores on properties.
+  -->
+  <Target Name="AddProjectReferenceMetadata" Condition=" '@(_ResolvedProjectReferencePaths)' != '' ">
+    <!-- Fist invoke the built-in task, but retrieve the outputs as items
+           rather than a single property, which is what the built-in targets do -->
+    <CreateProjectReferenceDefineConstants
+		  ProjectReferencePaths="@(_ResolvedProjectReferencePaths)"
+		  ProjectConfigurations="$(VSProjectConfigurations)">
+      <Output TaskParameter="DefineConstants" ItemName="_ProjectReferenceConstants" />
+    </CreateProjectReferenceDefineConstants>
+
+    <ItemGroup>
+      <!-- Via a cascading item metadata process, we determine the index of the first '.' in the project constants 
+           retrieved by the task, since we want to use that as the grouping 'ReferenceName' item name instead. -->
+      <_ProjectReferenceConstants>
+        <!-- Note how we create a new string with static method syntax, to be able to use property function syntax with item metadata -->
+        <ReferenceName>$([System.String]::new('%(Identity)').Substring(0, $([System.String]::new('%(Identity)').IndexOf('.'))))</ReferenceName>
+        <ReferenceStart>$([System.String]::new('%(Identity)').IndexOf('.'))</ReferenceStart>
+      </_ProjectReferenceConstants>
+      <_ProjectReferenceConstants>
+        <!-- The we actually need to add 1 to the index of the dot for the substring. 
+             For better readability, we do it in two steps, saving the value above, and then calling the built-in Add function here, which 
+             updates the metadata value. -->
+        <ReferenceStart>$([MSBuild]::Add(%(ReferenceStart), 1))</ReferenceStart>
+      </_ProjectReferenceConstants>
+
+      <!-- Here we change the item name on purpose, to drop all the items that have the
+           reference name prefix intentionally. Note that since we're creating a new item
+           group, we need to reference the original ones by their full item.metadata name. -->
+      <ProjectReferenceMetadata Include="@(_ProjectReferenceConstants -> '$([System.String]::new('%(_ProjectReferenceConstants.Identity)').Substring(%(_ProjectReferenceConstants.ReferenceStart)))')">
+        <ReferenceName>%(_ProjectReferenceConstants.ReferenceName)</ReferenceName>
+      </ProjectReferenceMetadata>
+    </ItemGroup>
+
+    <!-- Finally, create a new item group with the name of the reference, which leverages task batching and automatically 
+         groups the ProjectReferenceMetadata group by their reference name -->
+    <CreateItem Include="%(ProjectReferenceMetadata.ReferenceName)" AdditionalMetadata="@(ProjectReferenceMetadata)">
+      <Output TaskParameter="Include" ItemName="%(ProjectReferenceMetadata.ReferenceName)"/>
+    </CreateItem>
+  </Target>
+
+</Project>
