@@ -85,21 +85,23 @@ namespace MSBuilder
 						(string)msbuildProject["Language"],
 						msbuildProjectFile,
 						outputFilePath: (string)msbuildProject["OutputFilePath"],
-						metadataReferences: ((XElement)msbuildProject.MetadataReferences).Elements("FilePath").Select(e => MetadataReference.CreateFromFile(e.Value)),
+						metadataReferences: ((XElement)msbuildProject.MetadataReferences)
+							.Elements("MetadataReference")
+							.Select(e => MetadataReference.CreateFromFile(e.Attribute("FilePath").Value)),
 						compilationOptions: new CSharpCompilationOptions(
 							(OutputKind)(Enum.Parse(typeof(OutputKind), (string)msbuildProject.CompilationOptions["OutputKind"])),
 							platform: (Platform)(Enum.Parse(typeof(Platform), (string)msbuildProject.CompilationOptions["Platform"])))));
 				
 				// Add the documents to the workspace
-				foreach (var document in ((XElement)msbuildProject.Documents).Elements("FilePath").Select(e => e.Value))
+				foreach (XElement document in ((XElement)msbuildProject.Documents).Elements("Document"))
 					AddDocument (msbuildProjectFile, document, false);
-				foreach (var document in ((XElement)msbuildProject.AdditionalDocuments).Elements("FilePath").Select(e => e.Value))
+				foreach (XElement document in ((XElement)msbuildProject.AdditionalDocuments).Elements("Document"))
 					AddDocument (msbuildProjectFile, document, true);
 
 				// Fix references
 				// Iterate the references of the msbuild project
 				var referencesToAdd = new List<ProjectReference> ();
-				foreach (var referencePath in ((XElement)msbuildProject.ProjectReferences).Elements("FilePath").Select(e => e.Value)) {
+				foreach (var referencePath in ((XElement)msbuildProject.ProjectReferences).Elements("ProjectReference").Select(e => e.Attribute("FilePath").Value)) {
 					var referencedProject = GetOrAddProject(buildEngine, referencePath);
 					referencesToAdd.Add (new ProjectReference (referencedProject.Id));
 				}
@@ -114,8 +116,9 @@ namespace MSBuilder
 			}
 		}
 
-		void AddDocument (string projectPath, string documentPath, bool isAdditionalDocument)
+		void AddDocument (string projectPath, XElement document, bool isAdditionalDocument)
 		{
+			var documentPath = document.Attribute("FilePath").Value;
 			var project = FindProjectByPath (projectPath);
 			SourceText text;
 			using (var reader = new StreamReader (documentPath)) {
@@ -126,6 +129,7 @@ namespace MSBuilder
 				DocumentId.CreateNewId (project.Id),
 				Path.GetFileName (documentPath),
 				loader: TextLoader.From (TextAndVersion.Create (text, VersionStamp.Create (), documentPath)),
+				folders: document.Attribute("Folders").Value.Split(Path.DirectorySeparatorChar),
 				filePath: documentPath);
 
 			if (isAdditionalDocument)

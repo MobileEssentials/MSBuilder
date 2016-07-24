@@ -50,8 +50,7 @@ namespace MSBuilder
 				(string)msbuildProject["Language"],
 				(string)msbuildProject["FilePath"],
 				outputFilePath: (string)msbuildProject.OutputFilePath,
-				projectReferences: ((XElement)msbuildProject.ProjectReferences).Elements("Project").Select(e => new ProjectReference(ProjectId.CreateFromSerialized(new Guid(e.Attribute("Id").Value)))),
-				metadataReferences: ((XElement)msbuildProject.MetadataReferences).Elements("FilePath").Select(e => MetadataReference.CreateFromFile(e.Value)));
+				metadataReferences: ((XElement)msbuildProject.MetadataReferences).Elements("MetadataReference").Select(e => MetadataReference.CreateFromFile(e.Attribute("FilePath").Value)));
 
 			Assert.NotEqual(0, info.MetadataReferences.Count);
 

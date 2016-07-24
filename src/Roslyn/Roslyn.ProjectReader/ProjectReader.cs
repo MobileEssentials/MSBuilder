@@ -72,10 +72,18 @@ namespace MSBuilder
 					new XAttribute("Platform", project.CompilationOptions.Platform.ToString())),
 				new XElement("ProjectReferences", project.ProjectReferences
 					.Where(x => workspace.CurrentSolution.Projects.Any(p => p.Id == x.ProjectId))
-					.Select(x => new XElement("FilePath", workspace.CurrentSolution.Projects.First(p => p.Id == x.ProjectId).FilePath))),
-				new XElement("MetadataReferences", references.Select(x => new XElement("FilePath", x.FilePath))),
-				new XElement("Documents", project.Documents.Select(x => new XElement("FilePath", x.FilePath))),
-				new XElement("AdditionalDocuments", project.AdditionalDocuments.Select(x => new XElement("FilePath", x.FilePath)))
+					.Select(x => new XElement("ProjectReference",
+						new XAttribute("FilePath", workspace.CurrentSolution.Projects.First(p => p.Id == x.ProjectId).FilePath)))),
+				new XElement("MetadataReferences", references.Select(x =>
+					new XElement("MetadataReference", new XAttribute("FilePath", x.FilePath)))),
+				new XElement("Documents", project.Documents.Select(x =>
+					new XElement("Document",
+						new XAttribute("FilePath", x.FilePath),
+						new XAttribute("Folders", string.Join(Path.DirectorySeparatorChar.ToString(), x.Folders))))),
+				new XElement("AdditionalDocuments", project.AdditionalDocuments.Select(x =>
+					new XElement("Document",
+						new XAttribute("FilePath", x.FilePath),
+						new XAttribute("Folders", string.Join(Path.DirectorySeparatorChar.ToString(), x.Folders)))))
 			);
 		}
 	}
