@@ -40,16 +40,15 @@ namespace MSBuilder
 
 			var loader = factory.Create(props);
 			var xml = loader.LoadXml(Path.Combine(ModuleInitializer.BaseDirectory, @"Content\CsLibrary\CsLibrary.csproj"));
-
-			var msbuildProject = XElement.Parse(xml).ToDynamic();
+			var msbuildProject = xml.ToDynamic();
 
 			var info = ProjectInfo.Create(
-				ProjectId.CreateFromSerialized(new Guid((string)msbuildProject.Id)),
+				ProjectId.CreateFromSerialized(new Guid((string)msbuildProject["Id"])),
 				VersionStamp.Default,
-				(string)msbuildProject.Name,
-				(string)msbuildProject.AssemblyName,
-				(string)msbuildProject.Language,
-				(string)msbuildProject.FilePath,
+				(string)msbuildProject["Name"],
+				(string)msbuildProject["AssemblyName"],
+				(string)msbuildProject["Language"],
+				(string)msbuildProject["FilePath"],
 				outputFilePath: (string)msbuildProject.OutputFilePath,
 				projectReferences: ((XElement)msbuildProject.ProjectReferences).Elements("Project").Select(e => new ProjectReference(ProjectId.CreateFromSerialized(new Guid(e.Attribute("Id").Value)))),
 				metadataReferences: ((XElement)msbuildProject.MetadataReferences).Elements("FilePath").Select(e => MetadataReference.CreateFromFile(e.Value)));

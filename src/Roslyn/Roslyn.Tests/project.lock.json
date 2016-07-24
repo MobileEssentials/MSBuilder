@@ -136,6 +136,14 @@
           "lib/net45/_._": {}
         }
       },
+      "System.Collections.Concurrent/4.0.0": {
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
       "System.Collections.Immutable/1.1.37": {
         "dependencies": {
           "System.Collections": "4.0.0",
@@ -155,6 +163,22 @@
         }
       },
       "System.Diagnostics.Debug/4.0.0": {
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
+      "System.Diagnostics.Tracing/4.0.0": {
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
+      "System.Dynamic.Runtime/4.0.0": {
         "compile": {
           "ref/net45/_._": {}
         },
@@ -288,6 +312,35 @@
         },
         "runtime": {
           "lib/net45/_._": {}
+        }
+      },
+      "System.Threading.Tasks/4.0.0": {
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
+      "System.Threading.Tasks.DataFlow/4.5.25": {
+        "dependencies": {
+          "System.Collections": "4.0.0",
+          "System.Collections.Concurrent": "4.0.0",
+          "System.Diagnostics.Debug": "4.0.0",
+          "System.Diagnostics.Tracing": "4.0.0",
+          "System.Dynamic.Runtime": "4.0.0",
+          "System.Linq": "4.0.0",
+          "System.Resources.ResourceManager": "4.0.0",
+          "System.Runtime": "4.0.0",
+          "System.Runtime.Extensions": "4.0.0",
+          "System.Threading": "4.0.0",
+          "System.Threading.Tasks": "4.0.0"
+        },
+        "compile": {
+          "lib/dotnet/System.Threading.Tasks.Dataflow.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet/System.Threading.Tasks.Dataflow.dll": {}
         }
       },
       "xunit/2.1.0": {
@@ -475,6 +528,14 @@
           "lib/net45/_._": {}
         }
       },
+      "System.Collections.Concurrent/4.0.0": {
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
       "System.Collections.Immutable/1.1.37": {
         "dependencies": {
           "System.Collections": "4.0.0",
@@ -494,6 +555,22 @@
         }
       },
       "System.Diagnostics.Debug/4.0.0": {
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
+      "System.Diagnostics.Tracing/4.0.0": {
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
+      "System.Dynamic.Runtime/4.0.0": {
         "compile": {
           "ref/net45/_._": {}
         },
@@ -627,6 +704,35 @@
         },
         "runtime": {
           "lib/net45/_._": {}
+        }
+      },
+      "System.Threading.Tasks/4.0.0": {
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
+      "System.Threading.Tasks.DataFlow/4.5.25": {
+        "dependencies": {
+          "System.Collections": "4.0.0",
+          "System.Collections.Concurrent": "4.0.0",
+          "System.Diagnostics.Debug": "4.0.0",
+          "System.Diagnostics.Tracing": "4.0.0",
+          "System.Dynamic.Runtime": "4.0.0",
+          "System.Linq": "4.0.0",
+          "System.Resources.ResourceManager": "4.0.0",
+          "System.Runtime": "4.0.0",
+          "System.Runtime.Extensions": "4.0.0",
+          "System.Threading": "4.0.0",
+          "System.Threading.Tasks": "4.0.0"
+        },
+        "compile": {
+          "lib/dotnet/System.Threading.Tasks.Dataflow.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet/System.Threading.Tasks.Dataflow.dll": {}
         }
       },
       "xunit/2.1.0": {
@@ -919,6 +1025,51 @@
         "ref/xamarinmac20/_._"
       ]
     },
+    "System.Collections.Concurrent/4.0.0": {
+      "sha512": "1f5SWoX7UlFkvUt7A8JoG5lXgZDw4cRAcKG8Eaxa+3Sq6e/UgVWl2YWew1evJv+p+edNNlIIorDfREKcoEDHGw==",
+      "type": "package",
+      "files": [
+        "License.rtf",
+        "System.Collections.Concurrent.4.0.0.nupkg.sha512",
+        "System.Collections.Concurrent.nuspec",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net45/_._",
+        "lib/win8/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/dotnet/System.Collections.Concurrent.dll",
+        "ref/dotnet/System.Collections.Concurrent.xml",
+        "ref/dotnet/de/System.Collections.Concurrent.xml",
+        "ref/dotnet/es/System.Collections.Concurrent.xml",
+        "ref/dotnet/fr/System.Collections.Concurrent.xml",
+        "ref/dotnet/it/System.Collections.Concurrent.xml",
+        "ref/dotnet/ja/System.Collections.Concurrent.xml",
+        "ref/dotnet/ko/System.Collections.Concurrent.xml",
+        "ref/dotnet/ru/System.Collections.Concurrent.xml",
+        "ref/dotnet/zh-hans/System.Collections.Concurrent.xml",
+        "ref/dotnet/zh-hant/System.Collections.Concurrent.xml",
+        "ref/net45/_._",
+        "ref/netcore50/System.Collections.Concurrent.dll",
+        "ref/netcore50/System.Collections.Concurrent.xml",
+        "ref/netcore50/de/System.Collections.Concurrent.xml",
+        "ref/netcore50/es/System.Collections.Concurrent.xml",
+        "ref/netcore50/fr/System.Collections.Concurrent.xml",
+        "ref/netcore50/it/System.Collections.Concurrent.xml",
+        "ref/netcore50/ja/System.Collections.Concurrent.xml",
+        "ref/netcore50/ko/System.Collections.Concurrent.xml",
+        "ref/netcore50/ru/System.Collections.Concurrent.xml",
+        "ref/netcore50/zh-hans/System.Collections.Concurrent.xml",
+        "ref/netcore50/zh-hant/System.Collections.Concurrent.xml",
+        "ref/win8/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._"
+      ]
+    },
     "System.Collections.Immutable/1.1.37": {
       "sha512": "fTpqwZYBzoklTT+XjTRK8KxvmrGkYHzBiylCcKyQcxiOM8k+QvhNBxRvFHDWzy4OEP5f8/9n+xQ9mEgEXY+muA==",
       "type": "package",
@@ -971,6 +1122,98 @@
         "ref/netcore50/ru/System.Diagnostics.Debug.xml",
         "ref/netcore50/zh-hans/System.Diagnostics.Debug.xml",
         "ref/netcore50/zh-hant/System.Diagnostics.Debug.xml",
+        "ref/win8/_._",
+        "ref/wp80/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._"
+      ]
+    },
+    "System.Diagnostics.Tracing/4.0.0": {
+      "sha512": "tzqQJPgD4bKs0eE5Gx9HEsxiHSBGcL42PImkjhwXTQK6iQbLTTB9mi+G7mUyEjlH8LUcm7F5QHEs+O+LpruOrQ==",
+      "type": "package",
+      "files": [
+        "License.rtf",
+        "System.Diagnostics.Tracing.4.0.0.nupkg.sha512",
+        "System.Diagnostics.Tracing.nuspec",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net45/_._",
+        "lib/win8/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/dotnet/System.Diagnostics.Tracing.dll",
+        "ref/dotnet/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/de/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/es/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/fr/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/it/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/ja/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/ko/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/ru/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/zh-hans/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/zh-hant/System.Diagnostics.Tracing.xml",
+        "ref/net45/_._",
+        "ref/netcore50/System.Diagnostics.Tracing.dll",
+        "ref/netcore50/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/de/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/es/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/fr/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/it/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/ja/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/ko/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/ru/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/zh-hans/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/zh-hant/System.Diagnostics.Tracing.xml",
+        "ref/win8/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._"
+      ]
+    },
+    "System.Dynamic.Runtime/4.0.0": {
+      "sha512": "33os71rQUCLjM5pbhQqCopq9/YcqBHPBQ8WylrzNk3oJmfAR0SFwzZIKJRN2JcrkBYdzC/NtWrYVU8oroyZieA==",
+      "type": "package",
+      "files": [
+        "License.rtf",
+        "System.Dynamic.Runtime.4.0.0.nupkg.sha512",
+        "System.Dynamic.Runtime.nuspec",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net45/_._",
+        "lib/win8/_._",
+        "lib/wp80/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/dotnet/System.Dynamic.Runtime.dll",
+        "ref/dotnet/System.Dynamic.Runtime.xml",
+        "ref/dotnet/de/System.Dynamic.Runtime.xml",
+        "ref/dotnet/es/System.Dynamic.Runtime.xml",
+        "ref/dotnet/fr/System.Dynamic.Runtime.xml",
+        "ref/dotnet/it/System.Dynamic.Runtime.xml",
+        "ref/dotnet/ja/System.Dynamic.Runtime.xml",
+        "ref/dotnet/ko/System.Dynamic.Runtime.xml",
+        "ref/dotnet/ru/System.Dynamic.Runtime.xml",
+        "ref/dotnet/zh-hans/System.Dynamic.Runtime.xml",
+        "ref/dotnet/zh-hant/System.Dynamic.Runtime.xml",
+        "ref/net45/_._",
+        "ref/netcore50/System.Dynamic.Runtime.dll",
+        "ref/netcore50/System.Dynamic.Runtime.xml",
+        "ref/netcore50/de/System.Dynamic.Runtime.xml",
+        "ref/netcore50/es/System.Dynamic.Runtime.xml",
+        "ref/netcore50/fr/System.Dynamic.Runtime.xml",
+        "ref/netcore50/it/System.Dynamic.Runtime.xml",
+        "ref/netcore50/ja/System.Dynamic.Runtime.xml",
+        "ref/netcore50/ko/System.Dynamic.Runtime.xml",
+        "ref/netcore50/ru/System.Dynamic.Runtime.xml",
+        "ref/netcore50/zh-hans/System.Dynamic.Runtime.xml",
+        "ref/netcore50/zh-hant/System.Dynamic.Runtime.xml",
         "ref/win8/_._",
         "ref/wp80/_._",
         "ref/wpa81/_._",
@@ -1536,6 +1779,67 @@
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._"
+      ]
+    },
+    "System.Threading.Tasks/4.0.0": {
+      "sha512": "dA3y1B6Pc8mNt9obhEWWGGpvEakS51+nafXpmM/Z8IF847GErLXGTjdfA+AYEKszfFbH7SVLWUklXhYeeSQ1lw==",
+      "type": "package",
+      "files": [
+        "License.rtf",
+        "System.Threading.Tasks.4.0.0.nupkg.sha512",
+        "System.Threading.Tasks.nuspec",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net45/_._",
+        "lib/win8/_._",
+        "lib/wp80/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/dotnet/System.Threading.Tasks.dll",
+        "ref/dotnet/System.Threading.Tasks.xml",
+        "ref/dotnet/de/System.Threading.Tasks.xml",
+        "ref/dotnet/es/System.Threading.Tasks.xml",
+        "ref/dotnet/fr/System.Threading.Tasks.xml",
+        "ref/dotnet/it/System.Threading.Tasks.xml",
+        "ref/dotnet/ja/System.Threading.Tasks.xml",
+        "ref/dotnet/ko/System.Threading.Tasks.xml",
+        "ref/dotnet/ru/System.Threading.Tasks.xml",
+        "ref/dotnet/zh-hans/System.Threading.Tasks.xml",
+        "ref/dotnet/zh-hant/System.Threading.Tasks.xml",
+        "ref/net45/_._",
+        "ref/netcore50/System.Threading.Tasks.dll",
+        "ref/netcore50/System.Threading.Tasks.xml",
+        "ref/netcore50/de/System.Threading.Tasks.xml",
+        "ref/netcore50/es/System.Threading.Tasks.xml",
+        "ref/netcore50/fr/System.Threading.Tasks.xml",
+        "ref/netcore50/it/System.Threading.Tasks.xml",
+        "ref/netcore50/ja/System.Threading.Tasks.xml",
+        "ref/netcore50/ko/System.Threading.Tasks.xml",
+        "ref/netcore50/ru/System.Threading.Tasks.xml",
+        "ref/netcore50/zh-hans/System.Threading.Tasks.xml",
+        "ref/netcore50/zh-hant/System.Threading.Tasks.xml",
+        "ref/win8/_._",
+        "ref/wp80/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._"
+      ]
+    },
+    "System.Threading.Tasks.DataFlow/4.5.25": {
+      "sha512": "Y5/Dj+tYlDxHBwie7bFKp3+1uSG4vqTJRF7Zs7kaUQ3ahYClffCTxvgjrJyPclC+Le55uE7bMLgjZQVOQr3Jfg==",
+      "type": "package",
+      "files": [
+        "System.Threading.Tasks.Dataflow.4.5.25.nupkg.sha512",
+        "System.Threading.Tasks.Dataflow.nuspec",
+        "lib/dotnet/System.Threading.Tasks.Dataflow.XML",
+        "lib/dotnet/System.Threading.Tasks.Dataflow.dll",
+        "lib/portable-net45+win8+wp8+wpa81/System.Threading.Tasks.Dataflow.XML",
+        "lib/portable-net45+win8+wp8+wpa81/System.Threading.Tasks.Dataflow.dll",
+        "lib/portable-net45+win8+wpa81/System.Threading.Tasks.Dataflow.XML",
+        "lib/portable-net45+win8+wpa81/System.Threading.Tasks.Dataflow.dll"
       ]
     },
     "xunit/2.1.0": {

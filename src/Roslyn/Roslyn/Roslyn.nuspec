@@ -9,19 +9,19 @@
 		<projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>
-Allows custom tasks to efficiently load and access
-a Roslyn project for code generation or analysis. Multiple tasks, targets
-and even projects will all share the same Workspace and loaded Projects,
-thereby optimizing build times.
+			Allows custom tasks to efficiently load and access
+			a Roslyn project for code generation or analysis. Multiple tasks, targets
+			and even projects will all share the same Workspace and loaded Projects,
+			thereby optimizing build times.
 
-Usage:
-In your custom task library, install the MSBuilder.Roslyn package, and just
-use the two new provided extension methods for Task: GetWorkspace and GetOrAddProject.
+			Usage:
+			In your custom task library, install the MSBuilder.Roslyn package, and just
+			use the two new provided extension methods for Task: GetWorkspace and GetOrAddProject.
 		</description>
 		<copyright>Copyright 2015</copyright>
 		<tags>MSBuild Roslyn CodeAnalysis Compiler CSharp VB VisualBasic Emit CodeGeneration Compilation Syntax Semantics</tags>
 		<dependencies>
-      <dependency id="Microsoft.CodeAnalysis" version="1.1.1" />
+			<dependency id="Microsoft.CodeAnalysis" version="1.1.1" />
 		</dependencies>
 	</metadata>
 	<files>
@@ -29,5 +29,7 @@ use the two new provided extension methods for Task: GetWorkspace and GetOrAddPr
 		<file src="bin\MSBuilder.Roslyn.dll" target="lib\net45" />
 		<file src="bin\MSBuilder.Roslyn.pdb" target="lib\net45" />
 		<file src="bin\MSBuilder.Roslyn.xml" target="lib\net45" />
+		<file src="bin\MSBuilder.Roslyn.ProjectReader.exe" target="lib\net45" />
+		<file src="bin\MSBuilder.Roslyn.ProjectReader.pdb" target="lib\net45" />
 	</files>
 </package>

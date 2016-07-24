@@ -30,6 +30,16 @@ namespace MSBuilder
 
 			Assert.True(built);
 		}
+
+		[Fact]
+		public void when_reading_project_then_succeeds()
+		{
+			var project = ProjectReader.Read(
+				Path.Combine(ModuleInitializer.BaseDirectory, @"Content\CodeGen\CodeGen.csproj"), 
+				new Dictionary<string, string>());
+
+			output.WriteLine(project.ToString());
+		}
 	}
 
 	public class CodeGenTask : Task

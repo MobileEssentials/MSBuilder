@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Xml.Linq;
 
 namespace MSBuilder
 {
     interface IProjectLoader : IDisposable
 	{
-		string LoadXml (string filePath);
+		XElement LoadXml (string filePath);
 	}
 }

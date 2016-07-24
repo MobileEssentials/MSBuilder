@@ -71,18 +71,20 @@ namespace MSBuilder
 			// factory, which looks up the project by ID and determines 
 			// the configuration/platform to load.
 			using (var loader = loaderFactory.Create (buildEngine)) {
-				var msbuildProject = XElement.Parse (loader.LoadXml (projectPath)).ToDynamic();
+				var xml = loader.LoadXml(projectPath);
+				var msbuildProject = xml.ToDynamic();
+				var msbuildProjectFile = (string)msbuildProject["FilePath"];
 
 				// Use the msbuild project to add a new project to the current solution of the workspace
 				OnProjectAdded(
 					ProjectInfo.Create(
-						ProjectId.CreateFromSerialized(new Guid((string)msbuildProject.Id)),
+						ProjectId.CreateFromSerialized(new Guid((string)msbuildProject["Id"])),
 						VersionStamp.Default,
-						(string)msbuildProject.Name,
-						(string)msbuildProject.AssemblyName,
-						(string)msbuildProject.Language,
-						(string)msbuildProject.FilePath,
-						outputFilePath: (string)msbuildProject.OutputFilePath,
+						(string)msbuildProject["Name"],
+						(string)msbuildProject["AssemblyName"],
+						(string)msbuildProject["Language"],
+						msbuildProjectFile,
+						outputFilePath: (string)msbuildProject["OutputFilePath"],
 						metadataReferences: ((XElement)msbuildProject.MetadataReferences).Elements("FilePath").Select(e => MetadataReference.CreateFromFile(e.Value)),
 						compilationOptions: new CSharpCompilationOptions(
 							(OutputKind)(Enum.Parse(typeof(OutputKind), (string)msbuildProject.CompilationOptions["OutputKind"])),
@@ -90,9 +92,9 @@ namespace MSBuilder
 				
 				// Add the documents to the workspace
 				foreach (var document in ((XElement)msbuildProject.Documents).Elements("FilePath").Select(e => e.Value))
-					AddDocument ((string)msbuildProject.FilePath, document, false);
+					AddDocument (msbuildProjectFile, document, false);
 				foreach (var document in ((XElement)msbuildProject.AdditionalDocuments).Elements("FilePath").Select(e => e.Value))
-					AddDocument ((string)msbuildProject.FilePath, document, true);
+					AddDocument (msbuildProjectFile, document, true);
 
 				// Fix references
 				// Iterate the references of the msbuild project
@@ -103,7 +105,7 @@ namespace MSBuilder
 				}
 
 				if (referencesToAdd.Count > 0) {
-					var addedProject = FindProjectByPath ((string)msbuildProject.FilePath);
+					var addedProject = FindProjectByPath (msbuildProjectFile);
 
 					TryApplyChanges (CurrentSolution.WithProjectReferences (addedProject.Id, referencesToAdd));
 				}

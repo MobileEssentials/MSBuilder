@@ -1,0 +1,12 @@
+﻿{
+  "dependencies": {
+    "System.Threading.Tasks.DataFlow": "4.5.25",
+    "Microsoft.CodeAnalysis": "1.1.1"
+  },
+  "frameworks": {
+    "net452": {}
+  },
+  "runtimes": {
+    "win": {}
+  }
+}

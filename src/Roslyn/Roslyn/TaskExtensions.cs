@@ -5,7 +5,7 @@ using MSBuilder;
 namespace Microsoft.Build.Utilities
 {
     /// <summary>
-    /// Provides extensions for <see cref="Task"/> that allows 
+    /// Provides extensions for <see cref="ITask"/> that allows 
     /// to efficiently access and reuse a Roslyn <see cref="Workspace"/> 
     /// and loaded <see cref="Project"/>s across a build.
     /// </summary>
@@ -18,10 +18,10 @@ namespace Microsoft.Build.Utilities
 		/// <param name="task">The task that needs to access the workspace.</param>
 		/// <returns>An already initialized and reused <see cref="Workspace"/>, or a new one 
 		/// if it is the first time it is accessed.</returns>
-		public static Workspace GetWorkspace(this Task task)
+		public static Workspace GetWorkspace(this ITask task)
 		{
-			var engine = task.BuildEngine4;
-
+			var engine = (IBuildEngine4)task.BuildEngine;
+			
 			// TODO: when file monitoring is added, we can add workspace reuse 
 			// by using RegisteredTaskObjectLifetime.AppDomain when building inside VS.
 			var lifetime = RegisteredTaskObjectLifetime.Build;
@@ -44,7 +44,7 @@ namespace Microsoft.Build.Utilities
 		/// <param name="task">The task that needs to access the project.</param>
 		/// <param name="projectPath">The project full path.</param>
 		/// <returns>The loaded Roslyn project.</returns>
-		public static Project GetOrAddProject (this Task task, string projectPath)
+		public static Project GetOrAddProject (this ITask task, string projectPath)
 		{
 			var workspace = (IWorkspace)GetWorkspace (task);
 			

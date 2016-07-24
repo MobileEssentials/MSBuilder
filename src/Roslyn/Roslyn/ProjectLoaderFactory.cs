@@ -11,9 +11,6 @@ namespace MSBuilder
 {
 	class ProjectLoaderFactory : IProjectLoaderFactory
 	{
-		Lazy<AppDomain> appDomain = new Lazy<AppDomain>(() =>
-			AppDomain.CreateDomain(Guid.NewGuid().ToString(), null, AppDomain.CurrentDomain.SetupInformation));
-
 		public IProjectLoader Create(IBuildEngine buildEngine)
 		{
 			// Use introspection to determine the global properties to use for the 
@@ -25,13 +22,11 @@ namespace MSBuilder
 
 		internal IProjectLoader Create(Dictionary<string, string> globalProperties)
 		{
-			return new ProjectLoader(appDomain.Value, globalProperties);
+			return new ProjectLoader(globalProperties);
 		}
 
 		public void Dispose()
 		{
-			if (appDomain.IsValueCreated)
-				AppDomain.Unload(appDomain.Value);
 		}
 
 		Dictionary<string, string> GetGlobalProperties(IBuildEngine buildEngine)

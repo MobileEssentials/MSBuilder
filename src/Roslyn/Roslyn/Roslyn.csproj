@@ -18,9 +18,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DefineConstants>TRACE</DefineConstants>
     <NuGetPackageImportStamp>1ec945af</NuGetPackageImportStamp>
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -29,13 +29,12 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Build" />
+    <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Build" />
-    <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,7 +44,6 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="IProjectLoaderFactory.cs" />
     <Compile Include="IProjectLoader.cs" />
-    <Compile Include="IsolatedProjectReader.cs" />
     <Compile Include="IWorkspace.cs" />
     <Compile Include="netfx\System\Xml\Linq\DynamicXml.cs" />
     <Compile Include="ProjectLoader.cs" />
@@ -59,6 +57,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Roslyn.ProjectReader\Roslyn.ProjectReader.csproj">
+      <Project>{87645a85-fa11-456b-9678-903431536108}</Project>
+      <Name>Roslyn.ProjectReader</Name>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
