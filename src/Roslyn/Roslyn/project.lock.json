@@ -3,6 +3,7 @@
   "version": 1,
   "targets": {
     ".NETFramework,Version=v4.5.2": {
+      "GitInfo/1.1.20": {},
       "Microsoft.CodeAnalysis/1.1.1": {
         "dependencies": {
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "[1.1.1]",
@@ -320,6 +321,7 @@
       }
     },
     ".NETFramework,Version=v4.5.2/win": {
+      "GitInfo/1.1.20": {},
       "Microsoft.CodeAnalysis/1.1.1": {
         "dependencies": {
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "[1.1.1]",
@@ -638,6 +640,21 @@
     }
   },
   "libraries": {
+    "GitInfo/1.1.20": {
+      "sha512": "2ESqOdgRuogy1UFkCl63x2iZIoiQFOj/WB6VO0Er+xFeKgrEJ7fIBQI7rvNnoSxjK15ZXd7v3t+hRRAwnN2iUg==",
+      "type": "package",
+      "path": "GitInfo/1.1.20",
+      "files": [
+        "GitInfo.1.1.20.nupkg.sha512",
+        "GitInfo.nuspec",
+        "build/GitInfo.cache.pp",
+        "build/GitInfo.cs.pp",
+        "build/GitInfo.targets",
+        "build/GitInfo.vb.pp",
+        "build/GitInfo.xbuild",
+        "readme.txt"
+      ]
+    },
     "Microsoft.CodeAnalysis/1.1.1": {
       "sha512": "X+UK+Ev5rQOCkb1HgMdUz47VK/qUvCe8FyObh3McgfIi+j2VXDsQq0YSPxqcKyQd72UmY0ttYDGLsA/ee0oC6w==",
       "type": "package",
@@ -1628,6 +1645,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
+      "GitInfo >= 1.1.20",
       "Microsoft.CodeAnalysis >= 1.1.1"
     ],
     ".NETFramework,Version=v4.5.2": []

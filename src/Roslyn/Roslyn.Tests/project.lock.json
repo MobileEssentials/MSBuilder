@@ -12,6 +12,7 @@
         }
       },
       "Fody/1.29.2": {},
+      "GitInfo/1.1.20": {},
       "Microsoft.CodeAnalysis/1.1.1": {
         "dependencies": {
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "[1.1.1]",
@@ -404,6 +405,7 @@
         }
       },
       "Fody/1.29.2": {},
+      "GitInfo/1.1.20": {},
       "Microsoft.CodeAnalysis/1.1.1": {
         "dependencies": {
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "[1.1.1]",
@@ -830,6 +832,21 @@
         "Mono.Cecil.dll",
         "build/dotnet/Fody.targets",
         "build/portable-net+sl+win+wpa+wp/Fody.targets"
+      ]
+    },
+    "GitInfo/1.1.20": {
+      "sha512": "2ESqOdgRuogy1UFkCl63x2iZIoiQFOj/WB6VO0Er+xFeKgrEJ7fIBQI7rvNnoSxjK15ZXd7v3t+hRRAwnN2iUg==",
+      "type": "package",
+      "path": "GitInfo/1.1.20",
+      "files": [
+        "GitInfo.1.1.20.nupkg.sha512",
+        "GitInfo.nuspec",
+        "build/GitInfo.cache.pp",
+        "build/GitInfo.cs.pp",
+        "build/GitInfo.targets",
+        "build/GitInfo.vb.pp",
+        "build/GitInfo.xbuild",
+        "readme.txt"
       ]
     },
     "Microsoft.CodeAnalysis/1.1.1": {

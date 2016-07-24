@@ -3,12 +3,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("MSBuilder.Roslyn")]
 [assembly: AssemblyDescription("Provides efficient access to a Roslyn workspace and projects from custom MSBuild tasks.")]
-[assembly: AssemblyCompany("Mobile Essentials")]
-[assembly: AssemblyProduct("MSBuilder.Roslyn")]
-[assembly: AssemblyCopyright("Copyright © Mobile Essentials 2015")]
 
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: InternalsVisibleTo("MSBuilder.Roslyn.Tests, PublicKey=00240000048000009400000006020000002400005253413100040000010001004576a6b129af7933936de9fea97b191915238359d7138bf125db54431ff4cc2efec9c89eee9d5a0ec565a14b624f2a735bca7dde9a62dce5373c5cfaf16e5611f31b473197d937e9de1321bea6ef61fceb389cc8f17de0ca670b257039f5b068e73c57a7da6cbf18fd8f05b3fd4c5420d76687540a406881f9e1fee26f0f66c1")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2,PublicKey=0024000004800000940000000602000000240000525341310004000001000100c547cac37abd99c8db225ef2f6c8a3602f3b3606cc9891605d02baa56104f4cfc0734aa39b93bf7852f7d9266654753cc297e7d2edfe0bac1cdcf9f717241550e0a7b191195b7667bb4f64bcb8e2121380fd1d9d46ad2d92d2d15605093924cceaf74c4861eff62abf69b9291ed0a340e113be11e6a7d3113e92484cf7045cc7")]
 
-[assembly: InternalsVisibleTo("MSBuilder.Roslyn.Tests")]
-[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

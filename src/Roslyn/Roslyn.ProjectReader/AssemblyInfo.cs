@@ -1,0 +1,8 @@
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
+
+[assembly: AssemblyTitle("MSBuilder.Roslyn.ProjectReader")]
+[assembly: AssemblyDescription("Provides isolated reading of an MSBuild project using Roslyn.")]
+
+[assembly: InternalsVisibleTo("MSBuilder.Roslyn.Tests, PublicKey=00240000048000009400000006020000002400005253413100040000010001004576a6b129af7933936de9fea97b191915238359d7138bf125db54431ff4cc2efec9c89eee9d5a0ec565a14b624f2a735bca7dde9a62dce5373c5cfaf16e5611f31b473197d937e9de1321bea6ef61fceb389cc8f17de0ca670b257039f5b068e73c57a7da6cbf18fd8f05b3fd4c5420d76687540a406881f9e1fee26f0f66c1")]
+
