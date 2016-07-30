@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Microsoft.Build.Framework;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
@@ -39,7 +40,7 @@ namespace MSBuilder
 				.Returns(() => new ProjectLoader(properties));
 			var workspace = new SnapshotWorkspace(factory.Object);
 
-			var project = workspace.GetOrAddProject(Mock.Of<IBuildEngine>(), Path.Combine(ModuleInitializer.BaseDirectory, @"Content\CsLibrary\CsLibrary.csproj"));
+			var project = workspace.GetOrAddProject(Mock.Of<IBuildEngine>(), Path.Combine(ModuleInitializer.BaseDirectory, @"Content\CsLibrary\CsLibrary.csproj"), CancellationToken.None);
 
 			// Configuration for the main project is Debug in the selected solution configuration.
 			Assert.Equal("Debug", new DirectoryInfo(Path.GetDirectoryName(project.OutputFilePath)).Name);
@@ -65,7 +66,7 @@ namespace MSBuilder
 				.Returns(() => new ProjectLoader(new Dictionary<string, string>()));
 			var workspace = new SnapshotWorkspace(factory.Object);
 
-			var project = workspace.GetOrAddProject(Mock.Of<IBuildEngine>(), Path.Combine(ModuleInitializer.BaseDirectory, @"Content\CsLibrary\CsLibrary.csproj"));
+			var project = workspace.GetOrAddProject(Mock.Of<IBuildEngine>(), Path.Combine(ModuleInitializer.BaseDirectory, @"Content\CsLibrary\CsLibrary.csproj"), CancellationToken.None);
 			var reference = project.Solution.GetProject(project.ProjectReferences.First().ProjectId);
 
 			// Because there is no solution configuration, PclLibrary defaults to Debug configuration, and the 
@@ -91,7 +92,7 @@ namespace MSBuilder
 				.Returns(() => new ProjectLoader(properties));
 			var workspace = new SnapshotWorkspace(factory.Object);
 
-			var project = workspace.GetOrAddProject(Mock.Of<IBuildEngine>(), Path.Combine(ModuleInitializer.BaseDirectory, @"Content\CsLibrary\CsLibrary.csproj"));
+			var project = workspace.GetOrAddProject(Mock.Of<IBuildEngine>(), Path.Combine(ModuleInitializer.BaseDirectory, @"Content\CsLibrary\CsLibrary.csproj"), CancellationToken.None);
 			var reference = project.Solution.GetProject(project.ProjectReferences.First().ProjectId);
 
 			Assert.True(project.Documents.Any(doc => Path.GetFileName(doc.FilePath) == "Class1.cs"));
