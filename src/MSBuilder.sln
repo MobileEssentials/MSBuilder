@@ -128,6 +128,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VisualStudio", "VisualStudi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsixInstaller", "VisualStudio\VsixInstaller\VsixInstaller.csproj", "{4D0F4438-9F2F-4E9F-B9A0-58DD7EC90C03}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsixInstaller.Tests", "VisualStudio\VsixInstaller.Tests\VsixInstaller.Tests.csproj", "{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -194,6 +196,10 @@ Global
 		{4D0F4438-9F2F-4E9F-B9A0-58DD7EC90C03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D0F4438-9F2F-4E9F-B9A0-58DD7EC90C03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D0F4438-9F2F-4E9F-B9A0-58DD7EC90C03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -221,5 +227,6 @@ Global
 		{6D4B6CA6-B37B-46F5-82AF-FA03574BC341} = {8B3AD949-9952-4A54-9023-B127123A3132}
 		{87645A85-FA11-456B-9678-903431536108} = {F27D9312-4D46-47F0-AF97-3FA7F1232B17}
 		{4D0F4438-9F2F-4E9F-B9A0-58DD7EC90C03} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
+		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
 	EndGlobalSection
 EndGlobal
