@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Build.Framework;
+using Microsoft.Win32;
 
 namespace MSBuilder
 {
@@ -65,6 +68,24 @@ namespace MSBuilder
 
 			Console.WriteLine("Execute: " + task.Execute());
 		}
-	}
 
+		public void ListInstalled()
+		{
+			var task = new ListInstalledVsix
+			{
+				VisualStudioVersion = "14.0",
+				RootSuffix = "Exp",
+				FilterExpression = "Xamarin.*",
+				BuildEngine = new MockBuildEngine()
+			};
+
+			Console.WriteLine("Execute: {0} ({1})", task.Execute(), task.InstalledExtensions.Length);
+
+			foreach (var extension in task.InstalledExtensions)
+			{
+				Console.WriteLine("Extension {0} ({1} metadata, InstalledPerMachine={2}).", 
+					extension.ItemSpec, extension.MetadataCount, extension.GetMetadata("InstalledPerMachine"));
+			}
+		}
+	}
 }

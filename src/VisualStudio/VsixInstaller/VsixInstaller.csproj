@@ -39,6 +39,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ListInstalledVsix.cs" />
     <Compile Include="DisableVsix.cs" />
     <Compile Include="EnableVsix.cs" />
     <Compile Include="UninstallVsix.cs" />
