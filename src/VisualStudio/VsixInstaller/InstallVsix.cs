@@ -37,8 +37,9 @@ namespace MSBuilder
 		public string RootSuffix { get; set; }
 
 		/// <summary>
-		/// Optional importance for the task messages. Defaults to High.
+		/// Message importance for the task messages. Defaults to High.
 		/// </summary>
+		[Required]
 		public Microsoft.Build.Framework.MessageImportance MessageImportance { get; set; }
 
 		/// <summary>

@@ -3,7 +3,7 @@
 	<metadata>
 		<id>MSBuilder.VsixInstaller</id>
 		<version>0.1.0</version>
-		<title>MSBuilder: InstallVsix, UninstallVsix, EnableVsix and DisableVsix Tasks</title>
+		<title>MSBuilder: VsixInstaller+ Tasks</title>
 		<authors>Mobile Essentials</authors>
 		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
 		<projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
