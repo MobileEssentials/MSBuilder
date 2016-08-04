@@ -2,7 +2,7 @@
 <package>
 	<metadata>
 		<id>MSBuilder.VsixInstaller</id>
-		<version>0.1.2</version>
+		<version>0.1.3</version>
 		<title>MSBuilder: VsixInstaller+ Tasks</title>
 		<authors>Mobile Essentials</authors>
 		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -16,14 +16,14 @@ Visual Studio versions but also experimental and custom instances (also
 known as -registry- hives).
 
 Example (tasks used inside a target):
-&lt;InstallVsix VisualStudioVersion="$(VisualStudioVersion)" VsixPath="MyExtension.vsix"
+&lt;InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
+                VsixPath="MyExtension.vsix"
                 RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" /&gt;
-&lt;UninstallVsix VisualStudioVersion="$(VisualStudioVersion)" VsixId="MyExtension"
-                RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" /&gt;
-&lt;EnableVsix VisualStudioVersion="$(VisualStudioVersion)" VsixId="MyExtension"
-                RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" /&gt;
-&lt;DisableVsix VisualStudioVersion="$(VisualStudioVersion)" VsixId="MyExtension"
-                RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" /&gt;
+&lt;UninstallVsix VisualStudioVersion="$(VisualStudioVersion)" 
+                  VsixId="MyExtension"
+                  RootSuffix="Exp" /&gt;
+&lt;EnableVsix VisualStudioVersion="$(VisualStudioVersion)" VsixId="MyExtension" /&gt;
+&lt;DisableVsix VisualStudioVersion="$(VisualStudioVersion)" VsixId="MyExtension" /&gt;
 </description>
 		<copyright>Copyright 2015</copyright>
 		<tags>msbuild inline vssdk vsix vsixinstaller</tags>

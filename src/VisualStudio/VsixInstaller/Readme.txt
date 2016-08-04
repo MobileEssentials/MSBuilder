@@ -17,21 +17,19 @@ Usage:
 
 <Target Name="UninstallMyExtension">
     <UninstallVsix VisualStudioVersion="$(VisualStudioVersion)" 
-                   MessageImportance="high"
+                   MessageImportance="normal"
                    VsixId="MyExtension"
                    RootSuffix="Exp" />
 </Target>
 
 <Target Name="EnableMyExtension">
     <EnableVsix VisualStudioVersion="$(VisualStudioVersion)" 
-                MessageImportance="normal"
                 VsixId="MyExtension"
 	            FailIfNotInstalled="true" />
 </Target>
 
 <Target Name="InstallMyExtension">
     <DisableVsix VisualStudioVersion="$(VisualStudioVersion)" 
-                 MessageImportance="low"
                  VsixId="MyExtension"
 	             FailIfNotInstalled="false"
                  RootSuffix="Exp" />

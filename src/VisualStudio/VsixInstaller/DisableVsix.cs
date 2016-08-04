@@ -27,10 +27,9 @@ namespace MSBuilder
 		public string VsixId { get; set; }
 
 		/// <summary>
-		/// Message importance for the task messages.
+		/// Optional message importance for the task messages.
 		/// </summary>
-		[Required]
-		public Microsoft.Build.Framework.MessageImportance MessageImportance { get; set; }
+		public string MessageImportance { get; set; }
 
 		/// <summary>
 		/// Optional flag to fail if the extension is not already installed.
@@ -62,6 +61,10 @@ namespace MSBuilder
 					return false;
 				}
 			}
+
+			var importance = Microsoft.Build.Framework.MessageImportance.Normal;
+			if (!string.IsNullOrEmpty(MessageImportance))
+					importance = (MessageImportance)Enum.Parse(typeof(MessageImportance), MessageImportance, true);
 
 			var managerAsm = Assembly.LoadFrom(Path.Combine(vsdir, @"PrivateAssemblies\Microsoft.VisualStudio.ExtensionManager.Implementation.dll"));
 
