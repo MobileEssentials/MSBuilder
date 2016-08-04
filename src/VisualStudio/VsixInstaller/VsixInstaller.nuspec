@@ -9,7 +9,13 @@
 		<projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<summary>Provides full control of install/uninstall/enable/disable for extensions in arbitrary Visual Studio versions and instances (a.k.a hives).</summary>
-		<description>Example (tasks used inside a target):
+		<description>This NuGet package provides the various tasks to handle all operations 
+related to Visual Studio extensions via MSBuild, which goes beyond what 
+VSIXInstaller.exe supports by allowing not only to work against arbitrary
+Visual Studio versions but also experimental and custom instances (also 
+known as -registry- hives).
+
+Example (tasks used inside a target):
 &lt;InstallVsix VisualStudioVersion="$(VisualStudioVersion)" VsixPath="MyExtension.vsix"
                 RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" /&gt;
 &lt;UninstallVsix VisualStudioVersion="$(VisualStudioVersion)" VsixId="MyExtension"
