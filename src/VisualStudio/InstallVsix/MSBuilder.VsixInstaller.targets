@@ -23,5 +23,5 @@
 	SOFTWARE.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="MSBuilder.VisualStudio.InstallVsix.tasks" />
+	<Import Project="MSBuilder.VsixInstaller.tasks" />
 </Project>

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<package>
+	<metadata>
+		<id>MSBuilder.VsixInstaller</id>
+		<version>0.1.0</version>
+		<title>MSBuilder: InstallVsix, UninstallVsix, EnableVsix and DisableVsix Tasks</title>
+		<authors>Mobile Essentials</authors>
+		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<summary>Provides full control of install/uninstall/enable/disable for extensions in arbitrary Visual Studio versions and instances (a.k.a hives).</summary>
+		<description>Example (tasks used inside a target):
+&lt;InstallVsix VisualStudioVersion="$(VisualStudioVersion)" VsixPath="MyExtension.vsix"
+                RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" /&gt;
+&lt;UninstallVsix VisualStudioVersion="$(VisualStudioVersion)" VsixId="MyExtension"
+                RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" /&gt;
+&lt;EnableVsix VisualStudioVersion="$(VisualStudioVersion)" VsixId="MyExtension"
+                RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" /&gt;
+&lt;DisableVsix VisualStudioVersion="$(VisualStudioVersion)" VsixId="MyExtension"
+                RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" /&gt;
+</description>
+		<copyright>Copyright 2015</copyright>
+		<tags>msbuild inline vssdk vsix vsixinstaller</tags>
+		<dependencies>
+			<dependency id="MSBuilder" version="0.1.0" />
+			<dependency id="MSBuilder.CodeTaskAssembly" version="0.2.3" />
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="Readme.txt" />
+		<file src="bin\MSBuilder.VsixInstaller.targets" target="build" />
+		<file src="bin\MSBuilder.VsixInstaller.tasks" target="build" />
+		<file src="bin\MSBuilder.VsixInstaller.dll" target="build" />
+		<file src="bin\MSBuilder.VsixInstaller.Inline.tasks" target="build" />
+		<file src="bin\MSBuilder.VsixInstaller.Compiled.tasks" target="build" />
+	</files>
+</package>

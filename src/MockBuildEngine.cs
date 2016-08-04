@@ -15,14 +15,19 @@ namespace Microsoft.Build.Framework
         bool trace = false;
 		ITestOutputHelper output;
 
-        public MockBuildEngine(ITestOutputHelper output, bool trace = false)
+		public MockBuildEngine(bool trace = true)
+		{
+			this.trace = trace;
+			LoggedCustomEvents = new List<CustomBuildEventArgs>();
+			LoggedErrorEvents = new List<BuildErrorEventArgs>();
+			LoggedMessageEvents = new List<BuildMessageEventArgs>();
+			LoggedWarningEvents = new List<BuildWarningEventArgs>();
+		}
+
+		public MockBuildEngine(ITestOutputHelper output, bool trace = false)
+			: this(trace)
         {
 			this.output = output;
-            this.trace = trace;
-            LoggedCustomEvents = new List<CustomBuildEventArgs>();
-            LoggedErrorEvents = new List<BuildErrorEventArgs>();
-            LoggedMessageEvents = new List<BuildMessageEventArgs>();
-            LoggedWarningEvents = new List<BuildWarningEventArgs>();
         }
 
         public bool BuildProjectFile(string projectFileName, string[] targetNames, IDictionary globalProperties, IDictionary targetOutputs)
@@ -81,7 +86,8 @@ namespace Microsoft.Build.Framework
 			Trace.WriteLine(message);
 			Debug.WriteLine(message);
 			Debugger.Log(0, "", message);
-			output.WriteLine(message);	
+			if (output != null)
+				output.WriteLine(message);	
 		}
     }
 }

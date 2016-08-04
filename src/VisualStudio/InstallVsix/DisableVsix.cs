@@ -9,32 +9,22 @@ using System.Linq;
 namespace MSBuilder
 {
 	/// <summary>
-	/// Installs a VSIX to the given Visual Studio version and optional hive/instance (i.e. 'Exp').
-	/// Allows specifying per-machine install too.
+	/// Disables the extension with the given identifier in the 
+	/// given Visual Studio version and optional hive/instance (i.e. 'Exp').
 	/// </summary>
-	public class InstallVsix : Task
+	public class DisableVsix : Task
 	{
 		/// <summary>
-		/// Visual Studio version to install the VSIX to.
+		/// Visual Studio version to disable the VSIX for.
 		/// </summary>
 		[Required]
 		public string VisualStudioVersion { get; set; }
 
 		/// <summary>
-		/// Full path to the VSIX file to install.
+		/// Identifier of the extension to disable.
 		/// </summary>
 		[Required]
-		public string VsixPath { get; set; }
-
-		/// <summary>
-		/// Optional flag to install the VSIX on the machine-wide location.
-		/// </summary>
-		public bool PerMachine { get; set; }
-
-		/// <summary>
-		/// Optional hive/instance to install to (i.e. 'Exp').
-		/// </summary>
-		public string RootSuffix { get; set; }
+		public string VsixId { get; set; }
 
 		/// <summary>
 		/// Optional importance for the task messages. Defaults to High.
@@ -42,7 +32,17 @@ namespace MSBuilder
 		public MessageImportance MessageImportance { get; set; }
 
 		/// <summary>
-		/// Ensures the given VSIX is installed and enabled for the given 
+		/// Optional flag to fail if the extension is not already installed.
+		/// </summary>
+		public bool FailIfNotInstalled { get; set; }
+
+		/// <summary>
+		/// Optional hive/instance to disable in (i.e. 'Exp').
+		/// </summary>
+		public string RootSuffix { get; set; }
+
+		/// <summary>
+		/// Disables the extension in the given 
 		/// Visual Studio version and instance/hive.
 		/// </summary>
 		public override bool Execute()
@@ -76,31 +76,37 @@ namespace MSBuilder
 			var managerType = managerAsm.GetType("Microsoft.VisualStudio.ExtensionManager.ExtensionManagerService", true);
 			var manager = Activator.CreateInstance(managerType, new[] { settings });
 
-			object extension = managerType.InvokeMember("CreateInstallableExtension", BindingFlags.Static | BindingFlags.Public | BindingFlags.InvokeMethod, null, null, new[] { VsixPath });
-			var header = extension.GetType().InvokeMember("Header", BindingFlags.GetProperty, null, extension, null);
-			var id = header.GetType().InvokeMember("Identifier", BindingFlags.GetProperty, null, header, null);
 			var vsversion = "Visual Studio " + VisualStudioVersion;
 			if (!string.IsNullOrEmpty(RootSuffix))
 				vsversion += " (" + RootSuffix + ")";
 
-			var installed = (bool)managerType.InvokeMember("IsInstalled", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension });
-			if (!installed)
+			try
 			{
-				managerType.InvokeMember("Install", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension, PerMachine });
-				Log.LogMessage(MessageImportance, "Successfully installed extension '{0}' on {1}.", id, vsversion);
-			}
-			else
-			{
-				extension = managerType.InvokeMember("GetInstalledExtension", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { id });
+				var extension = managerType.InvokeMember("GetInstalledExtension", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { VsixId });
 				var state = (int)extension.GetType().InvokeMember("State", BindingFlags.GetProperty, null, extension, null);
-				if (state != 1)
+				if (state != 0)
 				{
-					managerType.InvokeMember("Enable", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension });
-					Log.LogMessage(MessageImportance, "Successfully enabled previously installed extension '{0}' on {1}.", id, vsversion);
+					managerType.InvokeMember("Disable", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension });
+					Log.LogMessage(MessageImportance, "Successfully disabled extension '{0}' on {1}.", VsixId, vsversion);
 				}
 				else
 				{
-					Log.LogMessage(MessageImportance, "Extension '{0}' was already installed and enabled on {1}.", id, vsversion);
+					Log.LogMessage(MessageImportance, "Extension '{0}' was already disabled on {1}.", VsixId, vsversion);
+				}
+			}
+			catch (TargetInvocationException tie)
+			{
+				if (tie.InnerException.GetType().FullName == "Microsoft.VisualStudio.ExtensionManager.NotInstalledException")
+				{
+					if (FailIfNotInstalled)
+					{
+						Log.LogError("Extension '{0}' is not installed on {1}.", VsixId, vsversion);
+						return false;
+					}
+					else
+					{
+						Log.LogMessage(MessageImportance, "Extension '{0}' is not installed on {1}.", VsixId, vsversion);
+					}
 				}
 			}
 
