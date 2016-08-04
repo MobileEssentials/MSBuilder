@@ -91,11 +91,11 @@ namespace MSBuilder
 				if (state != 1)
 				{
 					managerType.InvokeMember("Enable", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension });
-					Log.LogMessage(MessageImportance, "Successfully enabled extension '{0}' on {1}.", VsixId, vsversion);
+					Log.LogMessage(importance, "Successfully enabled extension '{0}' on {1}.", VsixId, vsversion);
 				}
 				else
 				{
-					Log.LogMessage(MessageImportance, "Extension '{0}' was already enabled on {1}.", VsixId, vsversion);
+					Log.LogMessage(importance, "Extension '{0}' was already enabled on {1}.", VsixId, vsversion);
 				}
 			}
 			catch (TargetInvocationException tie)
@@ -109,7 +109,7 @@ namespace MSBuilder
 					}
 					else
 					{
-						Log.LogMessage(MessageImportance, "Extension '{0}' is not installed on {1}.", VsixId, vsversion);
+						Log.LogMessage(importance, "Extension '{0}' is not installed on {1}.", VsixId, vsversion);
 					}
 				}
 			}

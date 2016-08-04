@@ -88,7 +88,7 @@ namespace MSBuilder
 			{
 				var extension = managerType.InvokeMember("GetInstalledExtension", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { VsixId });
 				managerType.InvokeMember("Uninstall", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension });
-				Log.LogMessage(MessageImportance, "Successfully uninstalled extension '{0}' from {1}.", VsixId, vsversion);
+				Log.LogMessage(importance, "Successfully uninstalled extension '{0}' from {1}.", VsixId, vsversion);
 			}
 			catch (TargetInvocationException tie)
 			{
@@ -101,7 +101,7 @@ namespace MSBuilder
 					}
 					else
 					{
-						Log.LogMessage(MessageImportance, "Extension '{0}' is not installed on {1}.", VsixId, vsversion);
+						Log.LogMessage(importance, "Extension '{0}' is not installed on {1}.", VsixId, vsversion);
 					}
 				}
 			}

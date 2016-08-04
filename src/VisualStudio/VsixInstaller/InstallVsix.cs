@@ -91,7 +91,7 @@ namespace MSBuilder
 			if (!installed)
 			{
 				managerType.InvokeMember("Install", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension, PerMachine });
-				Log.LogMessage(MessageImportance, "Successfully installed extension '{0}' on {1}.", id, vsversion);
+				Log.LogMessage(importance, "Successfully installed extension '{0}' on {1}.", id, vsversion);
 			}
 			else
 			{
@@ -100,11 +100,11 @@ namespace MSBuilder
 				if (state != 1)
 				{
 					managerType.InvokeMember("Enable", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension });
-					Log.LogMessage(MessageImportance, "Successfully enabled previously installed extension '{0}' on {1}.", id, vsversion);
+					Log.LogMessage(importance, "Successfully enabled previously installed extension '{0}' on {1}.", id, vsversion);
 				}
 				else
 				{
-					Log.LogMessage(MessageImportance, "Extension '{0}' was already installed and enabled on {1}.", id, vsversion);
+					Log.LogMessage(importance, "Extension '{0}' was already installed and enabled on {1}.", id, vsversion);
 				}
 			}
 
