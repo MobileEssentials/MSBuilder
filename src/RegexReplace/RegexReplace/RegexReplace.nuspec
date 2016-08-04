@@ -8,7 +8,7 @@
 		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
 		<projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<description>Allows applying a regular expression replacement for a patter over an entire file or files.
+		<description>Allows applying a regular expression replacement for a pattern over an entire file or files.
 Example:
 &lt;RegexReplace Files="@(Compile)"
 											Pattern="/\* LICENSE \*/"
