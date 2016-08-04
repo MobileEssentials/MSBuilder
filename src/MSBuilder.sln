@@ -126,7 +126,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roslyn.ProjectReader", "Ros
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VisualStudio", "VisualStudio", "{E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsixInstaller", "VisualStudio\InstallVsix\VsixInstaller.csproj", "{4D0F4438-9F2F-4E9F-B9A0-58DD7EC90C03}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsixInstaller", "VisualStudio\VsixInstaller\VsixInstaller.csproj", "{4D0F4438-9F2F-4E9F-B9A0-58DD7EC90C03}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
