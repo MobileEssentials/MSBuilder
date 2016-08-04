@@ -39,7 +39,7 @@ namespace MSBuilder
 		/// <summary>
 		/// Optional importance for the task messages. Defaults to High.
 		/// </summary>
-		public MessageImportance MessageImportance { get; set; }
+		public Microsoft.Build.Framework.MessageImportance MessageImportance { get; set; }
 
 		/// <summary>
 		/// Ensures the given VSIX is installed and enabled for the given 
