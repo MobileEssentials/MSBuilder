@@ -119,6 +119,10 @@ namespace MSBuilder
 					addMetadata(metadata, extension);
 					addMetadata(metadata, header);
 
+					// Preserve the original VS version and RootSuffix used to fetch the extensions
+					metadata["VisualStudioVersion"] = VisualStudioVersion;
+					metadata["RootSuffix"] = RootSuffix ?? "";
+
 					extensions.Add(new TaskItem(id, metadata));
 				}
 			}

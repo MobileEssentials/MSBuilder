@@ -9,6 +9,11 @@
 			<Output TaskParameter="InstalledExtensions" ItemName="InstalledVsix" />
 		</ListInstalledVsix>
 
-		<DumpItems Items="@(InstalledVsix)" ItemName="InstalledVsix" />
+		<ItemGroup>
+			<LocalExtension Include="@(InstalledVsix)" Condition=" '%(InstalledPerMachine)' == 'True' " />
+		</ItemGroup>
+
+
+		<DumpItems Items="@(LocalExtension)" ItemName="InstalledVsix" />
 	</Target>
 </Project>
