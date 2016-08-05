@@ -130,6 +130,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsixInstaller", "VisualStud
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsixInstaller.Tests", "VisualStudio\VsixInstaller.Tests\VsixInstaller.Tests.csproj", "{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IsAdministrator", "IsAdministrator", "{A1A40953-D0CF-4102-8466-3E35F26FF60F}"
+	ProjectSection(SolutionItems) = preProject
+		IsAdministrator\IsAdministrator.nuspec = IsAdministrator\IsAdministrator.nuspec
+		IsAdministrator\IsAdministrator.Test.targets = IsAdministrator\IsAdministrator.Test.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{F86E683D-C8B0-4133-954F-35B42BD72054}"
+	ProjectSection(SolutionItems) = preProject
+		IsAdministrator\build\MSBuilder.IsAdministrator.targets = IsAdministrator\build\MSBuilder.IsAdministrator.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -228,5 +239,6 @@ Global
 		{87645A85-FA11-456B-9678-903431536108} = {F27D9312-4D46-47F0-AF97-3FA7F1232B17}
 		{4D0F4438-9F2F-4E9F-B9A0-58DD7EC90C03} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
 		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
+		{F86E683D-C8B0-4133-954F-35B42BD72054} = {A1A40953-D0CF-4102-8466-3E35F26FF60F}
 	EndGlobalSection
 EndGlobal

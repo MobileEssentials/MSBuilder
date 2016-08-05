@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>MSBuilder.IsAdministrator</id>
+        <version>0.1.0</version>
+        <title>MSBuilder: IsAdministrator Task and Target</title>
+        <authors>Mobile Essentials</authors>
+        <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Provides the IsAdministrator task which returns Result=True if the current user belongs to the built-in Windows role Administrator.</description>
+        <copyright>Copyright 2015</copyright>
+        <tags>msbuild windows</tags>
+		<dependencies>
+			<dependency id="MSBuilder.CodeTaskAssembly" />
+		</dependencies>
+	</metadata>
+</package>
