@@ -88,6 +88,8 @@ namespace MSBuilder
 			{
 				var extension = managerType.InvokeMember("GetInstalledExtension", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { VsixId });
 				managerType.InvokeMember("Uninstall", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension });
+				managerType.InvokeMember("UpdateLastExtensionsChange", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new object[0]);
+				
 				Log.LogMessage(importance, "Successfully uninstalled extension '{0}' from {1}.", VsixId, vsversion);
 			}
 			catch (TargetInvocationException tie)

@@ -97,6 +97,7 @@ namespace MSBuilder
 			}
 
 			managerType.InvokeMember("Install", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension, PerMachine });
+			managerType.InvokeMember("UpdateLastExtensionsChange", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new object[0]);
 			Log.LogMessage(importance, "Successfully installed extension '{0}' on {1}.", id, vsversion);
 
 			return true;
