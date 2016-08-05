@@ -18,7 +18,7 @@ namespace MSBuilder
 			var task = new InstallVsix
 			{
 				VisualStudioVersion = "14.0",
-				VsixPath = @"[PATH_TO_VSIX]",
+				VsixPath = @"C:\Code\Xamarin\mobessen\Merq\src\Vsix\Merq.Vsix\bin\Debug\Merq.vsix",
 				RootSuffix = "Exp",
 				BuildEngine = new MockBuildEngine()
 			};

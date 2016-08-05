@@ -88,25 +88,16 @@ namespace MSBuilder
 				vsversion += " (" + RootSuffix + ")";
 
 			var installed = (bool)managerType.InvokeMember("IsInstalled", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension });
-			if (!installed)
+			if (installed)
 			{
-				managerType.InvokeMember("Install", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension, PerMachine });
-				Log.LogMessage(importance, "Successfully installed extension '{0}' on {1}.", id, vsversion);
+				// If previously installed, uninstall first.
+				var installedExtension = managerType.InvokeMember("GetInstalledExtension", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { id });
+				managerType.InvokeMember("Uninstall", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { installedExtension });
+				Log.LogMessage(importance, "Successfully uninstalled existing extension '{0}' found on {1}.", id, vsversion);
 			}
-			else
-			{
-				extension = managerType.InvokeMember("GetInstalledExtension", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { id });
-				var state = (int)extension.GetType().InvokeMember("State", BindingFlags.GetProperty, null, extension, null);
-				if (state != 1)
-				{
-					managerType.InvokeMember("Enable", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension });
-					Log.LogMessage(importance, "Successfully enabled previously installed extension '{0}' on {1}.", id, vsversion);
-				}
-				else
-				{
-					Log.LogMessage(importance, "Extension '{0}' was already installed and enabled on {1}.", id, vsversion);
-				}
-			}
+
+			managerType.InvokeMember("Install", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension, PerMachine });
+			Log.LogMessage(importance, "Successfully installed extension '{0}' on {1}.", id, vsversion);
 
 			return true;
 		}
