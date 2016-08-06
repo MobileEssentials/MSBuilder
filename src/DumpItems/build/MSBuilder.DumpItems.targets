@@ -46,9 +46,14 @@
 			<Code Type="Fragment" Language="cs">
 				<![CDATA[
 			var itemName = ItemName ?? "Item";
-			foreach (var item in Items)
+			if (Items.Length == 0)
+				Log.LogMessage(MessageImportance.High, "No {0} items received to dump.", ItemName ?? "");
+			else
+				Log.LogMessage(MessageImportance.High, "Dumping {0} {1} items.", Items.Length, ItemName ?? "");
+				
+			foreach (var item in Items.OrderBy(i => i.ItemSpec))
 			{
-				Log.LogMessage("{0}: {1}", itemName, item.ItemSpec);
+				Log.LogMessage(MessageImportance.High, "{0}: {1}", itemName, item.ItemSpec);
 				foreach (var name in item.MetadataNames.OfType<string>().OrderBy(_ => _))
 				{
 					try 
