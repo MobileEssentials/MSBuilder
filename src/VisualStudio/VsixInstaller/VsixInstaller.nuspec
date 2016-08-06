@@ -2,7 +2,7 @@
 <package>
 	<metadata>
 		<id>MSBuilder.VsixInstaller</id>
-		<version>0.1.9</version>
+		<version>0.1.11</version>
 		<title>MSBuilder: VsixInstaller+ Tasks</title>
 		<authors>Mobile Essentials</authors>
 		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
