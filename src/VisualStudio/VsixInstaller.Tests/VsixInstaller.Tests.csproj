@@ -63,7 +63,7 @@
       <Link>MockBuildEngine.cs</Link>
     </Compile>
     <Compile Include="ManualTests.cs" />
-    <Compile Include="ManualTests.VsixPath.cs" />
+    <Compile Include="ManualTests.VsixPath.cs" Condition="Exists('ManualTests.VsixPath.cs')" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

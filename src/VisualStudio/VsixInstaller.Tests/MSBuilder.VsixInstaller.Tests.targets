@@ -5,7 +5,7 @@
 	<Import Project="..\VsixInstaller\bin\MSBuilder.VsixInstaller.targets" />
 
 	<Target Name="Build">
-		<ListInstalledVsix VisualStudioVersion="14.0" FilterExpression="$(FilterExpression)">
+		<ListInstalledVsix VisualStudioVersion="$(VisualStudioVersion)" RootSuffix="$(RootSuffix)" FilterExpression="$(FilterExpression)">
 			<Output TaskParameter="InstalledExtensions" ItemName="InstalledVsix" />
 		</ListInstalledVsix>
 
