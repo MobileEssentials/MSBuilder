@@ -17,8 +17,8 @@ namespace MSBuilder
 		{
 			var task = new InstallVsix
 			{
-				VisualStudioVersion = "14.0",
-				VsixPath = @"C:\Code\Xamarin\mobessen\Merq\src\Vsix\Merq.Vsix\bin\Debug\Merq.vsix",
+				VisualStudioVersion = "12.0",
+				VsixPath = @"C:\Code\Xamarin\mobessen\Merq\src\Vsix\Merq.Vsix\bin\Release\Merq.vsix",
 				RootSuffix = "Exp",
 				BuildEngine = new MockBuildEngine()
 			};
@@ -30,8 +30,8 @@ namespace MSBuilder
 		{
 			var task = new DisableVsix
 			{
-				VisualStudioVersion = "14.0",
-				VsixId = "Merq",
+				VisualStudioVersion = "12.0",
+				VsixId = "Xamarin.VisualStudio",
 				RootSuffix = "Exp",
 				FailIfNotInstalled = true,
 				BuildEngine = new MockBuildEngine()
@@ -44,7 +44,7 @@ namespace MSBuilder
 		{
 			var task = new EnableVsix
 			{
-				VisualStudioVersion = "14.0",
+				VisualStudioVersion = "12.0",
 				VsixId = "Merq",
 				RootSuffix = "Exp",
 				FailIfNotInstalled = true,
@@ -59,7 +59,7 @@ namespace MSBuilder
 		{
 			var task = new UninstallVsix
 			{
-				VisualStudioVersion = "14.0",
+				VisualStudioVersion = "12.0",
 				VsixId = "Merq",
 				RootSuffix = "Exp",
 				FailIfNotInstalled = true,
@@ -73,9 +73,9 @@ namespace MSBuilder
 		{
 			var task = new ListInstalledVsix
 			{
-				VisualStudioVersion = "14.0",
+				VisualStudioVersion = "12.0",
 				RootSuffix = "Exp",
-				FilterExpression = "Xamarin.*",
+				//FilterExpression = "Xamarin.*",
 				BuildEngine = new MockBuildEngine()
 			};
 

@@ -5,6 +5,10 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Microsoft.Win32;
 using System.Linq;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.XPath;
+using System.Security.Principal;
 
 namespace MSBuilder
 {
@@ -82,7 +86,7 @@ namespace MSBuilder
 
 			object extension = managerType.InvokeMember("CreateInstallableExtension", BindingFlags.Static | BindingFlags.Public | BindingFlags.InvokeMethod, null, null, new[] { VsixPath });
 			var header = extension.GetType().InvokeMember("Header", BindingFlags.GetProperty, null, extension, null);
-			var id = header.GetType().InvokeMember("Identifier", BindingFlags.GetProperty, null, header, null);
+			var id = (string)header.GetType().InvokeMember("Identifier", BindingFlags.GetProperty, null, header, null);
 			var vsversion = "Visual Studio " + VisualStudioVersion;
 			if (!string.IsNullOrEmpty(RootSuffix))
 				vsversion += " (" + RootSuffix + ")";
@@ -92,8 +96,65 @@ namespace MSBuilder
 			{
 				// If previously installed, uninstall first.
 				var installedExtension = managerType.InvokeMember("GetInstalledExtension", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { id });
-				managerType.InvokeMember("Uninstall", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { installedExtension });
-				Log.LogMessage(importance, "Successfully uninstalled existing extension '{0}' found on {1}.", id, vsversion);
+				var installedHeader = installedExtension.GetType().InvokeMember("Header", BindingFlags.GetProperty, null, installedExtension, null);
+				// SystemComponent can't be uninstalled via the API call.
+				var isSystemComponent = (bool)installedHeader.GetType().InvokeMember("SystemComponent", BindingFlags.GetProperty, null, installedHeader, null);
+				var isPerMachine = (bool)installedExtension.GetType().InvokeMember("InstalledPerMachine", BindingFlags.GetProperty, null, installedExtension, null);
+				var isAdministrator = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+				if (!isSystemComponent)
+				{
+					if (isPerMachine && !isAdministrator)
+					{
+						Log.LogError("Existing extension '{0}' found on {1} is installed per-machine, but the current user isn't an Administrator and cannot uninstall it.", id, vsversion);
+						return false;
+					}
+
+					managerType.InvokeMember("Uninstall", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { installedExtension });
+					Log.LogMessage(importance, "Successfully uninstalled existing extension '{0}' found on {1}.", id, vsversion);
+				}
+				else
+				{
+					Log.LogError("Existing extension '{0}' found on {1} is marked as a SystemComponent therefore cannot be automatically uninstalled.", id, vsversion);
+					return false;
+				}
+
+				if (!isPerMachine)
+				{
+					// Clear existing extension's install directory to avoid MEF corruption on restart
+					var xmlns = new XmlNamespaceManager(new NameTable());
+					xmlns.AddNamespace("v1", "http://schemas.microsoft.com/developer/vsx-schema/2010");
+					xmlns.AddNamespace("v2", "http://schemas.microsoft.com/developer/vsx-schema/2011");
+
+					var extensionsDir = Path.Combine(
+						Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+						"Microsoft", "VisualStudio",
+						VisualStudioVersion + RootSuffix,
+						"Extensions");
+					if (Directory.Exists(extensionsDir))
+					{
+						foreach (var manifest in Directory.EnumerateFiles(extensionsDir, "extension.vsixmanifest", SearchOption.AllDirectories))
+						{
+							var vsixDoc = XDocument.Load(manifest);
+							var vsixId = (string)vsixDoc.XPathEvaluate("string(/v1:Vsix/v1:Identifier/@Id)", xmlns);
+							if (string.IsNullOrEmpty(vsixId))
+								vsixId = (string)vsixDoc.XPathEvaluate("string(/v2:PackageManifest/v2:Metadata/v2:Identity/@Id)", xmlns);
+
+							if (vsixId == id)
+							{
+								var vsixDir = new FileInfo(manifest).Directory.FullName;
+								try
+								{
+									Directory.Delete(vsixDir, true);
+									Log.LogMessage(importance, "Succesfully deleted existing extension folder '{0}'.", vsixDir);
+								}
+								catch
+								{
+									Log.LogWarning("Failed to delete existing extension folder '{0}'.", vsixDir);
+								}
+							}
+						}
+					}
+				}
 			}
 
 			managerType.InvokeMember("Install", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension, PerMachine });
