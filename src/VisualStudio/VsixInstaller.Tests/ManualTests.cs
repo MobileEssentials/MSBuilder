@@ -11,14 +11,26 @@ using Microsoft.Win32;
 namespace MSBuilder
 {
 	// Ad-hoc tests for TD.NET to try out behavior.
-	class VsixInstallerTests
+	partial class VsixInstallerTests
 	{
 		public void Install()
 		{
 			var task = new InstallVsix
 			{
 				VisualStudioVersion = "12.0",
-				VsixPath = @"C:\Code\Xamarin\mobessen\Merq\src\Vsix\Merq.Vsix\bin\Release\Merq.vsix",
+				// Provide your test vsixPath in a class file named 
+				// ManualTests.VsixPath.cs alongside this file, 
+				// containing a partial class like the following:
+				//
+				// namespace MSBuilder
+				// {
+				//		partial class VsixInstallerTests
+				//		{
+				//			string vsixPath = @"[PATH_TO_TEST_VSIX]";
+				//		}
+				// }
+				// If this line doesn't compile, read above ^^
+				VsixPath = vsixPath,
 				RootSuffix = "Exp",
 				BuildEngine = new MockBuildEngine()
 			};
