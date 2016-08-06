@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Build.Framework;
-using Microsoft.Win32;
 
 namespace MSBuilder
 {
 	// Ad-hoc tests for TD.NET to try out behavior.
 	partial class VsixInstallerTests
 	{
+		string vsixPath = "TEST_VSIX_PATH";
+
 		public void Install()
 		{
 			var task = new InstallVsix
