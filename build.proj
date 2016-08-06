@@ -60,14 +60,12 @@
 		</BuildPackagesDependsOn>
 	</PropertyGroup>
 
-	<PropertyGroup>
-		<XunitBuildDir>$([System.IO.Path]::Combine('packages', 'xunit.runner.msbuild', 'build'))</XunitBuildDir>
-		<XunitPlatformDir Condition=" Exists('$(XunitBuildDir)') ">$([System.IO.Directory]::GetDirectories($(XunitBuildDir))[0])</XunitPlatformDir>
-		<XunitProps>$([System.IO.Path]::Combine($(XunitPlatformDir), 'xunit.runner.msbuild.props'))</XunitProps>
-	</PropertyGroup>
-	<Import Project="$(XunitProps)" Condition="Exists('$(XunitProps)')"/>
-
 	<Target Name="Test" DependsOnTargets="CoreBuild" AfterTargets="CoreBuild">
+		<PropertyGroup>
+			<XunitConsole>packages\xunit.runner.console\tools\xunit.console.x86.exe</XunitConsole>
+			<XunitOptions>$(XunitOptions) -noshadow</XunitOptions>
+		</PropertyGroup>
+
 		<ItemGroup>
 			<TestProject Include="$(SourceDir)**\*.Tests.csproj" Condition=" '$(TestProject)' == '' " />
 			<TestProject Include="$(TestProject)" Condition=" '$(TestProject)' != '' " />
@@ -80,13 +78,17 @@
 			<TestAssembly Include="@(_TestAssembly)" Condition=" Exists('%(_TestAssembly.FullPath)') " />
 		</ItemGroup>
 
-		<MakeDir Directories="out" Condition="!Exists('out')" />
+		<Exec Command="$(XunitConsole) %(TestAssembly.FullPath) $(XunitOptions)"
+			  Condition=" '@(TestAssembly)' != '' "
+			  ConsoleToMSBuild="true"
+			  WorkingDirectory="$(MSBuildThisFileDirectory)"
+			  ContinueOnError="ErrorAndContinue" />
 
-		<xunit Assemblies="@(TestAssembly)"
+		<!--<xunit Assemblies="@(TestAssembly)"
 			   Html="out\tests.html"
 			   Xml="out\tests.xml"
 			   ParallelizeAssemblies="$(ParallelizeAssemblies)"
-			   ParallelizeTestCollections="$(ParallelizeTestCollections)" />
+			   ParallelizeTestCollections="$(ParallelizeTestCollections)" />-->
 	</Target>
 	
 	<Target Name="FilterPackages" Inputs="@(NuGet)" Outputs="%(NuGet.Identity)-BATCH">

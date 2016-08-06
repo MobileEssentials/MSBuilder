@@ -11,8 +11,8 @@
 		<AssemblyName>CodeGen</AssemblyName>
 		<DefaultLanguage>en-US</DefaultLanguage>
 		<FileAlignment>512</FileAlignment>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-  </PropertyGroup>
+		<TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>full</DebugType>
@@ -34,12 +34,12 @@
 		<Compile Include="Class1.cs" />
 		<Compile Include="Properties\AssemblyInfo.cs" />
 	</ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <UsingTask TaskName="CodeGenTask" AssemblyFile="..\..\MSBuilder.Roslyn.Tests.dll" />
+	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+	<UsingTask TaskName="CodeGenTask" AssemblyFile="..\..\MSBuilder.Roslyn.Tests.dll" />
 	<Target Name="CodeGen">
-    <CodeGenTask ProjectFullPath="$(MSBuildProjectFullPath)" >
-      <Output TaskParameter="ProjectId" PropertyName="ProjectId" />
-    </CodeGenTask>
-    <Message Text="ProjectId=$(ProjectId)" Importance="high" />
+		<CodeGenTask ProjectFullPath="$(MSBuildProjectFullPath)" >
+			<Output TaskParameter="ProjectId" PropertyName="ProjectId" />
+		</CodeGenTask>
+		<Message Text="ProjectId=$(ProjectId)" Importance="high" />
 	</Target>
 </Project>

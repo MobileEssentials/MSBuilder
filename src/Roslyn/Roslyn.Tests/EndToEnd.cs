@@ -26,6 +26,7 @@ namespace MSBuilder
 		public void when_building_then_succeeds()
 		{
 			var project = new Project(Path.Combine(ModuleInitializer.BaseDirectory, @"Content\CodeGen\CodeGen.csproj"));
+
 			var built = project.Build("CodeGen", new[] { new TestOutputLogger(output) });
 
 			Assert.True(built);
