@@ -30,7 +30,7 @@
     <Vsix2010>&lt;Namespace Prefix='vs' Uri='http://schemas.microsoft.com/developer/vsx-schema/2010'/&gt;</Vsix2010>
   </PropertyGroup>
 
-  <Target Name="VsixInfo" DependsOnTargets="FindSourceVsixManifest;DetokenizeVsixManifestFile">
+  <Target Name="VsixInfo" DependsOnTargets="FindSourceVsixManifest">
     <XmlPeek Condition="'$(VsixID)' == ''" Namespaces="$(Vsix2010)" XmlInputPath="@(SourceVsixManifest)" Query="/vs:Vsix/vs:Identifier/@Id">
       <Output TaskParameter="Result" PropertyName="VsixID" />
     </XmlPeek>
