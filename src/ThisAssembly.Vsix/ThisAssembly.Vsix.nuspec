@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>MSBuilder.ThisAssembly.Vsix</id>
+        <version>0.1.0</version>
+        <title>MSBuilder: ThisAssembly.Vsix Information</title>
+        <authors>Mobile Essentials</authors>
+        <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Generates the ThisAssembly partial class and adds a Vsix property containing properties from the source VSIX extension manifest file. These might be useful for conditional behaviors, diagnostics and tracing, and more.
+        
+Included properties are: Identifier, Name, Description and Author.</description>
+        <copyright>Copyright 2015</copyright>
+        <tags>msbuild vsix</tags>
+    </metadata>
+</package>
