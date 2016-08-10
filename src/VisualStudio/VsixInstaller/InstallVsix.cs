@@ -132,6 +132,7 @@ namespace MSBuilder
 						"Extensions");
 					if (Directory.Exists(extensionsDir))
 					{
+						var vsixDirDeleted = false;
 						foreach (var manifest in Directory.EnumerateFiles(extensionsDir, "extension.vsixmanifest", SearchOption.AllDirectories))
 						{
 							var vsixDoc = XDocument.Load(manifest);
@@ -145,6 +146,7 @@ namespace MSBuilder
 								try
 								{
 									Directory.Delete(vsixDir, true);
+									vsixDirDeleted = true;
 									Log.LogMessage(importance, "Succesfully deleted existing extension folder '{0}'.", vsixDir);
 								}
 								catch
@@ -152,6 +154,15 @@ namespace MSBuilder
 									Log.LogWarning("Failed to delete existing extension folder '{0}'.", vsixDir);
 								}
 							}
+						}
+
+						// If we deleted the directory, we must re-create the manager and extension, since 
+						// otherwise the cached list of installed extensions will try to access the deleted 
+						// manifest when we install, causing an exception.
+						if (vsixDirDeleted)
+						{
+							manager = Activator.CreateInstance(managerType, new[] { settings });
+							extension = managerType.InvokeMember("CreateInstallableExtension", BindingFlags.Static | BindingFlags.Public | BindingFlags.InvokeMethod, null, null, new[] { VsixPath });
 						}
 					}
 				}
