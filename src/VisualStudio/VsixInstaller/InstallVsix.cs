@@ -87,6 +87,7 @@ namespace MSBuilder
 			object extension = managerType.InvokeMember("CreateInstallableExtension", BindingFlags.Static | BindingFlags.Public | BindingFlags.InvokeMethod, null, null, new[] { VsixPath });
 			var header = extension.GetType().InvokeMember("Header", BindingFlags.GetProperty, null, extension, null);
 			var id = (string)header.GetType().InvokeMember("Identifier", BindingFlags.GetProperty, null, header, null);
+			var newVersion = (Version)header.GetType().InvokeMember("Version", BindingFlags.GetProperty, null, header, null);
 			var vsversion = "Visual Studio " + VisualStudioVersion;
 			if (!string.IsNullOrEmpty(RootSuffix))
 				vsversion += " (" + RootSuffix + ")";
@@ -101,12 +102,21 @@ namespace MSBuilder
 				var isSystemComponent = (bool)installedHeader.GetType().InvokeMember("SystemComponent", BindingFlags.GetProperty, null, installedHeader, null);
 				var isPerMachine = (bool)installedExtension.GetType().InvokeMember("InstalledPerMachine", BindingFlags.GetProperty, null, installedExtension, null);
 				var isAdministrator = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+				var oldVersion = (Version)installedHeader.GetType().InvokeMember("Version", BindingFlags.GetProperty, null, installedHeader, null);
 				if (!isSystemComponent)
 				{
 					if (isPerMachine && !isAdministrator)
 					{
-						Log.LogError("Existing extension '{0}' found on {1} is installed per-machine, but the current user isn't an Administrator and cannot uninstall it.", id, vsversion);
-						return false;
+						if (newVersion != oldVersion)
+						{
+							Log.LogError("Existing extension '{0}' found on {1} is installed per-machine, but the current user isn't an Administrator and cannot uninstall it.", id, vsversion);
+							return false;
+						}
+						else
+						{
+							Log.LogMessage(importance, "Existing extension '{0}' found on {1} matches version to install {2}. Since the user isn't an Administrator, assuming the existing extension is the right one.", id, vsversion, newVersion);
+							return true;
+						}
 					}
 
 					managerType.InvokeMember("Uninstall", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { installedExtension });
@@ -114,8 +124,16 @@ namespace MSBuilder
 				}
 				else
 				{
-					Log.LogError("Existing extension '{0}' found on {1} is marked as a SystemComponent therefore cannot be automatically uninstalled.", id, vsversion);
-					return false;
+					if (newVersion != oldVersion)
+					{
+						Log.LogError("Existing extension '{0}' version {1} found on {2} does not match version {3} to install. Since it is marked as a SystemComponent, it cannot be automatically uninstalled.", id, oldVersion, vsversion, newVersion);
+						return false;
+					}
+					else
+					{
+						Log.LogMessage(importance, "Existing extension '{0}' found on {1} is a SystemComponent and matches version to install {2}. Assuming the existing extension is the right one.", id, vsversion, newVersion);
+						return true;
+					}
 				}
 
 				if (!isPerMachine)
