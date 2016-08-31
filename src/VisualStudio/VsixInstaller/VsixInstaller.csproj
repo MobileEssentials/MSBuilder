@@ -41,7 +41,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ListInstalledVsix.cs" />
+    <Compile Include="ListVsix.cs" />
     <Compile Include="DisableVsix.cs" />
     <Compile Include="EnableVsix.cs" />
     <Compile Include="UninstallVsix.cs" />

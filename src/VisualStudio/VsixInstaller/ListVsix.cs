@@ -12,19 +12,19 @@ using System.Text.RegularExpressions;
 namespace MSBuilder
 {
 	/// <summary>
-	/// Disables the extension with the given identifier in the 
-	/// given Visual Studio version and optional hive/instance (i.e. 'Exp').
+	/// Lists the installed extensions in the given Visual Studio 
+	/// version and optional hive/instance (i.e. 'Exp').
 	/// </summary>
-	public class ListInstalledVsix : Task
+	public class ListVsix : Task
 	{
 		/// <summary>
-		/// Visual Studio version to disable the VSIX for.
+		/// Visual Studio version to lookup the installed VSIXes in.
 		/// </summary>
 		[Required]
 		public string VisualStudioVersion { get; set; }
 
 		/// <summary>
-		/// Optional hive/instance to disable in (i.e. 'Exp').
+		/// Optional hive/instance to lookup the installed VSIXes in (i.e. 'Exp').
 		/// </summary>
 		public string RootSuffix { get; set; }
 
@@ -32,14 +32,20 @@ namespace MSBuilder
 		/// Optional regular expression used to match against the installed 
 		/// extensions identifiers.
 		/// </summary>
-		public string FilterExpression { get; set; }
+		public string VsixIdFilter { get; set; }
 
 		/// <summary>
-		/// The list of installed extensions that match the optional 
-		/// FilterExpression.
+		/// Optional regular expression used to match against the installed 
+		/// extensions name.
+		/// </summary>
+		public string VsixNameFilter { get; set; }
+
+		/// <summary>
+		/// The installed extensions (that match the optional 
+		/// VsixIdFilter or VsixNameFilter expressions).
 		/// </summary>
 		[Output]
-		public Microsoft.Build.Framework.ITaskItem[] InstalledExtensions { get; set; }
+		public Microsoft.Build.Framework.ITaskItem[] InstalledVsix { get; set; }
 
 		/// <summary>
 		/// Disables the extension in the given 
@@ -83,15 +89,20 @@ namespace MSBuilder
 			var installed = (IEnumerable)managerType.InvokeMember("GetInstalledExtensions", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new object[0]);
 			var extensions = new List<ITaskItem>();
 
-			var filter = string.IsNullOrEmpty(FilterExpression) ?
+			var idFilter = string.IsNullOrEmpty(VsixIdFilter) ?
 				((Func<string, bool>)(id => true)) :
-				((Func<string, bool>)(id => Regex.IsMatch(id, FilterExpression)));
+				((Func<string, bool>)(id => Regex.IsMatch(id, VsixIdFilter)));
+
+			var nameFilter = string.IsNullOrEmpty(VsixNameFilter) ?
+				((Func<string, bool>)(name => true)) :
+				((Func<string, bool>)(name => Regex.IsMatch(name, VsixNameFilter)));
 
 			Action<Dictionary<string, string>, object> addMetadata = (metadata, target) =>
 			{
 				foreach (var property in target.GetType().GetProperties().Where(prop => prop.Name != "License"))
 				{
-					if (property.PropertyType.IsValueType || property.PropertyType == typeof(string))
+					if (property.PropertyType.IsValueType || property.PropertyType == typeof(string) ||
+						property.PropertyType == typeof(Version))
 					{
 						try
 						{
@@ -113,8 +124,9 @@ namespace MSBuilder
 			{
 				var header = extension.GetType().InvokeMember("Header", BindingFlags.GetProperty, null, extension, null);
 				var id = (string)header.GetType().InvokeMember("Identifier", BindingFlags.GetProperty, null, header, null);
+				var name = (string)header.GetType().InvokeMember("Name", BindingFlags.GetProperty, null, header, null);
 				var metadata = new Dictionary<string, string>();
-				if (filter(id))
+				if (idFilter(id) && nameFilter(name))
 				{
 					addMetadata(metadata, extension);
 					addMetadata(metadata, header);
@@ -127,7 +139,7 @@ namespace MSBuilder
 				}
 			}
 
-			InstalledExtensions = extensions.ToArray();
+			InstalledVsix = extensions.ToArray();
 
 			return true;
 		}

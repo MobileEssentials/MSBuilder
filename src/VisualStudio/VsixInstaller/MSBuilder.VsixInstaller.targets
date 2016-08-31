@@ -24,4 +24,77 @@
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Import Project="MSBuilder.VsixInstaller.tasks" />
+
+	<PropertyGroup>
+		<RootSuffix Condition=" '$(RootSuffix)' == '' ">$(VSSDKTargetPlatformRegRootSuffix)</RootSuffix>
+		<RootSuffix Condition=" '$(RootSuffix)' == '.' "></RootSuffix>
+	</PropertyGroup>
+	
+	<Target Name="InstallVsix">
+		<PropertyGroup>
+			<PerMachine Condition=" '$(PerMachine)' == '' ">false</PerMachine>
+			<MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
+		</PropertyGroup>
+		<InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
+					 VsixPath="$(VsixPath)"
+					 PerMachine="$(PerMachine)"
+					 RootSuffix="$(RootSuffix)"
+					 MessageImportance="$(MessageImportance)" />
+	</Target>
+
+	<Target Name="UninstallVsix">
+		<PropertyGroup>
+			<FailIfNotInstalled Condition=" '$(FailIfNotInstalled)' == '' ">true</FailIfNotInstalled>
+			<MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
+		</PropertyGroup>
+		<UninstallVsix VisualStudioVersion="$(VisualStudioVersion)"
+					 VsixId="$(VsixId)"
+					 FailIfNotInstalled="$(FailIfNotInstalled)"
+					 RootSuffix="$(RootSuffix)"
+					 MessageImportance="$(MessageImportance)" />
+	</Target>
+
+	<Target Name="EnableVsix">
+		<PropertyGroup>
+			<FailIfNotInstalled Condition=" '$(FailIfNotInstalled)' == '' ">true</FailIfNotInstalled>
+			<MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
+		</PropertyGroup>
+		<EnableVsix VisualStudioVersion="$(VisualStudioVersion)"
+					VsixId="$(VsixId)"
+					FailIfNotInstalled="$(FailIfNotInstalled)"
+					RootSuffix="$(RootSuffix)"
+					MessageImportance="$(MessageImportance)" />
+	</Target>
+
+	<Target Name="DisableVsix">
+		<PropertyGroup>
+			<FailIfNotInstalled Condition=" '$(FailIfNotInstalled)' == '' ">true</FailIfNotInstalled>
+			<MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
+		</PropertyGroup>
+		<DisableVsix VisualStudioVersion="$(VisualStudioVersion)"
+					 VsixId="$(VsixId)"
+					 FailIfNotInstalled="$(FailIfNotInstalled)"
+					 RootSuffix="$(RootSuffix)"
+					 MessageImportance="$(MessageImportance)" />
+	</Target>
+
+	<Target Name="ListVsix" Returns="@(InstalledVsix)">
+		<PropertyGroup>
+			<MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
+		</PropertyGroup>
+		<ListVsix VisualStudioVersion="$(VisualStudioVersion)"
+				  VsixIdFilter="$(VsixIdFilter)"
+				  VsixNameFilter="$(VsixNameFilter)"
+				  RootSuffix="$(RootSuffix)">
+			<Output TaskParameter="InstalledVsix" ItemName="InstalledVsix" />
+		</ListVsix>
+		<Message Importance="$(MessageImportance)" 
+				 Text="%(InstalledVsix.Name)
+	Id='%(InstalledVsix.Identity)'
+	InstalledByMsi=%(InstalledVsix.InstalledByMsi)
+	InstalledPerMachine=%(InstalledVsix.InstalledPerMachine)
+	State=%(InstalledVsix.State)
+	SystemComponent=%(InstalledVsix.SystemComponent)
+	Version=%(InstalledVsix.Version)	" />
+	</Target>
 </Project>

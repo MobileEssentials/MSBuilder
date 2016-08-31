@@ -79,7 +79,7 @@ namespace MSBuilder
 
 		public void ListInstalled()
 		{
-			var task = new ListInstalledVsix
+			var task = new ListVsix
 			{
 				VisualStudioVersion = "12.0",
 				RootSuffix = "Exp",
@@ -87,12 +87,12 @@ namespace MSBuilder
 				BuildEngine = new MockBuildEngine()
 			};
 
-			Console.WriteLine("Execute: {0} ({1})", task.Execute(), task.InstalledExtensions.Length);
+			Console.WriteLine("Execute: {0} ({1})", task.Execute(), task.InstalledVsix.Length);
 
-			foreach (var extension in task.InstalledExtensions)
+			foreach (var extension in task.InstalledVsix)
 			{
-				Console.WriteLine("Extension {0} ({1} metadata, InstalledPerMachine={2}).", 
-					extension.ItemSpec, extension.MetadataCount, extension.GetMetadata("InstalledPerMachine"));
+				Console.WriteLine("Extension {0} v{1} ({2} metadata items, InstalledPerMachine={3}).", 
+					extension.ItemSpec, extension.GetMetadata("Version"), extension.MetadataCount, extension.GetMetadata("InstalledPerMachine"));
 			}
 		}
 	}
