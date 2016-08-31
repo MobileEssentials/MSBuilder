@@ -92,51 +92,43 @@ namespace MSBuilder
 			if (!string.IsNullOrEmpty(RootSuffix))
 				vsversion += " (" + RootSuffix + ")";
 
-			var installed = (bool)managerType.InvokeMember("IsInstalled", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension });
-			if (installed)
+			var isInstalled = (bool)managerType.InvokeMember("IsInstalled", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension });
+			var isInstalledPerMachine = false;
+			if (isInstalled)
 			{
 				// If previously installed, uninstall first.
 				var installedExtension = managerType.InvokeMember("GetInstalledExtension", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { id });
 				var installedHeader = installedExtension.GetType().InvokeMember("Header", BindingFlags.GetProperty, null, installedExtension, null);
 				// SystemComponent can't be uninstalled via the API call.
 				var isSystemComponent = (bool)installedHeader.GetType().InvokeMember("SystemComponent", BindingFlags.GetProperty, null, installedHeader, null);
-				var isPerMachine = (bool)installedExtension.GetType().InvokeMember("InstalledPerMachine", BindingFlags.GetProperty, null, installedExtension, null);
+				isInstalledPerMachine = (bool)installedExtension.GetType().InvokeMember("InstalledPerMachine", BindingFlags.GetProperty, null, installedExtension, null);
 				var isAdministrator = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
 				var oldVersion = (Version)installedHeader.GetType().InvokeMember("Version", BindingFlags.GetProperty, null, installedHeader, null);
+
+				if (oldVersion == newVersion)
+				{
+					Log.LogMessage(importance, "Existing extension '{0}' version {1} found on {3} matches version to install. Assuming the existing extension is the right one.", id, newVersion, vsversion);
+					return true;
+				}
+
 				if (!isSystemComponent)
 				{
-					if (isPerMachine && !isAdministrator)
+					if (isInstalledPerMachine && !isAdministrator)
 					{
-						if (newVersion != oldVersion)
-						{
-							Log.LogError("Existing extension '{0}' found on {1} is installed per-machine, but the current user isn't an Administrator and cannot uninstall it.", id, vsversion);
-							return false;
-						}
-						else
-						{
-							Log.LogMessage(importance, "Existing extension '{0}' found on {1} matches version to install {2}. Since the user isn't an Administrator, assuming the existing extension is the right one.", id, vsversion, newVersion);
-							return true;
-						}
+						Log.LogError("Existing extension '{0}' version {1} found on {2} is installed per-machine, but the current user isn't an Administrator and cannot uninstall it.", id, oldVersion, vsversion);
+						return false;
 					}
 
 					managerType.InvokeMember("Uninstall", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { installedExtension });
-					Log.LogMessage(importance, "Successfully uninstalled existing extension '{0}' found on {1}.", id, vsversion);
+					Log.LogMessage(importance, "Successfully uninstalled existing extension '{0}' version {1} found on {2}.", id, oldVersion, vsversion);
 				}
 				else
 				{
-					if (newVersion != oldVersion)
-					{
-						Log.LogError("Existing extension '{0}' version {1} found on {2} does not match version {3} to install. Since it is marked as a SystemComponent, it cannot be automatically uninstalled.", id, oldVersion, vsversion, newVersion);
-						return false;
-					}
-					else
-					{
-						Log.LogMessage(importance, "Existing extension '{0}' found on {1} is a SystemComponent and matches version to install {2}. Assuming the existing extension is the right one.", id, vsversion, newVersion);
-						return true;
-					}
+					Log.LogError("Existing extension '{0}' version {1} found on {2} does not match version {3} to install. Since it is marked as a SystemComponent, it cannot be automatically uninstalled.", id, oldVersion, vsversion, newVersion);
+					return false;
 				}
 
-				if (!isPerMachine)
+				if (!isInstalledPerMachine)
 				{
 					// Clear existing extension's install directory to avoid MEF corruption on restart
 					var xmlns = new XmlNamespaceManager(new NameTable());
@@ -179,6 +171,20 @@ namespace MSBuilder
 						// manifest when we install, causing an exception.
 						if (vsixDirDeleted)
 						{
+							// We also need to delete the extension.[locale].cache file since we want the list updated now
+							foreach (var cacheFile in Directory.EnumerateFiles(extensionsDir, "extensions.*.cache").ToArray())
+							{
+								try
+								{
+									File.Delete(cacheFile);
+									Log.LogMessage(importance, "Successfully deleted existing extensions cache file '{0}'.", cacheFile);
+								}
+								catch
+								{
+									Log.LogWarning("Failed to delete existing extensions cache file '{0}'.", cacheFile);
+								}
+							}
+
 							manager = Activator.CreateInstance(managerType, new[] { settings });
 							extension = managerType.InvokeMember("CreateInstallableExtension", BindingFlags.Static | BindingFlags.Public | BindingFlags.InvokeMethod, null, null, new[] { VsixPath });
 						}
@@ -188,7 +194,7 @@ namespace MSBuilder
 
 			managerType.InvokeMember("Install", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension, PerMachine });
 			managerType.InvokeMember("UpdateLastExtensionsChange", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new object[0]);
-			Log.LogMessage(importance, "Successfully installed extension '{0}' on {1}.", id, vsversion);
+			Log.LogMessage(importance, "Successfully installed extension '{0}' version {1} on {2}.", id, newVersion, vsversion);
 
 			return true;
 		}
