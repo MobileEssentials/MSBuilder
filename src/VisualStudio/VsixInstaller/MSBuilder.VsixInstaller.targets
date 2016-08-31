@@ -81,6 +81,7 @@
 	<Target Name="ListVsix" Returns="@(InstalledVsix)">
 		<PropertyGroup>
 			<MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
+			<VsVersionSuffix Condition=" '$(RootSuffix)' != '' ">($(RootSuffix))</VsVersionSuffix>
 		</PropertyGroup>
 		<ListVsix VisualStudioVersion="$(VisualStudioVersion)"
 				  VsixIdFilter="$(VsixIdFilter)"
@@ -88,7 +89,12 @@
 				  RootSuffix="$(RootSuffix)">
 			<Output TaskParameter="InstalledVsix" ItemName="InstalledVsix" />
 		</ListVsix>
+		
+		<Message Importance="$(MessageImportance)"
+				 Text="Found @(InstalledVsix -> Count()) matching VSIXes on Visual Studio $(VisualStudioVersion) $(VsVersionSuffix)"
+				 Condition=" '@(InstalledVsix)' != '' "/>
 		<Message Importance="$(MessageImportance)" 
+				 Condition=" '@(InstalledVsix)' != '' "
 				 Text="%(InstalledVsix.Name)
 	Id='%(InstalledVsix.Identity)'
 	InstalledByMsi=%(InstalledVsix.InstalledByMsi)
@@ -96,5 +102,9 @@
 	State=%(InstalledVsix.State)
 	SystemComponent=%(InstalledVsix.SystemComponent)
 	Version=%(InstalledVsix.Version)	" />
+
+		<Message Importance="$(MessageImportance)"
+				 Text="No VSIXes found matching VsixIdFilter='$(VsixIdFilter)' and VsixNameFilter='$(VsixNameFilter)' on Visual Studio $(VisualStudioVersion) $(VsVersionSuffix)"
+				 Condition=" '@(InstalledVsix)' == '' "/>
 	</Target>
 </Project>
