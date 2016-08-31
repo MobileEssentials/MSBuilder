@@ -81,9 +81,9 @@ namespace MSBuilder
 		{
 			var task = new ListVsix
 			{
-				VisualStudioVersion = "12.0",
+				VisualStudioVersion = "14.0",
 				RootSuffix = "Exp",
-				//FilterExpression = "Xamarin.*",
+				VsixIdFilter = "Merq",
 				BuildEngine = new MockBuildEngine()
 			};
 

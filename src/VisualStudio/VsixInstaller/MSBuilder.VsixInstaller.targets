@@ -22,13 +22,18 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 -->
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" TreatAsLocalProperty="RootSuffix">
 	<Import Project="MSBuilder.VsixInstaller.tasks" />
 
 	<PropertyGroup>
 		<RootSuffix Condition=" '$(RootSuffix)' == '' ">$(VSSDKTargetPlatformRegRootSuffix)</RootSuffix>
-		<RootSuffix Condition=" '$(RootSuffix)' == '.' "></RootSuffix>
+		<!-- Clear value if we got a '.' This is possible because of TreatAsLocalProperty above -->
+		<RootSuffix Condition=" '$(RootSuffix)' == '.' " />
 	</PropertyGroup>
+
+	<Target Name="RootSuffix">
+		<Message Importance="high" Text="RootSuffix='$(RootSuffix)'" />
+	</Target>
 	
 	<Target Name="InstallVsix">
 		<PropertyGroup>
