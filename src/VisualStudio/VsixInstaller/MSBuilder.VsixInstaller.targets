@@ -26,7 +26,10 @@
 	<Import Project="MSBuilder.VsixInstaller.tasks" />
 
 	<PropertyGroup>
-		<RootSuffix Condition=" '$(RootSuffix)' == '' ">$(VSSDKTargetPlatformRegRootSuffix)</RootSuffix>
+    <!-- Just in case our targets come before the VSSDK ones, we also copy its defaulting of VSSDKTargetPlatformRegRootSuffix -->
+    <VSSDKTargetPlatformRegRootSuffix Condition="'$(VSSDKTargetPlatformRegRootSuffix)' == ''">Exp</VSSDKTargetPlatformRegRootSuffix>
+    
+    <RootSuffix Condition=" '$(RootSuffix)' == '' ">$(VSSDKTargetPlatformRegRootSuffix)</RootSuffix>
 		<!-- Clear value if we got a '.' This is possible because of TreatAsLocalProperty above -->
 		<RootSuffix Condition=" '$(RootSuffix)' == '.' " />
 	</PropertyGroup>

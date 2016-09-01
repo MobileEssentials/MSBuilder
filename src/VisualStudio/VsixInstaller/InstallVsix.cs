@@ -107,7 +107,7 @@ namespace MSBuilder
 
 				if (oldVersion == newVersion)
 				{
-					Log.LogMessage(importance, "Existing extension '{0}' version {1} found on {3} matches version to install. Assuming the existing extension is the right one.", id, newVersion, vsversion);
+					Log.LogMessage(importance, "Existing extension '{0}' version {1} found on {2} matches version to install. Assuming the existing extension is the right one.", id, newVersion, vsversion);
 					return true;
 				}
 
