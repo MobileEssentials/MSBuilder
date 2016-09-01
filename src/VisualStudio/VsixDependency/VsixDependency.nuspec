@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package>
+	<metadata>
+		<id>MSBuilder.VsixDependency</id>
+		<version>0.1.0</version>
+		<title>MSBuilder: VsixDependency</title>
+		<authors>Mobile Essentials</authors>
+		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<summary>Automatically injects embedded VSIX dependencies into the containing VSIX project.</summary>
+		<description>Injects VsixDependency items into the containing VSIX project manifest and VSIX container.</description>
+		<copyright>Copyright 2015</copyright>
+		<tags>msbuild inline vssdk vsix dependency</tags>
+		<dependencies>
+			<dependency id="MSBuilder" version="0.1.0" />
+			<dependency id="MSBuilder.CodeTaskAssembly" version="0.2.3" />
+			<dependency id="MSBuilder.VsixInstaller" version="0.2.2" />
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="Readme.txt" />
+		<file src="bin\MSBuilder.VsixDependency.targets" target="build" />
+		<file src="bin\MSBuilder.VsixDependency.tasks" target="build" />
+		<file src="bin\MSBuilder.VsixDependency.dll" target="build" />
+		<file src="bin\MSBuilder.VsixDependency.Inline.tasks" target="build" />
+		<file src="bin\MSBuilder.VsixDependency.Compiled.tasks" target="build" />
+	</files>
+</package>

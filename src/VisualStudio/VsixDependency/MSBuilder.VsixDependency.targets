@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	The MIT License (MIT)
+
+	Copyright (c) 2015 Mobile Essentials
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="MSBuilder.VsixDependency.tasks" />
+
+  <Target Name="AddVsixDependencies"
+			Condition=" '@(VsixDependency)' != '' "
+			AfterTargets="DetokenizeVsixManifestFile"
+			Inputs="$(IntermediateVsixManifest)"
+			Outputs="$(IntermediateOutputPath)AddVsixDependencies.txt">
+
+    <ItemGroup>
+      <Content Include="%(VsixDependency.VsixPath)">
+        <Link>%(Filename)%(Extension)</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <IncludeInVsix>true</IncludeInVsix>
+      </Content>
+    </ItemGroup>
+
+    <AddVsixDependency TargetVsixManifest="$(IntermediateVsixManifest)"
+						   VsixDependencyManifest="@(VsixDependency)" />
+
+    <Touch Files="$(IntermediateOutputPath)AddVsixDependencies.txt" AlwaysCreate="true" />
+  </Target>
+
+  <!-- Only auto-install dependencies if the extension being built will be deployed too -->
+  <PropertyGroup Condition=" '$(DeployExtension)' == 'true' ">
+    <DeployVsixExtensionFilesDependsOn>
+      CleanInstallVsixDependencies;
+      CollectVsixPayloads;
+      InstallVsixDependencies;
+      $(DeployVsixExtensionFilesDependsOn)
+    </DeployVsixExtensionFilesDependsOn>
+  </PropertyGroup>
+
+  <!-- If the entire Extensions folder doesn't exist, most likely the dev deleted the entire Exp directory -->
+  <Target Name="CleanInstallVsixDependencies"
+			Condition=" Exists('$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt') ">
+    <GetExtensionsPath SubPath="$(ExtensionsDeploymentSubPath)" Condition=" '$(ExtensionsPath)' == '' ">
+      <Output TaskParameter="LocalExtensionsPath" PropertyName="ExtensionsPath"/>
+    </GetExtensionsPath>
+    <Delete Files="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt"
+				Condition=" !Exists('$(ExtensionsPath)') " />
+  </Target>
+
+  <Target Name="CollectVsixPayloads">
+    <ItemGroup>
+      <VsixPayload Include="@(VsixDependency -> '%(VsixPath)')" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Install only once per VS + Instance, to enable incremental build -->
+  <Target Name="InstallVsixDependencies"
+          Condition=" '@(VsixDependency)' != '' "
+          DependsOnTargets="CollectVsixPayloads"
+          Inputs="@(VsixPayload)"
+          Outputs="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt">
+    <InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
+					 VsixPath="%(VsixPayload.FullPath)"
+					 MessageImportance="high"
+					 RootSuffix="$(RootSuffix)" />
+    <Touch Files="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt" AlwaysCreate="true" />
+  </Target>
+
+</Project>
