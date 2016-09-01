@@ -4,6 +4,7 @@ using Microsoft.Build.Utilities;
 using Xunit;
 using System.Linq;
 using System.Xml.Linq;
+using System.Collections.Generic;
 
 namespace MSBuilder
 {
@@ -23,7 +24,7 @@ namespace MSBuilder
 				TargetVsixManifest = new TaskItem(targetVsix),
 				VsixDependencyManifest = new []
 				{
-					new TaskItem("clide.v1.vsixmanifest")
+					new TaskItem("clide.v1.vsixmanifest", new Dictionary<string, string> { { "VsixPath", "Clide.vsix" } })
 				}
 			};
 
@@ -48,7 +49,7 @@ namespace MSBuilder
 				TargetVsixManifest = new TaskItem(targetVsix),
 				VsixDependencyManifest = new[]
 				{
-					new TaskItem("merq.v2.vsixmanifest")
+					new TaskItem("merq.v2.vsixmanifest", new Dictionary<string, string> { { "VsixPath", "Merq.vsix" } })
 				}
 			};
 

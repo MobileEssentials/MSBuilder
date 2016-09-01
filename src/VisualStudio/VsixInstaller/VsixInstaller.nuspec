@@ -2,7 +2,7 @@
 <package>
 	<metadata>
 		<id>MSBuilder.VsixInstaller</id>
-		<version>0.2.0</version>
+		<version>0.2.4</version>
 		<title>MSBuilder: VsixInstaller+ Tasks</title>
 		<authors>Mobile Essentials</authors>
 		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -37,6 +37,7 @@ Example (tasks used inside a target):
 		<file src="bin\MSBuilder.VsixInstaller.targets" target="build" />
 		<file src="bin\MSBuilder.VsixInstaller.tasks" target="build" />
 		<file src="bin\MSBuilder.VsixInstaller.dll" target="build" />
+		<file src="bin\MSBuilder.VsixInstaller.xml" target="build" />
 		<file src="bin\MSBuilder.VsixInstaller.Inline.tasks" target="build" />
 		<file src="bin\MSBuilder.VsixInstaller.Compiled.tasks" target="build" />
 	</files>

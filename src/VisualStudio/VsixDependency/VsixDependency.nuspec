@@ -23,6 +23,7 @@
 		<file src="bin\MSBuilder.VsixDependency.targets" target="build" />
 		<file src="bin\MSBuilder.VsixDependency.tasks" target="build" />
 		<file src="bin\MSBuilder.VsixDependency.dll" target="build" />
+		<file src="bin\MSBuilder.VsixDependency.xml" target="build" />
 		<file src="bin\MSBuilder.VsixDependency.Inline.tasks" target="build" />
 		<file src="bin\MSBuilder.VsixDependency.Compiled.tasks" target="build" />
 	</files>

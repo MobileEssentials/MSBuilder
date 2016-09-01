@@ -155,6 +155,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{306A59B2
 		ThisAssembly.Vsix\build\MSBuilder.ThisAssembly.Vsix.vb.pp = ThisAssembly.Vsix\build\MSBuilder.ThisAssembly.Vsix.vb.pp
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsixDependency", "VisualStudio\VsixDependency\VsixDependency.csproj", "{CC42BF6A-8D4E-45C6-9E5A-3C101189FE30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsixDependency.Tests", "VisualStudio\VsixDependency.Tests\VsixDependency.Tests.csproj", "{0ED378F8-5926-4CC8-B8DD-6BAD21976B86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -225,6 +229,14 @@ Global
 		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC42BF6A-8D4E-45C6-9E5A-3C101189FE30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC42BF6A-8D4E-45C6-9E5A-3C101189FE30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC42BF6A-8D4E-45C6-9E5A-3C101189FE30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC42BF6A-8D4E-45C6-9E5A-3C101189FE30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0ED378F8-5926-4CC8-B8DD-6BAD21976B86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0ED378F8-5926-4CC8-B8DD-6BAD21976B86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0ED378F8-5926-4CC8-B8DD-6BAD21976B86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0ED378F8-5926-4CC8-B8DD-6BAD21976B86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -255,5 +267,7 @@ Global
 		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
 		{F86E683D-C8B0-4133-954F-35B42BD72054} = {A1A40953-D0CF-4102-8466-3E35F26FF60F}
 		{306A59B2-C608-4E2E-B0A1-AE2E7A64A356} = {FED20470-D2AA-4C15-B396-1DC6ED7561BE}
+		{CC42BF6A-8D4E-45C6-9E5A-3C101189FE30} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
+		{0ED378F8-5926-4CC8-B8DD-6BAD21976B86} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
 	EndGlobalSection
 EndGlobal
