@@ -2,7 +2,7 @@
 <package>
 	<metadata>
 		<id>MSBuilder.VsixDependency</id>
-		<version>0.1.0</version>
+		<version>0.2.0</version>
 		<title>MSBuilder: VsixDependency</title>
 		<authors>Mobile Essentials</authors>
 		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -15,7 +15,7 @@
 		<dependencies>
 			<dependency id="MSBuilder" version="0.1.0" />
 			<dependency id="MSBuilder.CodeTaskAssembly" version="0.2.3" />
-			<dependency id="MSBuilder.VsixInstaller" version="0.2.2" />
+			<dependency id="MSBuilder.VsixInstaller" version="0.2.5" />
 		</dependencies>
 	</metadata>
 	<files>
