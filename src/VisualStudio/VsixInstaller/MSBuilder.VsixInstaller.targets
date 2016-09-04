@@ -91,6 +91,13 @@
 			<MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
 			<VsVersionSuffix Condition=" '$(RootSuffix)' != '' ">($(RootSuffix))</VsVersionSuffix>
 		</PropertyGroup>
+		<Message Importance="high" Condition=" '$(VsixIdFilter)' == '' And '$(VsixNameFilter)' == '' "
+				 Text="ListVsix accepts the following properties for filtering: 
+	VisualStudioVersion: which version of Visual Studio to list extensions for. (i.e. '14.0')
+	RootSuffix: which instance/suffix to list. (i.e. 'Exp', which is the default, or '.' for the normal hive)
+	VsixIdFilter: filter listed extensions with identifiers matching the given regular expression (i.e. 'Microsoft.*')
+	VsixNameFilter: filter listed extensions with names matching the given regular expression (i.e. 'SDK')
+" />
 		<ListVsix VisualStudioVersion="$(VisualStudioVersion)"
 				  VsixIdFilter="$(VsixIdFilter)"
 				  VsixNameFilter="$(VsixNameFilter)"

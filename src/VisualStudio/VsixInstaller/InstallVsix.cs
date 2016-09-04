@@ -192,9 +192,39 @@ namespace MSBuilder
 				}
 			}
 
-			managerType.InvokeMember("Install", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension, PerMachine });
-			managerType.InvokeMember("UpdateLastExtensionsChange", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new object[0]);
-			Log.LogMessage(importance, "Successfully installed extension '{0}' version {1} on {2}.", id, newVersion, vsversion);
+			try
+			{
+				Log.LogMessage(importance, "Installing '{0}' version {1} on {2}.", id, newVersion, vsversion);
+				managerType.InvokeMember("Install", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension, PerMachine });
+				managerType.InvokeMember("UpdateLastExtensionsChange", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new object[0]);
+				Log.LogMessage(importance, "Successfully installed extension '{0}' version {1} on {2}.", id, newVersion, vsversion);
+
+			}
+			catch (TargetInvocationException tie)
+			{
+				var ex = tie.GetBaseException();
+				if (ex.GetType().Name == "BreaksExistingExtensionsException")
+				{
+					var message = ex.Message;
+					message = message.Substring(message.IndexOf(':') + 1);
+					var impacted = message
+						.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+						.Select(s => s.Replace("-", "").Trim());
+					message = string.Join(", ", impacted);
+					Log.LogError(ex.Message.Substring(0, ex.Message.IndexOf(':')) + ": " + message);
+					Log.LogMessage(importance, "You can uninstall the impacted extensions by running the build again with the following arguments: ");
+					foreach (var ie in impacted)
+					{
+						Log.LogMessage(importance, "\t /t:UninstallVsix /p:VsixId={0}", ie);
+					}
+				}
+				else
+				{
+					Log.LogErrorFromException(ex, true);
+				}
+
+				return false;
+			}
 
 			return true;
 		}

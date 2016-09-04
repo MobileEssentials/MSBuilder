@@ -90,6 +90,7 @@ namespace MSBuilder
 				var state = (int)extension.GetType().InvokeMember("State", BindingFlags.GetProperty, null, extension, null);
 				if (state != 0)
 				{
+					Log.LogMessage(importance, "Disabling '{0}' on {1}.", VsixId, vsversion);
 					managerType.InvokeMember("Disable", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension });
 					managerType.InvokeMember("UpdateLastExtensionsChange", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new object[0]);
 					Log.LogMessage(importance, "Successfully disabled extension '{0}' on {1}.", VsixId, vsversion);
