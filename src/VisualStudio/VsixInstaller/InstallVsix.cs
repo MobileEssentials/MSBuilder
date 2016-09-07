@@ -87,6 +87,7 @@ namespace MSBuilder
 			object extension = managerType.InvokeMember("CreateInstallableExtension", BindingFlags.Static | BindingFlags.Public | BindingFlags.InvokeMethod, null, null, new[] { VsixPath });
 			var header = extension.GetType().InvokeMember("Header", BindingFlags.GetProperty, null, extension, null);
 			var id = (string)header.GetType().InvokeMember("Identifier", BindingFlags.GetProperty, null, header, null);
+			var name = (string)header.GetType().InvokeMember("Name", BindingFlags.GetProperty, null, header, null);
 			var newVersion = (Version)header.GetType().InvokeMember("Version", BindingFlags.GetProperty, null, header, null);
 			var vsversion = "Visual Studio " + VisualStudioVersion;
 			if (!string.IsNullOrEmpty(RootSuffix))
@@ -107,7 +108,7 @@ namespace MSBuilder
 
 				if (oldVersion == newVersion)
 				{
-					Log.LogMessage(importance, "Existing extension '{0}' version {1} found on {2} matches version to install. Assuming the existing extension is the right one.", id, newVersion, vsversion);
+					Log.LogMessage(importance, "Existing extension '{0}' (id={1}) version {2} found on {3} matches version to install. Assuming the existing extension is the right one.", name, id, newVersion, vsversion);
 					return true;
 				}
 
@@ -115,16 +116,16 @@ namespace MSBuilder
 				{
 					if (isInstalledPerMachine && !isAdministrator)
 					{
-						Log.LogError("Existing extension '{0}' version {1} found on {2} is installed per-machine, but the current user isn't an Administrator and cannot uninstall it.", id, oldVersion, vsversion);
+						Log.LogError("Existing extension '{0}' (id={1}) version {2} found on {3} does not match version {4} to install and is installed per-machine, but the current user isn't an Administrator and cannot uninstall it. You can manually uninstall it from Visual Studio Extension and Updates dialog, or run Visual Studio in elevated mode ('Run as administrator') to fix it.", name, id, oldVersion, vsversion);
 						return false;
 					}
 
 					managerType.InvokeMember("Uninstall", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { installedExtension });
-					Log.LogMessage(importance, "Successfully uninstalled existing extension '{0}' version {1} found on {2}.", id, oldVersion, vsversion);
+					Log.LogMessage(importance, "Successfully uninstalled existing extension '{0}' (id={1}) version {2} found on {3}.", name, id, oldVersion, vsversion);
 				}
 				else
 				{
-					Log.LogError("Existing extension '{0}' version {1} found on {2} does not match version {3} to install. Since it is marked as a SystemComponent, it cannot be automatically uninstalled.", id, oldVersion, vsversion, newVersion);
+					Log.LogError("Existing extension '{0}' (id={1}) version {2} found on {3} does not match version {4} to install. Since it is marked as a SystemComponent, it cannot be automatically uninstalled. It must be uninstalled using the same installer that installed it.", name, id, oldVersion, vsversion, newVersion);
 					return false;
 				}
 
@@ -194,10 +195,10 @@ namespace MSBuilder
 
 			try
 			{
-				Log.LogMessage(importance, "Installing '{0}' version {1} on {2}.", id, newVersion, vsversion);
+				Log.LogMessage(importance, "Installing '{0}' (id={1}) version {2} on {3}.", name, id, newVersion, vsversion);
 				managerType.InvokeMember("Install", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension, PerMachine });
 				managerType.InvokeMember("UpdateLastExtensionsChange", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new object[0]);
-				Log.LogMessage(importance, "Successfully installed extension '{0}' version {1} on {2}.", id, newVersion, vsversion);
+				Log.LogMessage(importance, "Successfully installed extension '{0}' (id={1}) version {2} on {3}.", name, id, newVersion, vsversion);
 
 			}
 			catch (TargetInvocationException tie)
