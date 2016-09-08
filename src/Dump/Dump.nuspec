@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>MSBuilder.Dump</id>
-        <version>0.1.1</version>
+        <version>0.1.2</version>
         <title>MSBuilder: Dump Items and Properties from MSBuild</title>
         <authors>Mobile Essentials</authors>
         <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -14,7 +14,7 @@ or properties, for easy diagnostics and troubleshooting.</description>
         <tags>msbuild debug diagnostics</tags>
         <dependencies>
           <dependency id="MSBuilder.Introspect" version="0.1.5" />
-          <dependency id="MSBuilder.DumpItems" version="0.1.8" />
+          <dependency id="MSBuilder.DumpItems" version="0.2.0" />
         </dependencies>
     </metadata>
 </package>

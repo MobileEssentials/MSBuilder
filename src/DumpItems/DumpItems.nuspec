@@ -2,8 +2,8 @@
 <package>
     <metadata>
         <id>MSBuilder.DumpItems</id>
-        <version>0.1.6</version>
-        <title>MSBuilder: Dump Items</title>
+        <version>0.2.0</version>
+        <title>MSBuilder: Dump Items Task</title>
         <authors>Mobile Essentials</authors>
         <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
@@ -18,7 +18,6 @@
     <files>
         <file src="Readme.txt" />
         <file src="bin\MSBuilder.DumpItems.dll" target="build" />
-        <file src="bin\MSBuilder.DumpItems.targets" target="build" />
         <file src="bin\MSBuilder.DumpItems.tasks" target="build" />
         <file src="bin\MSBuilder.DumpItems.Inline.tasks" target="build" />
         <file src="bin\MSBuilder.DumpItems.Compiled.tasks" target="build" />
