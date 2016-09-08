@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>MSBuilder.Dump</id>
+        <version>0.1.0</version>
+        <title>MSBuilder: Dump Items and Properties from MSBuild</title>
+        <authors>Mobile Essentials</authors>
+        <licenseUrl>https://github.com/kzu/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/kzu/MSBuilder/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Provides the DumpItems and DumpProperties targets, which can be used to dump an item list and all their metadata 
+or properties, for easy diagnostics and troubleshooting.</description>
+        <copyright>Copyright 2015</copyright>
+        <tags>msbuild debug diagnostics</tags>
+        <dependencies>
+          <dependency id="MSBuilder.Introspect" version="0.1.4" />
+          <dependency id="MSBuilder.DumpItems" version="0.1.8" />
+        </dependencies>
+    </metadata>
+</package>
