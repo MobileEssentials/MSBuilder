@@ -42,6 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="DumpItems.nuspec" />
+    <Content Include="MSBuilder.DumpItems.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
