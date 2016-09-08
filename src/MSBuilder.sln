@@ -159,6 +159,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsixDependency", "VisualStu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsixDependency.Tests", "VisualStudio\VsixDependency.Tests\VsixDependency.Tests.csproj", "{0ED378F8-5926-4CC8-B8DD-6BAD21976B86}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dump", "Dump", "{45DA62BC-59F3-44C1-ADB4-8CDB0837D38D}"
+	ProjectSection(SolutionItems) = preProject
+		Dump\Dump.nuspec = Dump\Dump.nuspec
+		Dump\readme.txt = Dump\readme.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{6FB34D8B-D0AA-4E0C-9304-202BA85F4D11}"
+	ProjectSection(SolutionItems) = preProject
+		Dump\build\MSBuilder.Dump.targets = Dump\build\MSBuilder.Dump.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -269,5 +280,6 @@ Global
 		{306A59B2-C608-4E2E-B0A1-AE2E7A64A356} = {FED20470-D2AA-4C15-B396-1DC6ED7561BE}
 		{CC42BF6A-8D4E-45C6-9E5A-3C101189FE30} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
 		{0ED378F8-5926-4CC8-B8DD-6BAD21976B86} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
+		{6FB34D8B-D0AA-4E0C-9304-202BA85F4D11} = {45DA62BC-59F3-44C1-ADB4-8CDB0837D38D}
 	EndGlobalSection
 EndGlobal
