@@ -15,4 +15,12 @@
           <dependency id="MSBuilder.CodeTaskAssembly" version="0.2.3" />
         </dependencies>
     </metadata>
+    <files>
+        <file src="Readme.txt" />
+        <file src="bin\MSBuilder.DumpItems.dll" target="build" />
+        <file src="bin\MSBuilder.DumpItems.targets" target="build" />
+        <file src="bin\MSBuilder.DumpItems.tasks" target="build" />
+        <file src="bin\MSBuilder.DumpItems.Inline.tasks" target="build" />
+        <file src="bin\MSBuilder.DumpItems.Compiled.tasks" target="build" />
+    </files>
 </package>

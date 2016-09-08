@@ -115,14 +115,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roslyn.Tests", "Roslyn\Roslyn.Tests\Roslyn.Tests.csproj", "{3ACD0C50-917C-4328-B063-906AC4FC03E9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DumpItems", "DumpItems", "{8B3AD949-9952-4A54-9023-B127123A3132}"
-	ProjectSection(SolutionItems) = preProject
-		DumpItems\DumpItems.nuspec = DumpItems\DumpItems.nuspec
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{6D4B6CA6-B37B-46F5-82AF-FA03574BC341}"
-	ProjectSection(SolutionItems) = preProject
-		DumpItems\build\MSBuilder.DumpItems.targets = DumpItems\build\MSBuilder.DumpItems.targets
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roslyn.ProjectReader", "Roslyn\Roslyn.ProjectReader\Roslyn.ProjectReader.csproj", "{87645A85-FA11-456B-9678-903431536108}"
 EndProject
@@ -169,6 +161,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{6FB34D8B
 	ProjectSection(SolutionItems) = preProject
 		Dump\build\MSBuilder.Dump.targets = Dump\build\MSBuilder.Dump.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpItems", "DumpItems\DumpItems.csproj", "{BD5E546D-7334-4F49-8CA9-0EA4F38BD3F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -248,6 +242,10 @@ Global
 		{0ED378F8-5926-4CC8-B8DD-6BAD21976B86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0ED378F8-5926-4CC8-B8DD-6BAD21976B86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0ED378F8-5926-4CC8-B8DD-6BAD21976B86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD5E546D-7334-4F49-8CA9-0EA4F38BD3F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD5E546D-7334-4F49-8CA9-0EA4F38BD3F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD5E546D-7334-4F49-8CA9-0EA4F38BD3F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD5E546D-7334-4F49-8CA9-0EA4F38BD3F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -272,7 +270,6 @@ Global
 		{E8125C3A-8D93-4C63-8658-F087F0DDD616} = {3D4BAE0B-9EB9-47C1-B113-A1D95881041A}
 		{14BA7028-5B05-43BD-9913-39E1940A56FD} = {F27D9312-4D46-47F0-AF97-3FA7F1232B17}
 		{3ACD0C50-917C-4328-B063-906AC4FC03E9} = {F27D9312-4D46-47F0-AF97-3FA7F1232B17}
-		{6D4B6CA6-B37B-46F5-82AF-FA03574BC341} = {8B3AD949-9952-4A54-9023-B127123A3132}
 		{87645A85-FA11-456B-9678-903431536108} = {F27D9312-4D46-47F0-AF97-3FA7F1232B17}
 		{4D0F4438-9F2F-4E9F-B9A0-58DD7EC90C03} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
 		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
@@ -281,5 +278,6 @@ Global
 		{CC42BF6A-8D4E-45C6-9E5A-3C101189FE30} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
 		{0ED378F8-5926-4CC8-B8DD-6BAD21976B86} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
 		{6FB34D8B-D0AA-4E0C-9304-202BA85F4D11} = {45DA62BC-59F3-44C1-ADB4-8CDB0837D38D}
+		{BD5E546D-7334-4F49-8CA9-0EA4F38BD3F8} = {8B3AD949-9952-4A54-9023-B127123A3132}
 	EndGlobalSection
 EndGlobal

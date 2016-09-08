@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\MSBuilder.0.1.0\build\MSBuilder.props" Condition="Exists('..\packages\MSBuilder.0.1.0\build\MSBuilder.props')" />
+  <Import Project="..\packages\MSBuilder.IsXBuild.0.1.0\build\MSBuilder.IsXBuild.props" Condition="Exists('..\packages\MSBuilder.IsXBuild.0.1.0\build\MSBuilder.IsXBuild.props')" />
+  <Import Project="..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props" Condition="Exists('..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BD5E546D-7334-4F49-8CA9-0EA4F38BD3F8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MSBuilder</RootNamespace>
+    <AssemblyName>MSBuilder.DumpItems</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Build" />
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DumpItems.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DumpItems.nuspec" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="readme.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuilder.CodeTaskAssembly.0.1.0\build\MSBuilder.CodeTaskAssembly.props'))" />
+    <Error Condition="!Exists('..\packages\MSBuilder.IsXBuild.0.1.0\build\MSBuilder.IsXBuild.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuilder.IsXBuild.0.1.0\build\MSBuilder.IsXBuild.props'))" />
+    <Error Condition="!Exists('..\packages\MSBuilder.0.1.0\build\MSBuilder.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuilder.0.1.0\build\MSBuilder.props'))" />
+    <Error Condition="!Exists('..\packages\MSBuilder.TaskInliner.0.2.7\build\MSBuilder.TaskInliner.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuilder.TaskInliner.0.2.7\build\MSBuilder.TaskInliner.targets'))" />
+  </Target>
+  <Import Project="..\packages\MSBuilder.TaskInliner.0.2.7\build\MSBuilder.TaskInliner.targets" Condition="Exists('..\packages\MSBuilder.TaskInliner.0.2.7\build\MSBuilder.TaskInliner.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
