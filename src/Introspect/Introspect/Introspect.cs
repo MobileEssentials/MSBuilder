@@ -6,6 +6,7 @@ using System.Reflection;
 using Microsoft.Build.Framework;
 using System.IO;
 using Microsoft.Build.Execution;
+using Microsoft.Build.Evaluation;
 
 namespace MSBuilder
 {
@@ -14,6 +15,18 @@ namespace MSBuilder
 	/// </summary>
 	public class Introspect : Task
 	{
+		/// <summary>
+		/// Optional item type to retrieve via the Items output property, such as "Compile" or "Content".
+		/// </summary>
+		public string ItemType { get; set; }
+
+		/// <summary>
+		/// If ItemType was provided, contains all the items with the given type.
+		/// </summary>
+		[Output]
+		public Microsoft.Build.Framework.ITaskItem[] Items { get; set; }
+
+
 		/// <summary>
 		/// Returns all current project properties as an item, with 
 		/// each property as an item metadata with its evaluated value.
@@ -70,6 +83,14 @@ namespace MSBuilder
 				var targetsField = callback.GetType().GetField("_targetsToBuild", flags);
 				targets = (IEnumerable<object>)targetsField.GetValue(callback);
 			}
+
+			if (string.IsNullOrEmpty(ItemType))
+				Items = new ITaskItem[0];
+			else
+				Items = project.Items
+					.Select(item => new TaskItem(item.EvaluatedInclude,
+						item.Metadata.ToDictionary(meta => meta.Name, meta => meta.EvaluatedValue)))
+					.ToArray();
 
 			Properties = new TaskItem(project.ProjectFileLocation.File, project.Properties.ToDictionary(
 				prop => prop.Name, prop => prop.EvaluatedValue));

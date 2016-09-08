@@ -25,7 +25,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="MSBuilder.Introspect.tasks" />
 
-  <Target Name="IntrospectProperties" Returns="@(IntrospectedProperties)">
+  <Target Name="IntrospectProperties" Returns="@(IntrospectedProperties);@(IntrospectedGlobalProperties)">
     <Introspect>
       <Output TaskParameter="Properties" ItemName="IntrospectedProperties" />
       <Output TaskParameter="GlobalProperties" ItemName="IntrospectedGlobalProperties" />
@@ -37,4 +37,11 @@
       <Output TaskParameter="Targets" ItemName="IntrospectedTargets" />
     </Introspect>
   </Target>
+    
+  <Target Name="IntrospectItems" Returns="@(IntrospectedItems)">
+    <Introspect ItemType="$(ItemType)">
+      <Output TaskParameter="Items" ItemName="IntrospectedItems" />
+    </Introspect>
+  </Target>
+
 </Project>

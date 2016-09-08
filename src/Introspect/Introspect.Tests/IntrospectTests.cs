@@ -123,6 +123,28 @@ namespace MSBuilder
 			Assert.True(!outputs["Build"].Items.Select(t => t.ItemSpec).Contains("Startup"));
 		}
 
+		[Fact]
+		public void when_introspecting_then_retrieves_items()
+		{
+			var eval = new Project("IntrospectTests.targets");
+			eval.SetGlobalProperty("UseCompiledTasks", "true");
+			eval.SetGlobalProperty("Configuration", "Release");
+			eval.SetGlobalProperty("ItemType", "Compile");
+			var project = BuildManager.DefaultBuildManager.GetProjectInstanceForBuild(eval);
+			IDictionary<string, TargetResult> outputs;
+
+			var result = project.Build(new[] { "IntrospectItems" }, new[] { logger }, out outputs);
+
+			Assert.True(result);
+			Assert.True(outputs.ContainsKey("IntrospectItems"));
+			Assert.Equal(1, outputs["IntrospectItems"].Items.Length);
+
+			var item = outputs["IntrospectItems"].Items[0];
+
+			Assert.Equal("a.cs", item.ItemSpec);
+		}
+
+
 		public void Dispose()
 		{
 			ProjectCollection.GlobalProjectCollection.UnloadAllProjects();
