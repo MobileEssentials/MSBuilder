@@ -24,8 +24,11 @@ Usage:
 &lt;/PropertyGroup&gt;
 </description>
 		<copyright>Copyright 2015</copyright>
-		<tags>msbuild</tags>
-	</metadata>
+        <tags>msbuild</tags>
+        <dependencies>
+            <dependency id="MSBuilder.CodeTaskAssembly" version="0.2.3" />
+        </dependencies>
+    </metadata>
 	<files>
 		<file src="Readme.txt" />
     <file src="bin\MSBuilder.Introspect.dll" target="build" />
