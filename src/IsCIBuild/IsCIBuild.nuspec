@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>MSBuilder.IsCIBuild</id>
+        <version>0.1.0</version>
+        <title>MSBuilder: IsCIBuild Property</title>
+        <authors>Mobile Essentials</authors>
+        <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Provides the $(IsCIBuild) property which allows detecting that the current build is being performed in a continuous integration server. Supports TeamCity, AppVeyor, MyGet, Jenkins and Wrench.</description>
+        <copyright>Copyright 2016</copyright>
+        <tags>msbuild teamcity appveyor myget jenkins wrench</tags>
+    </metadata>
+</package>
