@@ -114,7 +114,8 @@
 		</ItemGroup>
 	
 		<Exec Command='"$(NuGet)" Pack "@(NuGet)" -NoPackageAnalysis -NonInteractive -Version %(Version)'
-			  Condition="'%(Identity)' != ''" />
+          Condition="'%(Identity)' != ''"
+          ConsoleToMSBuild="true" />
 	</Target>
 
 	<Target Name="FormatVersion">
