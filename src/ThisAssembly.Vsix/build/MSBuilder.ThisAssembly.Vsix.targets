@@ -65,6 +65,7 @@
           Condition="'$(Language)' == 'C#' Or '$(Language)' == 'VB'">
     <ItemGroup>
       <Compile Include="$(ThisVsixInfoFile)" />
+      <_GeneratedCodeFiles Include="$(ThisVsixInfoFile)" />
     </ItemGroup>
   </Target>
 
