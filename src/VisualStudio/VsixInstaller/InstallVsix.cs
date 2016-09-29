@@ -116,7 +116,8 @@ namespace MSBuilder
 				{
 					if (isInstalledPerMachine && !isAdministrator)
 					{
-						Log.LogError("Existing extension '{0}' (id={1}) version {2} found on {3} does not match version {4} to install and is installed per-machine, but the current user isn't an Administrator and cannot uninstall it. You can manually uninstall it from Visual Studio Extension and Updates dialog, or run Visual Studio in elevated mode ('Run as administrator') to fix it.", name, id, oldVersion, vsversion);
+						Log.LogError("Existing extension '{0}' (id={1}) version {2} found on {3} does not match version {4} to install and is installed per-machine, but the current user isn't an Administrator and cannot uninstall it. You can manually uninstall it from Visual Studio Extension and Updates dialog, or run Visual Studio in elevated mode ('Run as administrator') to fix it.", 
+							name, id, oldVersion, vsversion, newVersion);
 						return false;
 					}
 
@@ -125,7 +126,8 @@ namespace MSBuilder
 				}
 				else
 				{
-					Log.LogError("Existing extension '{0}' (id={1}) version {2} found on {3} does not match version {4} to install. Since it is marked as a SystemComponent, it cannot be automatically uninstalled. It must be uninstalled using the same installer that installed it.", name, id, oldVersion, vsversion, newVersion);
+					Log.LogError("Existing extension '{0}' (id={1}) version {2} found on {3} does not match version {4} to install. Since it is marked as a SystemComponent, it cannot be automatically uninstalled. It must be uninstalled using the same installer that installed it.", 
+						name, id, oldVersion, vsversion, newVersion);
 					return false;
 				}
 
