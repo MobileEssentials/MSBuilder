@@ -22,67 +22,72 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 -->
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!-- You can customize the namespace of the ThisAssembly class by setting the ThisAssemblyNamespace property. -->
+	<!-- You can customize the namespace of the ThisAssembly class by setting the ThisAssemblyNamespace property. -->
 	<PropertyGroup Condition="'$(Language)' == 'C#' Or '$(Language)' == 'VB'">
-    <CompileDependsOn>
-      GenerateProjectInfo;
-      $(CompileDependsOn)
-    </CompileDependsOn>
-    <ThisProjectInfoFile>$(IntermediateOutputPath)AssemblyInfo.ProjectInfo.g$(DefaultLanguageSourceExtension)</ThisProjectInfoFile>
-    <ProjectGuidString Condition="'$(ProjectGuidString)' == ''">$([System.Guid]::Parse($(ProjectGuid)).ToString())</ProjectGuidString>
-  </PropertyGroup>
+		<CoreCompileDependsOn>
+			ThisProjectInfo;
+			$(CoreCompileDependsOn)
+		</CoreCompileDependsOn>
+		<ThisProjectInfoFile>$(IntermediateOutputPath)ThisAssembly.Project.g$(DefaultLanguageSourceExtension)</ThisProjectInfoFile>
+		<ProjectGuidString Condition="'$(ProjectGuidString)' == ''">$([System.Guid]::Parse($(ProjectGuid)).ToString())</ProjectGuidString>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="$(ThisProjectInfoFile)" Condition="'$(Language)' == 'C#' Or '$(Language)' == 'VB'" />
-  </ItemGroup>
+	<Target Name="ThisProjectInfo" DependsOnTargets="_GenerateProjectInfo"
+			BeforeTargets="BuildOnlySettings"
+			Condition="'$(Language)' == 'C#' Or '$(Language)' == 'VB'">
+		<ItemGroup>
+			<Compile Include="$(ThisProjectInfoFile)" />
+			<_GeneratedCodeFiles Include="$(ThisProjectInfoFile)" />
+		</ItemGroup>
+	</Target>
 
-  <Target Name="GenerateProjectInfo"
-          BeforeTargets="BuildOnlySettings"
-          Inputs="$(MSBuildProjectFullPath)"
-          Outputs="$(ThisProjectInfoFile)">
+	<Target Name="_GenerateProjectInfo"
+			Condition="'$(Language)' == 'C#' Or '$(Language)' == 'VB'"
+			Inputs="$(MSBuildAllProjects)"
+			Outputs="$(ThisProjectInfoFile)">
 
-    <PropertyGroup>
-      <_ThisProjectInfoContent>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)MSBuilder.ThisAssembly.Project$(DefaultLanguageSourceExtension).pp'))</_ThisProjectInfoContent>
+		<PropertyGroup>
+			<_ThisProjectInfoContent>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)MSBuilder.ThisAssembly.Project$(DefaultLanguageSourceExtension).pp'))</_ThisProjectInfoContent>
 
-      <!-- The $NamespaceDefine$ replacement is turned into the GLOBALNAMESPACE define if the ThisAssemblyNamespace isn't empty.  -->
-      <_ThisProjectInfoContent Condition="'$(ThisAssemblyNamespace)' != ''">$(_ThisProjectInfoContent.Replace('$NamespaceDefine$', 'LOCALNAMESPACE'))</_ThisProjectInfoContent>
-      <_ThisProjectInfoContent Condition="'$(ThisAssemblyNamespace)' == ''">$(_ThisProjectInfoContent.Replace('$NamespaceDefine$', 'GLOBALNAMESPACE'))</_ThisProjectInfoContent>
+			<!-- The $NamespaceDefine$ replacement is turned into the GLOBALNAMESPACE define if the ThisAssemblyNamespace isn't empty.  -->
+			<_ThisProjectInfoContent Condition="'$(ThisAssemblyNamespace)' != ''">$(_ThisProjectInfoContent.Replace('$NamespaceDefine$', 'LOCALNAMESPACE'))</_ThisProjectInfoContent>
+			<_ThisProjectInfoContent Condition="'$(ThisAssemblyNamespace)' == ''">$(_ThisProjectInfoContent.Replace('$NamespaceDefine$', 'GLOBALNAMESPACE'))</_ThisProjectInfoContent>
 
-      <_ThisProjectInfoContent Condition="'$(ThisAssemblyNamespace)' != ''">$(_ThisProjectInfoContent.Replace('RootNamespace.', '$(ThisAssemblyNamespace).'))</_ThisProjectInfoContent>
-      <_ThisProjectInfoContent Condition="'$(ThisAssemblyNamespace)' == ''">$(_ThisProjectInfoContent.Replace('RootNamespace.', ''))</_ThisProjectInfoContent>
+			<_ThisProjectInfoContent Condition="'$(ThisAssemblyNamespace)' != ''">$(_ThisProjectInfoContent.Replace('RootNamespace.', '$(ThisAssemblyNamespace).'))</_ThisProjectInfoContent>
+			<_ThisProjectInfoContent Condition="'$(ThisAssemblyNamespace)' == ''">$(_ThisProjectInfoContent.Replace('RootNamespace.', ''))</_ThisProjectInfoContent>
 
-      <_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('_RootNamespace_', '$(ThisAssemblyNamespace)'))</_ThisProjectInfoContent>
-      <_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$RootNamespace$', '$(RootNamespace)'))</_ThisProjectInfoContent>
-      <_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$AssemblyName$', '$(AssemblyName)'))</_ThisProjectInfoContent>
-      <_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$ProjectGuid$', '$(ProjectGuid)'))</_ThisProjectInfoContent>
-      <_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$TargetFrameworkVersion$', '$(TargetFrameworkVersion)'))</_ThisProjectInfoContent>
-      <_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$TargetFrameworkIdentifier$', '$(TargetFrameworkIdentifier)'))</_ThisProjectInfoContent>
-      <_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$TargetFrameworkMoniker$', '$(TargetFrameworkMoniker)'))</_ThisProjectInfoContent>
-      <_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$TargetPlatformVersion$', '$(TargetPlatformVersion)'))</_ThisProjectInfoContent>
-      <_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$TargetPlatformIdentifier$', '$(TargetPlatformIdentifier)'))</_ThisProjectInfoContent>
-      <_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$TargetPlatformMoniker$', '$(TargetPlatformMoniker)'))</_ThisProjectInfoContent>
-    </PropertyGroup>
+			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('_RootNamespace_', '$(ThisAssemblyNamespace)'))</_ThisProjectInfoContent>
+			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$RootNamespace$', '$(RootNamespace)'))</_ThisProjectInfoContent>
+			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$AssemblyName$', '$(AssemblyName)'))</_ThisProjectInfoContent>
+			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$ProjectGuid$', '$(ProjectGuid)'))</_ThisProjectInfoContent>
+			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$TargetFrameworkVersion$', '$(TargetFrameworkVersion)'))</_ThisProjectInfoContent>
+			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$TargetFrameworkIdentifier$', '$(TargetFrameworkIdentifier)'))</_ThisProjectInfoContent>
+			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$TargetFrameworkMoniker$', '$(TargetFrameworkMoniker)'))</_ThisProjectInfoContent>
+			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$TargetPlatformVersion$', '$(TargetPlatformVersion)'))</_ThisProjectInfoContent>
+			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$TargetPlatformIdentifier$', '$(TargetPlatformIdentifier)'))</_ThisProjectInfoContent>
+			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$TargetPlatformMoniker$', '$(TargetPlatformMoniker)'))</_ThisProjectInfoContent>
+		</PropertyGroup>
 
-    <PropertyGroup>
-      <ThisProjectInfoDir>$([System.IO.Path]::GetDirectoryName('$(ThisProjectInfoFile)'))</ThisProjectInfoDir>
-    </PropertyGroup>
-    <MakeDir Directories="$(ThisProjectInfoDir)" Condition="!Exists('$(ThisProjectInfoDir)')" />
+		<PropertyGroup>
+			<ThisProjectInfoDir>$([System.IO.Path]::GetDirectoryName('$(ThisProjectInfoFile)'))</ThisProjectInfoDir>
+		</PropertyGroup>
+		<MakeDir Directories="$(ThisProjectInfoDir)" Condition="!Exists('$(ThisProjectInfoDir)')" />
 
-    <WriteLinesToFile File="$(ThisProjectInfoFile)" Lines="$(_ThisProjectInfoContent)" Overwrite="true" />
+		<WriteLinesToFile File="$(ThisProjectInfoFile)" Lines="$(_ThisProjectInfoContent)" Overwrite="true" />
 
-    <!-- Denotes xbuild, which doesn't properly handle escaped semicolon %3B -->
-    <Exec Condition="'$(MSBuildRuntimeVersion)' == ''"
-					Command="sed -i '' 's/\(.*\)&quot;/\1&quot;;/' '$(ThisProjectInfoFile)'" />
-    <!-- Remove potential double semi-colon we might have added -->
-    <Exec Condition="'$(MSBuildRuntimeVersion)' == ''"
-					Command="sed -i '' 's/\(.*\)&quot;;;/\1&quot;;/' '$(ThisProjectInfoFile)'" />
+		<!-- Denotes xbuild, which doesn't properly handle escaped semicolon %3B -->
+		<Exec Condition="'$(MSBuildRuntimeVersion)' == ''"
+						Command="sed -i '' 's/\(.*\)&quot;/\1&quot;;/' '$(ThisProjectInfoFile)'" />
+		<!-- Remove potential double semi-colon we might have added -->
+		<Exec Condition="'$(MSBuildRuntimeVersion)' == ''"
+						Command="sed -i '' 's/\(.*\)&quot;;;/\1&quot;;/' '$(ThisProjectInfoFile)'" />
 
-    <ItemGroup>
-      <FileWrites Include="$(ThisProjectInfoFile)" />
-    </ItemGroup>
+		<ItemGroup>
+			<FileWrites Include="$(ThisProjectInfoFile)" />
+		</ItemGroup>
 
-  </Target>
+	</Target>
 
 </Project>
