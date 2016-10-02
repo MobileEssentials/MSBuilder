@@ -31,15 +31,20 @@
 			$(CoreCompileDependsOn)
 		</CoreCompileDependsOn>
 		<ThisProjectInfoFile>$(IntermediateOutputPath)ThisAssembly.Project.g$(DefaultLanguageSourceExtension)</ThisProjectInfoFile>
+		<ThisProjectPropertiesFile>$(IntermediateOutputPath)ThisAssembly.ProjectProperties.g$(DefaultLanguageSourceExtension)</ThisProjectPropertiesFile>
 		<ProjectGuidString Condition="'$(ProjectGuidString)' == ''">$([System.Guid]::Parse($(ProjectGuid)).ToString())</ProjectGuidString>
 	</PropertyGroup>
 
-	<Target Name="ThisProjectInfo" DependsOnTargets="_GenerateProjectInfo"
+	<Target Name="ThisProjectInfo" DependsOnTargets="_GenerateProjectInfo;_IntrospectProjectProperties;_GenerateProjectProperties"
 			BeforeTargets="BuildOnlySettings"
 			Condition="'$(Language)' == 'C#' Or '$(Language)' == 'VB'">
 		<ItemGroup>
 			<Compile Include="$(ThisProjectInfoFile)" />
 			<_GeneratedCodeFiles Include="$(ThisProjectInfoFile)" />
+		</ItemGroup>
+		<ItemGroup Condition="'@(ThisAssemblyProjectProperty)' != ''">
+			<Compile Include="$(ThisProjectPropertiesFile)" />
+			<_GeneratedCodeFiles Include="$(ThisProjectPropertiesFile)" />
 		</ItemGroup>
 	</Target>
 
@@ -87,6 +92,69 @@
 		<ItemGroup>
 			<FileWrites Include="$(ThisProjectInfoFile)" />
 		</ItemGroup>
+
+	</Target>
+
+	<Target Name="_IntrospectProjectProperties" Condition="'@(ThisAssemblyProjectProperty)' != ''">
+		<Introspect>
+			<Output TaskParameter="Properties" ItemName="ProjectProperties" />
+		</Introspect>
+	</Target>
+	
+	<Target Name="_GenerateProjectProperties" Condition="'@(ThisAssemblyProjectProperty)' != ''" DependsOnTargets="_GenerateCSharpProjectProperties" />
+
+	<Target Name="_GenerateCSharpProjectProperties" Condition="'$(Language)' == 'C#'" 
+			DependsOnTargets="_WriteCSharpProjectBegin;_WriteCSharpProjectProperties;_WriteCSharpProjectEnd" />
+
+	<Target Name="_WriteCSharpProjectBegin">
+
+		<PropertyGroup>
+			<NoNamespace Condition="'$(ThisAssemblyNamespace)' == ''">true</NoNamespace>
+			<NoNamespace Condition="'$(ThisAssemblyNamespace)' != ''">false</NoNamespace>
+		</PropertyGroup>
+
+		<!-- Write namespace -->
+		<WriteLinesToFile Condition="'$(NoNamespace)' == 'false'" Lines='
+namespace $(ThisAssemblyNamespace)
+{
+' Overwrite='true' File='$(ThisProjectPropertiesFile)' />
+
+		<!-- Write partial classes -->
+		<WriteLinesToFile Lines='
+	partial class ThisAssembly
+	{
+		public static partial class Project
+		{
+			public static partial class Properties
+			{
+' Overwrite='$(NoNamespace)' File='$(ThisProjectPropertiesFile)' />
+
+	</Target>
+
+	<Target Name="_WriteCSharpProjectProperties" Inputs="@(ThisAssemblyProjectProperty)" Outputs="%(ThisAssemblyProjectProperty.Identity)-BATCH">
+		<PropertyGroup>
+			<PropertyName>%(ThisAssemblyProjectProperty.Identity)</PropertyName>
+			<PropertyValue>@(ProjectProperties -> Metadata('$(PropertyName)'))</PropertyValue>
+		</PropertyGroup>
+		<!-- Write property -->
+		<WriteLinesToFile Lines='				  
+				/// &lt;summary&gt;$(PropertyName)=$(PropertyValue)&lt;/summary&gt;
+				public const string $(PropertyName) = "$(PropertyValue)"%3B
+' Overwrite='false' File='$(ThisProjectPropertiesFile)' />
+	</Target>
+
+	<Target Name="_WriteCSharpProjectEnd">
+		<!-- Close partial classes -->
+		<WriteLinesToFile Lines='
+			}
+		}
+	}
+' Overwrite='false' File='$(ThisProjectPropertiesFile)' />
+
+		<!-- Close namespace -->
+		<WriteLinesToFile Condition="'$(NoNamespace)' == 'false'" Lines='
+}
+' Overwrite='false' File='$(ThisProjectPropertiesFile)' />
 
 	</Target>
 

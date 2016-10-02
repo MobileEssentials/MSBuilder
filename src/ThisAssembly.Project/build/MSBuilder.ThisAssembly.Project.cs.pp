@@ -17,7 +17,7 @@ namespace _RootNamespace_
 #endif
 	partial class ThisAssembly
 	{
-		public static class Project
+		public static partial class Project
 		{
 			/// <summary>RootNamespace: $RootNamespace$</summary>
 			public const string RootNamespace = "$RootNamespace$";

@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>MSBuilder.ThisAssembly.Project</id>
-        <version>0.2.2</version>
+        <version>0.3.0</version>
         <title>MSBuilder: ThisAssembly.Project Information</title>
         <authors>Mobile Essentials</authors>
         <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -10,8 +10,15 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Generates the ThisAssembly partial class and adds a Project property containing properties from the source project file. These might be useful for conditional behaviors, diagnostics and tracing, and more.
         
-Included properties are: AssemblyName, RootNamespace, ProjectGuid, TargetFrameworkVersion, TargetFrameworkIdentifier, TargetFrameworkMoniker, TargetPlatformVersion, TargetPlatformIdentifier and TargetPlatformMoniker.</description>
+Included properties are: AssemblyName, RootNamespace, ProjectGuid, TargetFrameworkVersion, TargetFrameworkIdentifier, TargetFrameworkMoniker, TargetPlatformVersion, TargetPlatformIdentifier and TargetPlatformMoniker.
+
+Arbitrary project properties can be included by declaring @(ThisAssemblyProjectProperty) items with the property names to generate, such as:
+	&lt;ThisAssemblyProjectProperty Include="AvailablePlatforms" /&gt;
+</description>
         <copyright>Copyright 2015</copyright>
         <tags>msbuild project</tags>
+		<dependencies>
+			<dependency id="MSBuilder.Introspect" version="0.1.5" />
+		</dependencies>
     </metadata>
 </package>
