@@ -101,7 +101,7 @@
 		</Introspect>
 	</Target>
 	
-	<Target Name="_GenerateProjectProperties" Condition="'@(ThisAssemblyProjectProperty)' != ''" DependsOnTargets="_GenerateCSharpProjectProperties" />
+	<Target Name="_GenerateProjectProperties" Condition="'@(ThisAssemblyProjectProperty)' != ''" DependsOnTargets="_GenerateCSharpProjectProperties;_GenerateVisualBasicProjectProperties" />
 
 	<Target Name="_GenerateCSharpProjectProperties" Condition="'$(Language)' == 'C#'" 
 			DependsOnTargets="_WriteCSharpProjectBegin;_WriteCSharpProjectProperties;_WriteCSharpProjectEnd" />
@@ -123,7 +123,7 @@ namespace $(ThisAssemblyNamespace)
 		<WriteLinesToFile Lines='
 	partial class ThisAssembly
 	{
-		public static partial class Project
+		public partial class Project
 		{
 			public static partial class Properties
 			{
@@ -154,6 +154,56 @@ namespace $(ThisAssemblyNamespace)
 		<!-- Close namespace -->
 		<WriteLinesToFile Condition="'$(NoNamespace)' == 'false'" Lines='
 }
+' Overwrite='false' File='$(ThisProjectPropertiesFile)' />
+
+	</Target>
+
+	<Target Name="_GenerateVisualBasicProjectProperties" Condition="'$(Language)' == 'VB'"
+			DependsOnTargets="_WriteVisualBasicProjectBegin;_WriteVisualBasicProjectProperties;_WriteVisualBasicProjectEnd" />
+
+	<Target Name="_WriteVisualBasicProjectBegin">
+
+		<PropertyGroup>
+			<NoNamespace Condition="'$(ThisAssemblyNamespace)' == ''">true</NoNamespace>
+			<NoNamespace Condition="'$(ThisAssemblyNamespace)' != ''">false</NoNamespace>
+		</PropertyGroup>
+
+		<!-- Write namespace -->
+		<WriteLinesToFile Condition="'$(NoNamespace)' == 'false'" Lines='
+Namespace Global.$(ThisAssemblyNamespace)
+' Overwrite='true' File='$(ThisProjectPropertiesFile)' />
+		<WriteLinesToFile Condition="'$(NoNamespace)' == 'true'" Lines='
+Namespace Global
+' Overwrite='true' File='$(ThisProjectPropertiesFile)' />
+
+		<!-- Write partial classes -->
+		<WriteLinesToFile Lines='
+	Partial Class ThisAssembly
+		Partial Public Class Project
+			Partial Public Class Properties
+' Overwrite='false' File='$(ThisProjectPropertiesFile)' />
+
+	</Target>
+
+	<Target Name="_WriteVisualBasicProjectProperties" Inputs="@(ThisAssemblyProjectProperty)" Outputs="%(ThisAssemblyProjectProperty.Identity)-BATCH">
+		<PropertyGroup>
+			<PropertyName>%(ThisAssemblyProjectProperty.Identity)</PropertyName>
+			<PropertyValue>@(ProjectProperties -> Metadata('$(PropertyName)'))</PropertyValue>
+		</PropertyGroup>
+		<!-- Write property -->
+		<WriteLinesToFile Lines="				  
+				''' &lt;summary&gt;$(PropertyName)=$(PropertyValue)&lt;/summary&gt;
+				Public Const $(PropertyName) = &quot;$(PropertyValue)&quot;
+" Overwrite="false" File="$(ThisProjectPropertiesFile)" />
+	</Target>
+
+	<Target Name="_WriteVisualBasicProjectEnd">
+		<!-- Close partial classes -->
+		<WriteLinesToFile Lines='
+			End Class
+		End Class
+	End Class
+End Namespace
 ' Overwrite='false' File='$(ThisProjectPropertiesFile)' />
 
 	</Target>
