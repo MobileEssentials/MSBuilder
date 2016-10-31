@@ -111,6 +111,11 @@ namespace MSBuilder
 					Log.LogMessage(importance, "Existing extension '{0}' (id={1}) version {2} found on {3} matches version to install. Assuming the existing extension is the right one.", name, id, newVersion, vsversion);
 					return true;
 				}
+				if (oldVersion > newVersion)
+				{
+					Log.LogWarning("Existing extension '{0}' (id={1}) version {2} found on {3} is greater than the version {4} to install. Assuming the existing extension does not need downgrading.", name, id, oldVersion, vsversion, newVersion);
+					return true;
+				}
 
 				if (!isSystemComponent)
 				{
