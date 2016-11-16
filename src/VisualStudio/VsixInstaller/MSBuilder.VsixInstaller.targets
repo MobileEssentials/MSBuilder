@@ -23,92 +23,98 @@
 	SOFTWARE.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" TreatAsLocalProperty="RootSuffix">
-	<Import Project="MSBuilder.VsixInstaller.tasks" />
+  <Import Project="MSBuilder.VsixInstaller.tasks" />
 
-	<PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">$(MSBuildToolsVersion)</VisualStudioVersion>
     <!-- Just in case our targets come before the VSSDK ones, we also copy its defaulting of VSSDKTargetPlatformRegRootSuffix -->
     <VSSDKTargetPlatformRegRootSuffix Condition="'$(VSSDKTargetPlatformRegRootSuffix)' == ''">Exp</VSSDKTargetPlatformRegRootSuffix>
-    
+
     <RootSuffix Condition=" '$(RootSuffix)' == '' ">$(VSSDKTargetPlatformRegRootSuffix)</RootSuffix>
-		<!-- Clear value if we got a '.' This is possible because of TreatAsLocalProperty above -->
-		<RootSuffix Condition=" '$(RootSuffix)' == '.' " />
-	</PropertyGroup>
+    <!-- Clear value if we got a '.' This is possible because of TreatAsLocalProperty above -->
+    <RootSuffix Condition=" '$(RootSuffix)' == '.' " />
+  </PropertyGroup>
 
-	<Target Name="RootSuffix">
-		<Message Importance="high" Text="RootSuffix='$(RootSuffix)'" />
-	</Target>
-	
-	<Target Name="InstallVsix">
-		<PropertyGroup>
-			<PerMachine Condition=" '$(PerMachine)' == '' ">false</PerMachine>
-			<MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
-		</PropertyGroup>
-		<InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
-					 VsixPath="$(VsixPath)"
-					 PerMachine="$(PerMachine)"
-					 RootSuffix="$(RootSuffix)"
-					 MessageImportance="$(MessageImportance)" />
-	</Target>
+  <Target Name="RootSuffix" Returns="$(RootSuffix)">
+    <Message Importance="high" Text="RootSuffix='$(RootSuffix)'" />
+  </Target>
 
-	<Target Name="UninstallVsix">
-		<PropertyGroup>
-			<FailIfNotInstalled Condition=" '$(FailIfNotInstalled)' == '' ">true</FailIfNotInstalled>
-			<MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
-		</PropertyGroup>
-		<UninstallVsix VisualStudioVersion="$(VisualStudioVersion)"
-					 VsixId="$(VsixId)"
-					 FailIfNotInstalled="$(FailIfNotInstalled)"
-					 RootSuffix="$(RootSuffix)"
-					 MessageImportance="$(MessageImportance)" />
-	</Target>
+  <Target Name="InstallVsix">
+    <PropertyGroup>
+      <PerMachine Condition=" '$(PerMachine)' == '' ">false</PerMachine>
+      <MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
+    </PropertyGroup>
+    <InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
+                 VsInstallRoot="$(VsInstallRoot)"
+                 VsixPath="$(VsixPath)"
+                 PerMachine="$(PerMachine)"
+                 RootSuffix="$(RootSuffix)"
+                 MessageImportance="$(MessageImportance)" />
+  </Target>
 
-	<Target Name="EnableVsix">
-		<PropertyGroup>
-			<FailIfNotInstalled Condition=" '$(FailIfNotInstalled)' == '' ">true</FailIfNotInstalled>
-			<MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
-		</PropertyGroup>
-		<EnableVsix VisualStudioVersion="$(VisualStudioVersion)"
-					VsixId="$(VsixId)"
-					FailIfNotInstalled="$(FailIfNotInstalled)"
-					RootSuffix="$(RootSuffix)"
-					MessageImportance="$(MessageImportance)" />
-	</Target>
+  <Target Name="UninstallVsix">
+    <PropertyGroup>
+      <FailIfNotInstalled Condition=" '$(FailIfNotInstalled)' == '' ">true</FailIfNotInstalled>
+      <MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
+    </PropertyGroup>
+    <UninstallVsix VisualStudioVersion="$(VisualStudioVersion)"
+                   VsInstallRoot="$(VsInstallRoot)"
+                   VsixId="$(VsixId)"
+                   FailIfNotInstalled="$(FailIfNotInstalled)"
+                   RootSuffix="$(RootSuffix)"
+                   MessageImportance="$(MessageImportance)" />
+  </Target>
 
-	<Target Name="DisableVsix">
-		<PropertyGroup>
-			<FailIfNotInstalled Condition=" '$(FailIfNotInstalled)' == '' ">true</FailIfNotInstalled>
-			<MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
-		</PropertyGroup>
-		<DisableVsix VisualStudioVersion="$(VisualStudioVersion)"
-					 VsixId="$(VsixId)"
-					 FailIfNotInstalled="$(FailIfNotInstalled)"
-					 RootSuffix="$(RootSuffix)"
-					 MessageImportance="$(MessageImportance)" />
-	</Target>
+  <Target Name="EnableVsix">
+    <PropertyGroup>
+      <FailIfNotInstalled Condition=" '$(FailIfNotInstalled)' == '' ">true</FailIfNotInstalled>
+      <MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
+    </PropertyGroup>
+    <EnableVsix VisualStudioVersion="$(VisualStudioVersion)"
+                VsInstallRoot="$(VsInstallRoot)"
+                VsixId="$(VsixId)"
+                FailIfNotInstalled="$(FailIfNotInstalled)"
+                RootSuffix="$(RootSuffix)"
+                MessageImportance="$(MessageImportance)" />
+  </Target>
 
-	<Target Name="ListVsix" Returns="@(InstalledVsix)">
-		<PropertyGroup>
-			<MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
-			<VsVersionSuffix Condition=" '$(RootSuffix)' != '' ">($(RootSuffix))</VsVersionSuffix>
-		</PropertyGroup>
-		<Message Importance="high" Condition=" '$(VsixIdFilter)' == '' And '$(VsixNameFilter)' == '' "
+  <Target Name="DisableVsix">
+    <PropertyGroup>
+      <FailIfNotInstalled Condition=" '$(FailIfNotInstalled)' == '' ">true</FailIfNotInstalled>
+      <MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
+    </PropertyGroup>
+    <DisableVsix VisualStudioVersion="$(VisualStudioVersion)"
+                 VsInstallRoot="$(VsInstallRoot)"
+                 VsixId="$(VsixId)"
+                 FailIfNotInstalled="$(FailIfNotInstalled)"
+                 RootSuffix="$(RootSuffix)"
+                 MessageImportance="$(MessageImportance)" />
+  </Target>
+
+  <Target Name="ListVsix" Returns="@(InstalledVsix)">
+    <PropertyGroup>
+      <MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>
+      <VsVersionSuffix Condition=" '$(RootSuffix)' != '' ">($(RootSuffix))</VsVersionSuffix>
+    </PropertyGroup>
+    <Message Importance="high" Condition=" '$(VsixIdFilter)' == '' And '$(VsixNameFilter)' == '' "
 				 Text="ListVsix accepts the following properties for filtering: 
 	VisualStudioVersion: which version of Visual Studio to list extensions for. (i.e. '14.0')
 	RootSuffix: which instance/suffix to list. (i.e. 'Exp', which is the default, or '.' for the normal hive)
 	VsixIdFilter: filter listed extensions with identifiers matching the given regular expression (i.e. 'Microsoft.*')
 	VsixNameFilter: filter listed extensions with names matching the given regular expression (i.e. 'SDK')
 " />
-		<ListVsix VisualStudioVersion="$(VisualStudioVersion)"
-				  VsixIdFilter="$(VsixIdFilter)"
-				  VsixNameFilter="$(VsixNameFilter)"
-				  RootSuffix="$(RootSuffix)">
-			<Output TaskParameter="InstalledVsix" ItemName="InstalledVsix" />
-		</ListVsix>
-		
-		<Message Importance="$(MessageImportance)"
+    <ListVsix VisualStudioVersion="$(VisualStudioVersion)"
+              VsInstallRoot="$(VsInstallRoot)"
+              VsixIdFilter="$(VsixIdFilter)"
+              VsixNameFilter="$(VsixNameFilter)"
+              RootSuffix="$(RootSuffix)">
+      <Output TaskParameter="InstalledVsix" ItemName="InstalledVsix" />
+    </ListVsix>
+
+    <Message Importance="$(MessageImportance)"
 				 Text="Found @(InstalledVsix -> Count()) matching VSIXes on Visual Studio $(VisualStudioVersion) $(VsVersionSuffix)"
 				 Condition=" '@(InstalledVsix)' != '' "/>
-		<Message Importance="$(MessageImportance)" 
+    <Message Importance="$(MessageImportance)"
 				 Condition=" '@(InstalledVsix)' != '' "
 				 Text="%(InstalledVsix.Name)
 	Id='%(InstalledVsix.Identity)'
@@ -118,8 +124,8 @@
 	SystemComponent=%(InstalledVsix.SystemComponent)
 	Version=%(InstalledVsix.Version)	" />
 
-		<Message Importance="$(MessageImportance)"
+    <Message Importance="$(MessageImportance)"
 				 Text="No VSIXes found matching VsixIdFilter='$(VsixIdFilter)' and VsixNameFilter='$(VsixNameFilter)' on Visual Studio $(VisualStudioVersion) $(VsVersionSuffix)"
 				 Condition=" '@(InstalledVsix)' == '' "/>
-	</Target>
+  </Target>
 </Project>

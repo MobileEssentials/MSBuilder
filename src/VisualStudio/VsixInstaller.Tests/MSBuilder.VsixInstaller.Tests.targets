@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Import Project="..\..\CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props" />
-	<Import Project="..\..\DumpItems\build\MSBuilder.DumpItems.targets" />
+	<Import Project="..\..\DumpItems\bin\MSBuilder.DumpItems.targets" />
 	<Import Project="..\VsixInstaller\bin\MSBuilder.VsixInstaller.targets" />
 
-	<Target Name="Build">
-		<ListInstalledVsix VisualStudioVersion="$(VisualStudioVersion)" RootSuffix="$(RootSuffix)" FilterExpression="$(FilterExpression)">
-			<Output TaskParameter="InstalledExtensions" ItemName="InstalledVsix" />
-		</ListInstalledVsix>
+	<PropertyGroup>
+		<VsixIdFilter Condition="'$(VsixIdFilter)' == ''">Clide</VsixIdFilter>
+	</PropertyGroup>
+
+	<Target Name="Build" Returns="@(LocalExtension)">
+		<ListVsix VisualStudioVersion="$(VisualStudioVersion)" RootSuffix="$(RootSuffix)" VsixIdFilter="$(VsixIdFilter)" VsixNameFilter="$(VsixNameFilter)">
+			<Output TaskParameter="InstalledVsix" ItemName="InstalledVsix" />
+		</ListVsix>
 
 		<ItemGroup>
-			<LocalExtension Include="@(InstalledVsix)" Condition=" '%(InstalledPerMachine)' == 'True' " />
+			<LocalExtension Include="@(InstalledVsix)" Condition=" '%(InstalledPerMachine)' != 'true' " />
 		</ItemGroup>
 
-
 		<DumpItems Items="@(LocalExtension)" ItemName="InstalledVsix" />
-	</Target>
+	</Target>	
 </Project>

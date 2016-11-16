@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\MSBuilder.CodeTaskAssembly.0.2.4\build\MSBuilder.CodeTaskAssembly.props" Condition="Exists('packages\MSBuilder.CodeTaskAssembly.0.2.4\build\MSBuilder.CodeTaskAssembly.props')" />
+  <Import Project="packages\Microsoft.VSSDK.BuildTools.15.0.25914-RC2\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('packages\Microsoft.VSSDK.BuildTools.15.0.25914-RC2\build\Microsoft.VSSDK.BuildTools.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{4AA888D5-8817-40D5-A888-6CB7CCE4DF5F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TestVsix</RootNamespace>
+    <AssemblyName>TestVsix</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <GeneratePkgDefFile>false</GeneratePkgDefFile>
+    <DeployExtension>false</DeployExtension>
+    <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Version Condition="'$(Version)' == ''">1.0.0</Version>
+    <TargetVsixContainerName Condition="'$(TargetVsixContainerName)' == ''">$(AssemblyName).$(Version).vsix</TargetVsixContainerName>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>14.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " />
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
+  <ItemGroup>
+    <Compile Include="_._" />
+    <None Include="packages.config" />
+    <None Include="source.extension.vsixmanifest" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Target Name="GetVersion" Returns="$(Version)" />
+  <UsingTask TaskName="SetVsSDKEnvironmentVariables" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)" Condition="'$(CodeTaskAssembly)' != ''">
+    <ParameterGroup>
+      <ProjectDirectory Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs">
+        System.Environment.SetEnvironmentVariable("VsSDKToolsPath", System.IO.Path.GetFullPath(ProjectDirectory + @"\..\tools\VSSDK\bin"),EnvironmentVariableTarget.Process);
+      </Code>
+    </Task>
+  </UsingTask>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\Microsoft.VSSDK.BuildTools.15.0.25914-RC2\build\Microsoft.VSSDK.BuildTools.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.VSSDK.BuildTools.15.0.25914-RC2\build\Microsoft.VSSDK.BuildTools.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.VSSDK.BuildTools.15.0.25914-RC2\build\Microsoft.VSSDK.BuildTools.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.VSSDK.BuildTools.15.0.25914-RC2\build\Microsoft.VSSDK.BuildTools.targets'))" />
+    <Error Condition="!Exists('packages\MSBuilder.CodeTaskAssembly.0.2.4\build\MSBuilder.CodeTaskAssembly.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\MSBuilder.CodeTaskAssembly.0.2.4\build\MSBuilder.CodeTaskAssembly.props'))" />
+  </Target>
+  <Import Project="packages\Microsoft.VSSDK.BuildTools.15.0.25914-RC2\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('packages\Microsoft.VSSDK.BuildTools.15.0.25914-RC2\build\Microsoft.VSSDK.BuildTools.targets')" />
+</Project>

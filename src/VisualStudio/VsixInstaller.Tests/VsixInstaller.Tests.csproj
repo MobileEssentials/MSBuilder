@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props')" />
   <Import Project="..\..\packages\MSBuilder.CodeTaskAssembly.0.2.3\build\MSBuilder.CodeTaskAssembly.props" Condition="Exists('..\..\packages\MSBuilder.CodeTaskAssembly.0.2.3\build\MSBuilder.CodeTaskAssembly.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -12,27 +13,18 @@
     <AssemblyName>MSBuilder.VsixInstaller.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " />
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
   <ItemGroup>
     <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.Build.Engine" />
@@ -62,8 +54,7 @@
     <Compile Include="..\..\MockBuildEngine.cs">
       <Link>MockBuildEngine.cs</Link>
     </Compile>
-    <Compile Include="ManualTests.cs" />
-    <Compile Include="ManualTests.VsixPath.cs" Condition="Exists('ManualTests.VsixPath.cs')" />
+    <Compile Include="VsixInstallerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -75,8 +66,23 @@
   <ItemGroup>
     <None Include="MSBuilder.VsixInstaller.Tests.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="VsixInstaller.Tests.targets">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestVsix\source.extension.vsixmanifest" />
+    <None Include="TestVsix\TestVsix.csproj" />
+    <None Include="TestVsix\TestVsix.sln" />
+    <None Include="TestVsix\Before.TestVsix.sln.targets" />
+    <None Include="TestVsix\NuGet.Restore.targets" />
+    <None Include="TestVsix\project.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -85,6 +91,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\MSBuilder.CodeTaskAssembly.0.2.3\build\MSBuilder.CodeTaskAssembly.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuilder.CodeTaskAssembly.0.2.3\build\MSBuilder.CodeTaskAssembly.props'))" />
     <Error Condition="!Exists('..\..\packages\MSBuilder.DumpItems.0.1.7\build\MSBuilder.DumpItems.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuilder.DumpItems.0.1.7\build\MSBuilder.DumpItems.targets'))" />
+    <Error Condition="!Exists('..\..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props'))" />
   </Target>
   <Import Project="..\..\packages\MSBuilder.DumpItems.0.1.7\build\MSBuilder.DumpItems.targets" Condition="Exists('..\..\packages\MSBuilder.DumpItems.0.1.7\build\MSBuilder.DumpItems.targets')" />
+  <Import Project="VsixInstaller.Tests.targets" />
 </Project>

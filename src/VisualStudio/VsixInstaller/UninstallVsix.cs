@@ -26,10 +26,15 @@ namespace MSBuilder
 		[Required]
 		public string VsixId { get; set; }
 
-		/// <summary>
-		/// Optional message importance for the task messages.
-		/// </summary>
-		public string MessageImportance { get; set; }
+        /// <summary>
+        /// Optional value set when building from MSBuild 15 or VS 2017+
+        /// </summary>
+        public string VsInstallRoot { get; set; }
+
+        /// <summary>
+        /// Optional message importance for the task messages.
+        /// </summary>
+        public string MessageImportance { get; set; }
 
 		/// <summary>
 		/// Optional flag to fail if the extension is not already installed.
@@ -47,68 +52,155 @@ namespace MSBuilder
 		/// </summary>
 		public override bool Execute()
 		{
-			string vsdir = null;
-			using (var root = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
-			using (var key = root.OpenSubKey(@"Software\Microsoft\VisualStudio\" + VisualStudioVersion))
-			{
-				if (key != null)
-				{
-					vsdir = key.GetValue("InstallDir") as string;
-				}
-				else
-				{
-					Log.LogError("Failed to locate installation directory for VisualStudioVersion '{0}'.", VisualStudioVersion);
-					return false;
-				}
-			}
+            string vsdir = VsInstallRoot;
+            var vsversion = "Visual Studio " + VisualStudioVersion;
+            if (!string.IsNullOrEmpty(RootSuffix))
+                vsversion += " (" + RootSuffix + ")";
 
-			var importance = Microsoft.Build.Framework.MessageImportance.Normal;
-			if (!string.IsNullOrEmpty(MessageImportance))
-				importance = (MessageImportance)Enum.Parse(typeof(MessageImportance), MessageImportance, true);
+            var importance = Microsoft.Build.Framework.MessageImportance.Normal;
+            if (!string.IsNullOrEmpty(MessageImportance))
+                importance = (MessageImportance)Enum.Parse(typeof(MessageImportance), MessageImportance, true);
 
-			var managerAsm = Assembly.LoadFrom(Path.Combine(vsdir, @"PrivateAssemblies\Microsoft.VisualStudio.ExtensionManager.Implementation.dll"));
+            object settings = null;
+            object manager = null;
+            Type managerType = null;
 
-			var vssdk = new DirectoryInfo(Path.Combine(vsdir, @"..\..\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0")).FullName;
-			if (!Directory.Exists(vssdk))
-				throw new ArgumentException("Visual Studio SDK was not found at expected path '" + vssdk + "'.");
+            // Actual task implementation run afterwards.
+            Func<bool> execute = () =>
+            {
+                try
+                {
+                    var extension = managerType.InvokeMember("GetInstalledExtension", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { VsixId });
+                    managerType.InvokeMember("Uninstall", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension });
+                    managerType.InvokeMember("UpdateLastExtensionsChange", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new object[0]);
 
-			var settingsAsm = Assembly.LoadFrom(Path.Combine(vssdk, string.Format(@"Microsoft.VisualStudio.Settings.{0}.dll", VisualStudioVersion)));
-			var settingsType = settingsAsm.GetType("Microsoft.VisualStudio.Settings.ExternalSettingsManager");
-			var settings = settingsType.InvokeMember("CreateForApplication", BindingFlags.Static | BindingFlags.Public | BindingFlags.InvokeMethod, null, null,
-				new[] { Path.Combine(vsdir, "devenv.exe"), RootSuffix ?? "" });
+                    Log.LogMessage(importance, "Successfully uninstalled extension '{0}' from {1}.", VsixId, vsversion);
+                    return true;
+                }
+                catch (TargetInvocationException tie)
+                {
+                    if (tie.InnerException.GetType().FullName == "Microsoft.VisualStudio.ExtensionManager.NotInstalledException")
+                    {
+                        if (FailIfNotInstalled)
+                        {
+                            Log.LogError("Extension '{0}' is not installed on {1}.", VsixId, vsversion);
+                            return false;
+                        }
+                        else
+                        {
+                            Log.LogMessage(importance, "Extension '{0}' is not installed on {1}.", VsixId, vsversion);
+                        }
+                    }
+                    else
+                    {
+                        Log.LogErrorFromException(tie.InnerException, true);
+                    }
 
-			var managerType = managerAsm.GetType("Microsoft.VisualStudio.ExtensionManager.ExtensionManagerService", true);
-			var manager = Activator.CreateInstance(managerType, new[] { settings });
+                    return false;
+                }
+            };
 
-			var vsversion = "Visual Studio " + VisualStudioVersion;
-			if (!string.IsNullOrEmpty(RootSuffix))
-				vsversion += " (" + RootSuffix + ")";
+            #region Execute
 
-			try
-			{
-				var extension = managerType.InvokeMember("GetInstalledExtension", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { VsixId });
-				managerType.InvokeMember("Uninstall", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension });
-				managerType.InvokeMember("UpdateLastExtensionsChange", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new object[0]);
-				
-				Log.LogMessage(importance, "Successfully uninstalled extension '{0}' from {1}.", VsixId, vsversion);
-			}
-			catch (TargetInvocationException tie)
-			{
-				if (tie.InnerException.GetType().FullName == "Microsoft.VisualStudio.ExtensionManager.NotInstalledException")
-				{
-					if (FailIfNotInstalled)
-					{
-						Log.LogError("Extension '{0}' is not installed on {1}.", VsixId, vsversion);
-						return false;
-					}
-					else
-					{
-						Log.LogMessage(importance, "Extension '{0}' is not installed on {1}.", VsixId, vsversion);
-					}
-				}
-			}
+            if (string.IsNullOrEmpty(vsdir))
+            {
+                using (var root = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+                using (var key = root.OpenSubKey(@"Software\Microsoft\VisualStudio\SxS\VS7"))
+                {
+                    if (key != null)
+                        vsdir = key.GetValue(VisualStudioVersion) as string;
 
-			return true;
-		}
-	}
+                    if (string.IsNullOrEmpty(vsdir))
+                    {
+                        Log.LogError("Failed to locate installation directory for VisualStudioVersion '{0}'.", VisualStudioVersion);
+                        return false;
+                    }
+                }
+            }
+
+            var asmFile = Path.Combine(vsdir, @"Common7\IDE\PrivateAssemblies\Microsoft.VisualStudio.ExtensionManager.Implementation.dll");
+            if (!File.Exists(asmFile))
+            {
+                Log.LogError(string.Format("Failed to locate extension manager implementation at '{0}'.", asmFile));
+                return false;
+            }
+
+            var vssdk = new DirectoryInfo(Path.Combine(vsdir, @"VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0")).FullName;
+            if (!Directory.Exists(vssdk))
+            {
+                Log.LogError(string.Format("Visual Studio SDK was not found at expected path '{0}'.", vssdk));
+                return false;
+            }
+
+            var settingsFile = Path.Combine(vssdk, string.Format("Microsoft.VisualStudio.Settings.{0}.dll", VisualStudioVersion));
+            if (!File.Exists(settingsFile))
+            {
+                Log.LogError(string.Format("Failed to locate settings manager implementation at '{0}'.", settingsFile));
+                return false;
+            }
+
+            ResolveEventHandler resolver = (sender, args) =>
+            {
+                var requestedName = new AssemblyName(args.Name).Name;
+                var requestedFile = Path.Combine(vsdir, requestedName + ".dll");
+                if (!File.Exists(requestedFile))
+                    requestedFile = Path.Combine(vsdir, @"Common7\IDE\" + requestedName + ".dll");
+                if (!File.Exists(requestedFile))
+                    requestedFile = Path.Combine(vsdir, @"Common7\IDE\PrivateAssemblies\" + requestedName + ".dll");
+                if (!File.Exists(requestedFile))
+                    requestedFile = Path.Combine(vsdir, @"Common7\IDE\PublicAssemblies\" + requestedName + ".dll");
+                if (!File.Exists(requestedFile))
+                    requestedFile = Path.Combine(vsdir, @"VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\" + requestedName + ".dll");
+
+                if (File.Exists(requestedFile))
+                {
+                    try
+                    {
+                        return Assembly.LoadFrom(requestedFile);
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                }
+
+                return null;
+            };
+
+            AppDomain.CurrentDomain.AssemblyResolve += resolver;
+
+            try
+            {
+                var managerAsm = Assembly.LoadFrom(asmFile);
+                var settingsAsm = Assembly.LoadFrom(settingsFile);
+                var settingsType = settingsAsm.GetType("Microsoft.VisualStudio.Settings.ExternalSettingsManager");
+
+                settings = settingsType.InvokeMember("CreateForApplication", BindingFlags.Static | BindingFlags.Public | BindingFlags.InvokeMethod, null, null,
+                    new[] { Path.Combine(vsdir, @"Common7\IDE\devenv.exe"), RootSuffix ?? "" });
+
+                managerType = managerAsm.GetType("Microsoft.VisualStudio.ExtensionManager.ExtensionManagerService", true);
+                manager = Activator.CreateInstance(managerType, new[] { settings });
+
+                return execute();
+            }
+            catch (TargetInvocationException tie)
+            {
+                Log.LogErrorFromException(tie.InnerException, true);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Log.LogErrorFromException(ex, true);
+                return false;
+            }
+            finally
+            {
+                AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+            }
+
+            #endregion
+
+            return true;
+        }
+    }
 }
