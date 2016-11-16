@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
@@ -36,7 +37,15 @@ namespace MSBuilder
             using (var root = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
             using (var key = root.OpenSubKey(@"Software\Microsoft\VisualStudio\SxS\VS7"))
             {
-                return key.GetValueNames().Select(s => new object[] { s }).ToArray();
+                return from name in key.GetValueNames()
+                       where !string.IsNullOrEmpty(name) && name.IndexOf('.') != -1
+                       let version = name.Substring(0, name.IndexOf('.'))
+                       // We've only tested on VS2012+
+                       where int.Parse(version) >= 11 
+                       let vsdir = (string)key.GetValue(name)
+                       // VSSDK is required
+                       where Directory.Exists(Path.Combine(vsdir, @"VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0"))
+                       select new[] { name };
             }
         }
 
