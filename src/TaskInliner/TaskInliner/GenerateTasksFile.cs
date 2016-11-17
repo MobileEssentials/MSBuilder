@@ -286,9 +286,9 @@ namespace MSBuilder.TaskInliner
 
             projectXml.Root.Add(new XElement(xmlns + "Import",
 				new XAttribute("Project", TasksName + ".Inline.tasks"),
-				new XAttribute("Condition", "'$" + "(UseCompiledTasks)' != 'true'")));
+				new XAttribute("Condition", "'$" + "(UseCompiledTasks)' != 'true' And '$" + "(CodeTaskAssembly)' != ''")));
 
-			projectXml.Save(TasksFile);
+            projectXml.Save(TasksFile);
 
 			return true;
 		}
