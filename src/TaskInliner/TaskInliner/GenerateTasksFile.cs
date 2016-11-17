@@ -280,14 +280,13 @@ namespace MSBuilder.TaskInliner
 
 			// Now generate .tasks file importing both inline and compiled tasks.
 			projectXml.Root.RemoveNodes();
-			projectXml.Root.Add(new XElement(xmlns + "Import",
+            projectXml.Root.Add(new XElement(xmlns + "Import",
+                new XAttribute("Project", TasksName + ".Compiled.tasks"),
+                new XAttribute("Condition", "'$" + "(UseCompiledTasks)' == 'true' Or '$" + "(CodeTaskAssembly)' == ''")));
+
+            projectXml.Root.Add(new XElement(xmlns + "Import",
 				new XAttribute("Project", TasksName + ".Inline.tasks"),
 				new XAttribute("Condition", "'$" + "(UseCompiledTasks)' != 'true'")));
-
-			projectXml.Root.Add(new XElement(xmlns + "Import",
-				new XAttribute("Project", TasksName + ".Compiled.tasks"),
-				new XAttribute("Condition", "'$" + "(UseCompiledTasks)' == 'true'")));
-
 
 			projectXml.Save(TasksFile);
 
