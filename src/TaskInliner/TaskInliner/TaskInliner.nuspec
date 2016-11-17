@@ -14,6 +14,7 @@ This package automatically converts Task-derived classes in your project into in
 Unit testing your custom tasks becomes straight-forward while maintaining the transparency and easy of deployment (and fixing!) of loose tasks files.</description>
         <copyright>Copyright 2015</copyright>
         <tags>msbuild inline</tags>
+		<developmentDependency>true</developmentDependency>
 		<dependencies>
 			<dependency id="MSBuilder" />
 			<dependency id="MSBuilder.CodeTaskAssembly" />

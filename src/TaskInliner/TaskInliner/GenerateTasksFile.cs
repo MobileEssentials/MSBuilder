@@ -100,7 +100,9 @@ namespace MSBuilder.TaskInliner
 
 			properties.AddProperty("CodeTaskAssembly", "$" + @"(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll")
 				.Condition = "'$" + "(CodeTaskAssembly)' == '' And '$" + "(MSBuildAssemblyVersion)' == '' And Exists('$" + @"(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')";
-			properties.AddProperty("CodeTaskAssembly", "$" + @"(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll")
+            properties.AddProperty("CodeTaskAssembly", "$" + @"(MSBuildFrameworkToolsPath)\Microsoft.Build.Tasks.v4.0.dll")
+                .Condition = "'$" + "(CodeTaskAssembly)' == '' And '$" + "(MSBuildAssemblyVersion)' == '' And Exists('$" + @"(MSBuildFrameworkToolsPath)\Microsoft.Build.Tasks.v4.0.dll')";
+            properties.AddProperty("CodeTaskAssembly", "$" + @"(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll")
 				.Condition = "'$" + "(CodeTaskAssembly)' == '' And '$" + "(MSBuildAssemblyVersion)' == '' And Exists('$" + @"(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll')";
 			properties.AddProperty("CodeTaskAssembly", "$" + @"(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll")
 				.Condition = "'$" + "(CodeTaskAssembly)' == '' And '$" + "(MSBuildAssemblyVersion)' == '12.0'";
@@ -280,7 +282,7 @@ namespace MSBuilder.TaskInliner
 			projectXml.Root.RemoveNodes();
 			projectXml.Root.Add(new XElement(xmlns + "Import",
 				new XAttribute("Project", TasksName + ".Inline.tasks"),
-				new XAttribute("Condition", "'$" + "(UseCompiledTasks)' == 'false' Or '$" + "(UseCompiledTasks)' == ''")));
+				new XAttribute("Condition", "'$" + "(UseCompiledTasks)' != 'true'")));
 
 			projectXml.Root.Add(new XElement(xmlns + "Import",
 				new XAttribute("Project", TasksName + ".Compiled.tasks"),
