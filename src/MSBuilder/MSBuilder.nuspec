@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>MSBuilder</id>
-        <version>0.1.0</version>
+        <version>0.1.1</version>
         <title>MSBuilder: Core</title>
         <authors>Mobile Essentials</authors>
         <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -13,7 +13,8 @@ MSBuilder components to determine whether inline or compiled tasks will be used 
 are typically provided).</description>
         <copyright>Copyright 2015</copyright>
         <tags>msbuild</tags>
-        <dependencies>
+		<developmentDependency>true</developmentDependency>
+		<dependencies>
             <dependency id="MSBuilder.IsXBuild" />
         </dependencies>
     </metadata>

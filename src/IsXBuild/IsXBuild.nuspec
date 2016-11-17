@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>MSBuilder.IsXBuild</id>
-        <version>0.2.0</version>
+        <version>0.2.1</version>
         <title>MSBuilder: IsXBuild Property</title>
         <authors>Mobile Essentials</authors>
         <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -11,5 +11,6 @@
         <description>Provides the $(IsXBuild) property which allows detecting that the current engine is XBuild rather than MSBuild, for conditional execution.</description>
         <copyright>Copyright 2015</copyright>
         <tags>msbuild xbuild</tags>
-    </metadata>
+		<developmentDependency>true</developmentDependency>
+	</metadata>
 </package>
