@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>MSBuilder.XmlPoke</id>
+        <version>1.0.0-pre</version>
+        <title>MSBuilder: XmlPoke preserving whitespace and formatting</title>
+        <authors>Mobile Essentials</authors>
+        <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Redefines the XmlPoke built-in task so that it preserves whitespace and formatting. Drop-in replacement.</description>
+        <copyright>Copyright 2016</copyright>
+        <tags>msbuild inline codetask</tags>
+		<developmentDependency>true</developmentDependency>
+	</metadata>
+</package>
