@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>MSBuilder.XmlPoke</id>
-        <version>1.0.0-pre</version>
+        <version>0.9.0</version>
         <title>MSBuilder: XmlPoke preserving whitespace and formatting</title>
         <authors>Mobile Essentials</authors>
         <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -13,4 +13,8 @@
         <tags>msbuild inline codetask</tags>
 		<developmentDependency>true</developmentDependency>
 	</metadata>
+	<files>
+		<file src="Readme.txt" />
+		<file src="XmlPoke.props" target="build\MSBuilder.XmlPoke.props" />
+	</files>
 </package>

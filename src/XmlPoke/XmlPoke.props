@@ -2,7 +2,7 @@
 <!--
 	The MIT License (MIT)
 
-	Copyright (c) 2015 Mobile Essentials
+	Copyright (c) 2016 Mobile Essentials
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
@@ -22,24 +22,75 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 -->
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
 
 	<!--
     ============================================================
-              CodeTaskAssembly Property
-	
-	Locates the right Microsoft.Build.Tasks to use with inline 
-	tasks.
+		XmlPoke with format/whitespace preservation turned on
 	============================================================
 	-->
+
 	<PropertyGroup>
-		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '' And Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')">$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll</CodeTaskAssembly>
-		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '' And Exists('$(MSBuildFrameworkToolsPath)\Microsoft.Build.Tasks.v4.0.dll')">$(MSBuildFrameworkToolsPath)\Microsoft.Build.Tasks.v4.0.dll</CodeTaskAssembly>
-		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '' And Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll')">$(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll</CodeTaskAssembly>
-		<!-- In VS2013, the assembly contains the VS version. -->
-		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '12.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll</CodeTaskAssembly>
-		<!-- In VS2015+, the assembly was renamed, hopefully this will be the last condition! -->
-		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' != '' And '$(MSBuildAssemblyVersion)' &gt;= '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</CodeTaskAssembly>
+		<XmlPokeImported>true</XmlPokeImported>
 	</PropertyGroup>
 
+	<UsingTask TaskName="XmlPoke" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)">
+		<ParameterGroup>
+			<Namespaces />
+			<Query />
+			<Value ParameterType="Microsoft.Build.Framework.ITaskItem" Required="true" />
+			<XmlInputPath ParameterType="Microsoft.Build.Framework.ITaskItem" Required="true" />
+		</ParameterGroup>
+		<Task>
+			<Reference Include="System.Core" />
+			<Reference Include="System.Xml" />
+			<Reference Include="System.Xml.Linq" />
+			<Using Namespace="Microsoft.Build.Framework" />
+			<Using Namespace="System.Xml" />
+			<Using Namespace="System.Xml.Linq" />
+			<Using Namespace="System.Xml.XPath" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[			
+            var xmlns = new XmlNamespaceManager(new NameTable());
+            if (!string.IsNullOrEmpty(Namespaces))
+            {
+                using (var reader = XmlReader.Create(new StringReader(Namespaces), new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment }))
+                {
+                    while (reader.Read())
+                    {
+                        var prefix = reader.GetAttribute("Prefix");
+                        var uri = reader.GetAttribute("Uri");
+                        xmlns.AddNamespace(prefix, uri);
+                    }
+                }
+            }
+
+            var doc = XDocument.Load(XmlInputPath.GetMetadata("FullPath"), LoadOptions.PreserveWhitespace);
+			var expr = doc.CreateNavigator().Compile(Query);
+			expr.SetContext (xmlns);
+
+			var replacements = 0;
+            foreach (var node in doc.CreateNavigator().Select(expr).OfType<XPathNavigator>().Select(x => x.UnderlyingObject))
+            {
+				var attr = node as XAttribute;
+				var elem = node as XElement;
+				if (attr != null) {
+					attr.SetValue (Value.ItemSpec);
+					replacements++;
+				} else if (elem != null) {
+					elem.SetValue (Value.ItemSpec);
+					replacements++;
+				}
+            }
+
+			if (replacements != 0) {
+				Log.LogMessage ("Made {0} replacement(s).", replacements);
+				doc.Save(XmlInputPath.GetMetadata ("FullPath"), SaveOptions.DisableFormatting);
+			} else {
+				Log.LogMessage("No nodes were affected.");
+			}
+			]]>
+			</Code>
+		</Task>
+	</UsingTask>
 </Project>
