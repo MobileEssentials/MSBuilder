@@ -58,9 +58,19 @@
 	<!-- If the entire Extensions folder doesn't exist, most likely the dev deleted the entire Exp directory -->
 	<Target Name="CleanInstallVsixDependencies"
 			  Condition=" Exists('$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt') ">
-		<GetExtensionsPath SubPath="$(ExtensionsDeploymentSubPath)" Condition=" '$(ExtensionsPath)' == '' ">
+		
+		<GetExtensionsPath 
+			Condition="'$(ExtensionsPath)' == '' And '$(VisualStudioVersion)' &gt;= '15.0'"
+			RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" >
+		  <Output TaskParameter="LocalExtensionsPath" PropertyName="ExtensionsPath"/>
+		</GetExtensionsPath>
+		
+		<GetExtensionsPath 
+			Condition="'$(ExtensionsPath)' == '' And '$(VisualStudioVersion)' &lt; '15.0'"
+			SubPath="$(ExtensionsDeploymentSubPath)">
 			<Output TaskParameter="LocalExtensionsPath" PropertyName="ExtensionsPath"/>
 		</GetExtensionsPath>
+		
 		<Delete Files="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt"
 					Condition=" !Exists('$(ExtensionsPath)') " />
 	</Target>
