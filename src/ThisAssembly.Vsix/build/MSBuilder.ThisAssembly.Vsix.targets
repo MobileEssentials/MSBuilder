@@ -62,7 +62,6 @@
 	</Target>
 
 	<Target Name="VsixThisAssembly" DependsOnTargets="_VsixGenerateThisAssembly"
-			BeforeTargets="BuildOnlySettings"
 			Condition="'$(Language)' == 'C#' Or '$(Language)' == 'VB'">
 		<ItemGroup>
 			<Compile Include="$(ThisVsixInfoFile)" />
