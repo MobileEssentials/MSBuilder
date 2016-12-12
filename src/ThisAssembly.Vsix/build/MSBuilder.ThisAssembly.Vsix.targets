@@ -22,6 +22,7 @@
 	<!-- You can customize the namespace of the ThisAssembly class by setting the ThisAssemblyNamespace property. -->
 	<PropertyGroup Condition="'$(Language)' == 'C#' Or '$(Language)' == 'VB'">
 		<CoreCompileDependsOn>
+			FindSourceVsixManifest;
 			VsixThisAssembly;
 			$(CoreCompileDependsOn)
 		</CoreCompileDependsOn>
