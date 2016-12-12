@@ -23,6 +23,7 @@
 	<PropertyGroup Condition="'$(Language)' == 'C#' Or '$(Language)' == 'VB'">
 		<CoreCompileDependsOn>
 			FindSourceVsixManifest;
+			EnsureSourceVsixManifest;
 			VsixThisAssembly;
 			$(CoreCompileDependsOn)
 		</CoreCompileDependsOn>
@@ -31,6 +32,14 @@
 		<Vsix2010>&lt;Namespace Prefix='vs' Uri='http://schemas.microsoft.com/developer/vsx-schema/2010'/&gt;</Vsix2010>
 	</PropertyGroup>
 
+	<Target Name="EnsureSourceVsixManifest" Condition="'@(SourceVsixManifest)' == ''">
+		<!-- Under VSSDK 15.0+, the FindSourceVsixManifest target is not run unless '$(CreateVsixContainer)' == 'true' -->
+		<FindVsixManifest ItemsToConsider="@(None)"
+						  ProjectName="$(MSBuildProjectName)">
+			<Output TaskParameter="VsixManifest" ItemName="SourceVsixManifest"/>
+		</FindVsixManifest>
+	</Target>
+	
 	<Target Name="VsixInfo" DependsOnTargets="FindSourceVsixManifest" Condition="Exists('@(SourceVsixManifest)')">
 		<XmlPeek Condition="'$(VsixID)' == ''" Namespaces="$(Vsix2010)" XmlInputPath="@(SourceVsixManifest)" Query="/vs:Vsix/vs:Identifier/@Id">
 			<Output TaskParameter="Result" PropertyName="VsixID" />
