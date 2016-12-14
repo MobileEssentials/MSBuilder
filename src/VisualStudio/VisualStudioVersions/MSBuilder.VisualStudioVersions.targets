@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	The MIT License (MIT)
+
+	Copyright (c) 2016 Mobile Essentials
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<PropertyGroup>
+		<VisualStudioVersionsImported>true</VisualStudioVersionsImported>
+	</PropertyGroup>
+
+	<ItemDefinitionGroup>
+		<AvailableVisualStudioVersion>
+			<InProject>false</InProject>
+		</AvailableVisualStudioVersion>
+		<InstalledVisualStudioVersion>
+			<InProject>false</InProject>
+			<IsSdkInstalled>false</IsSdkInstalled>
+			<SdkDir />
+		</InstalledVisualStudioVersion>
+	</ItemDefinitionGroup>
+
+	<ItemGroup>
+		<AvailableVisualStudioVersion Include="10.0">
+			<Dev>10</Dev>
+			<DisplayName>2010</DisplayName>
+		</AvailableVisualStudioVersion>
+		<AvailableVisualStudioVersion Include="11.0">
+			<Dev>11</Dev>
+			<DisplayName>2012</DisplayName>
+		</AvailableVisualStudioVersion>
+		<AvailableVisualStudioVersion Include="12.0">
+			<Dev>12</Dev>
+			<DisplayName>2013</DisplayName>
+		</AvailableVisualStudioVersion>
+		<AvailableVisualStudioVersion Include="14.0">
+			<Dev>14</Dev>
+			<DisplayName>2015</DisplayName>
+		</AvailableVisualStudioVersion>
+		<AvailableVisualStudioVersion Include="15.0">
+			<Dev>15</Dev>
+			<DisplayName>2017</DisplayName>
+		</AvailableVisualStudioVersion>
+	</ItemGroup>
+
+	<Target Name="FindInstalledVisualStudioVersions"
+			Inputs="@(AvailableVisualStudioVersion)"
+			Outputs="%(AvailableVisualStudioVersion.Identity)">
+
+		<PropertyGroup>
+			<AvailableVisualStudioVersion>@(AvailableVisualStudioVersion)</AvailableVisualStudioVersion>
+			<!-- NOTE: THIS WILL PROBABLY CHANGE IN FUTURE DEV15, MAYBE NOT FOR CI REASONS? -->
+			<VSDIR>$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7@%(AvailableVisualStudioVersion.Identity))</VSDIR>
+			<VSDIR Condition="'$(VSDIR)' == ''">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\SxS\VS7@%(AvailableVisualStudioVersion.Identity))</VSDIR>
+		</PropertyGroup>
+
+		<ItemGroup Condition="Exists('$(VSDIR)')">
+			<InstalledVisualStudioVersion Include="@(AvailableVisualStudioVersion)">
+				<InstallDir>$(VSDIR)</InstallDir>
+			</InstalledVisualStudioVersion>
+			<InstalledVisualStudioVersion>
+				<IsSdkInstalled Condition="Exists('%(InstallDir)VSSDK\VisualStudioIntegration')">true</IsSdkInstalled>
+				<SdkDir Condition="Exists('%(InstallDir)VSSDK\VisualStudioIntegration')">%(InstallDir)VSSDK\VisualStudioIntegration</SdkDir>
+			</InstalledVisualStudioVersion>
+		</ItemGroup>
+
+	</Target>
+
+	<Target Name="GetVisualStudioVersions" BeforeTargets="Build" DependsOnTargets="FindInstalledVisualStudioVersions" Returns="@(InstalledVisualStudioVersion)" />
+
+	<Target Name="VisualStudioVersions" DependsOnTargets="GetVisualStudioVersions">		
+		<Message Importance="high" Text="No installed Visual Studio versions found" Condition="'@(InstalledVisualStudioVersion)' == ''" />
+		<Message Importance="high" Text="Installed Visual Studio versions:"  Condition="'@(InstalledVisualStudioVersion)' != ''" />
+		<Message Importance="high" Condition="'@(InstalledVisualStudioVersion)' != ''"
+				 Text="    %(InstalledVisualStudioVersion.DisplayName) (%(InstalledVisualStudioVersion.Identity))
+        InstallDir     = %(InstalledVisualStudioVersion.InstallDir)
+		IsSdkInstalled = %(InstalledVisualStudioVersion.IsSdkInstalled)
+        SdkDir         = %(InstalledVisualStudioVersion.SdkDir)
+" />
+
+		<Message Importance="high" Text="Current VisualStudioVersion: $(VisualStudioVersion)" />
+	</Target>
+
+</Project>
