@@ -34,7 +34,7 @@
 		<XmlPokeImported>true</XmlPokeImported>
 	</PropertyGroup>
 
-	<UsingTask TaskName="XmlPoke" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)">
+	<UsingTask TaskName="XmlPoke" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)" Condition="'$(CodeTaskAssembly)' != ''">
 		<ParameterGroup>
 			<Namespaces />
 			<Query />
