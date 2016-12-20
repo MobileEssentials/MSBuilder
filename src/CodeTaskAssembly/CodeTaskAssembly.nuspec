@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>MSBuilder.CodeTaskAssembly</id>
-        <version>0.2.4</version>
+        <version>0.2.5</version>
         <title>MSBuilder: CodeTaskAssembly Property</title>
         <authors>Mobile Essentials</authors>
         <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -13,4 +13,7 @@
         <tags>msbuild inline codetask</tags>
 		<developmentDependency>true</developmentDependency>
 	</metadata>
+	<files>
+		<file src="CodeTaskAssembly.props" target="build\MSBuilder.CodeTaskAssembly.props" />
+	</files>
 </package>
