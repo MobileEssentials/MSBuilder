@@ -83,7 +83,7 @@
 
 	<!-- Install only once per VS + Instance, to enable incremental build -->
 	<Target Name="InstallVsixDependencies"
-			Condition=" '@(VsixDependency)' != '' and and '$(InstallVsixDependencies)' != 'false' "
+			Condition=" '@(VsixDependency)' != '' and '$(InstallVsixDependencies)' != 'false' "
 			DependsOnTargets="CollectVsixPayloads"
 			Inputs="@(VsixPayload)"
 			Outputs="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt">
