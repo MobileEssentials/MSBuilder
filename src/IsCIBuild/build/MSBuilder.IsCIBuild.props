@@ -39,13 +39,16 @@
         <IsAppVeyorBuild Condition="'$(IsAppVeyorBuild)' == '' and '$(APPVEYOR)' != ''">true</IsAppVeyorBuild>
         <IsMyGetBuild Condition="'$(IsMyGetBuild)' == '' and '$(BuildRunner)' == 'MyGet'">true</IsMyGetBuild>
         <IsJenkinsBuild Condition=" '$(IsJenkinsBuild)' == '' and '$(JENKINS_URL)' != ''">true</IsJenkinsBuild>
+        <IsTeamFoundationBuild Condition="'$(IsTeamFoundationBuild)' == '' and '$(SYSTEM_TEAMFOUNDATIONCOLLECTIONURI)' != ''">true</IsTeamFoundationBuild>
 
         <IsCIBuild Condition="
                    '$(IsTeamCityBuild)' == 'true' or 
                    '$(IsWrenchBuild)' == 'true' or 
                    '$(IsAppVeyorBuild)' == 'true' or 
                    '$(IsMyGetBuild)' == 'true' or 
-                   '$(IsJenkinsBuild)' == 'true'">true</IsCIBuild>
+                   '$(IsJenkinsBuild)' == 'true'
+                   '$(IsTeamCityBuild)' == 'true'
+                   ">true</IsCIBuild>
     </PropertyGroup>
 
     <Target Name="IsCIBuild" Returns="$(IsCIBuild)">
