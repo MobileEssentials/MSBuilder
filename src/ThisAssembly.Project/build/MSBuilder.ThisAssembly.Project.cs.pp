@@ -3,7 +3,6 @@
 
 [assembly: System.Reflection.AssemblyMetadata("Project.AssemblyName", RootNamespace.ThisAssembly.Project.AssemblyName)]
 [assembly: System.Reflection.AssemblyMetadata("Project.RootNamespace", RootNamespace.ThisAssembly.Project.RootNamespace)]
-[assembly: System.Reflection.AssemblyMetadata("Project.ProjectGuid", RootNamespace.ThisAssembly.Project.ProjectGuid)]
 [assembly: System.Reflection.AssemblyMetadata("Project.TargetFrameworkVersion", RootNamespace.ThisAssembly.Project.TargetFrameworkVersion)]
 [assembly: System.Reflection.AssemblyMetadata("Project.TargetFrameworkIdentifier", RootNamespace.ThisAssembly.Project.TargetFrameworkIdentifier)]
 [assembly: System.Reflection.AssemblyMetadata("Project.TargetFrameworkMoniker", RootNamespace.ThisAssembly.Project.TargetFrameworkMoniker)]
@@ -24,10 +23,7 @@ namespace _RootNamespace_
 
 			/// <summary>AssemblyName: $AssemblyName$</summary>
 			public const string AssemblyName = "$AssemblyName$";
-		
-			/// <summary>ProjectGuid: $ProjectGuid$</summary>
-			public const string ProjectGuid = "$ProjectGuid$";
-			
+					
 			/// <summary>TargetFrameworkVersion: $TargetFrameworkVersion$</summary>
 			public const string TargetFrameworkVersion = "$TargetFrameworkVersion$";
 			

@@ -66,7 +66,6 @@
 			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('_RootNamespace_', '$(ThisAssemblyNamespace)'))</_ThisProjectInfoContent>
 			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$RootNamespace$', '$(RootNamespace)'))</_ThisProjectInfoContent>
 			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$AssemblyName$', '$(AssemblyName)'))</_ThisProjectInfoContent>
-			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$ProjectGuid$', '$(ProjectGuid)'))</_ThisProjectInfoContent>
 			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$TargetFrameworkVersion$', '$(TargetFrameworkVersion)'))</_ThisProjectInfoContent>
 			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$TargetFrameworkIdentifier$', '$(TargetFrameworkIdentifier)'))</_ThisProjectInfoContent>
 			<_ThisProjectInfoContent>$(_ThisProjectInfoContent.Replace('$TargetFrameworkMoniker$', '$(TargetFrameworkMoniker)'))</_ThisProjectInfoContent>

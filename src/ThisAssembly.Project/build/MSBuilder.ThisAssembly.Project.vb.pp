@@ -2,7 +2,6 @@
 
 <Assembly: System.Reflection.AssemblyMetadata("Project.AssemblyName", Global.RootNamespace.ThisAssembly.Project.AssemblyName)>
 <Assembly: System.Reflection.AssemblyMetadata("Project.RootNamespace", Global.RootNamespace.ThisAssembly.Project.RootNamespace)>
-<Assembly: System.Reflection.AssemblyMetadata("Project.ProjectGuid", Global.RootNamespace.ThisAssembly.Project.ProjectGuid)>
 <Assembly: System.Reflection.AssemblyMetadata("Project.TargetFrameworkVersion", Global.RootNamespace.ThisAssembly.Project.TargetFrameworkVersion)>
 <Assembly: System.Reflection.AssemblyMetadata("Project.TargetFrameworkIdentifier", Global.RootNamespace.ThisAssembly.Project.TargetFrameworkIdentifier)>
 <Assembly: System.Reflection.AssemblyMetadata("Project.TargetFrameworkMoniker", Global.RootNamespace.ThisAssembly.Project.TargetFrameworkMoniker)>
@@ -22,10 +21,7 @@ Namespace Global
 
 			''' <summary>AssemblyName: $AssemblyName$</summary>
 			Public Const AssemblyName = "$AssemblyName$"
-		
-			''' <summary>ProjectGuid: $ProjectGuid$</summary>
-			Public Const ProjectGuid = "$ProjectGuid$"
-			
+					
 			''' <summary>TargetFrameworkVersion: $TargetFrameworkVersion$</summary>
 			Public Const TargetFrameworkVersion = "$TargetFrameworkVersion$"
 			
