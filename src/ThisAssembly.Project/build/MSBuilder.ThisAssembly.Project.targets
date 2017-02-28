@@ -32,7 +32,6 @@
 		</CoreCompileDependsOn>
 		<ThisProjectInfoFile>$(IntermediateOutputPath)ThisAssembly.Project.g$(DefaultLanguageSourceExtension)</ThisProjectInfoFile>
 		<ThisProjectPropertiesFile>$(IntermediateOutputPath)ThisAssembly.ProjectProperties.g$(DefaultLanguageSourceExtension)</ThisProjectPropertiesFile>
-		<ProjectGuidString Condition="'$(ProjectGuidString)' == ''">$([System.Guid]::Parse($(ProjectGuid)).ToString())</ProjectGuidString>
 	</PropertyGroup>
 
 	<Target Name="ThisProjectInfo" DependsOnTargets="_GenerateProjectInfo;_IntrospectProjectProperties;_GenerateProjectProperties"
