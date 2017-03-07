@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>MSBuilder.ReadItemFromFile</id>
+        <version>0.1.0</version>
+        <title>MSBuilder: ReadItemFromFile reads items and their metadata to an XML file in MSBuild format.</title>
+        <authors>Mobile Essentials</authors>
+        <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>
+			Reads items and their metadata from an MSBuild project
+			that contains an ItemGroup. For use together with the
+			WriteItemsToFile task.
+		</description>
+        <copyright>Copyright 2016</copyright>
+        <tags>msbuild inline codetask</tags>
+		<developmentDependency>true</developmentDependency>
+		<dependencies>
+			<dependency id="MSBuilder.CodeTaskAssembly" version="0.2.4" />
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="Readme.txt" />
+		<file src="ReadItemsFromFile.targets" target="build\MSBuilder.ReadItemsFromFile.targets" />
+	</files>
+</package>

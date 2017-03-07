@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	The MIT License (MIT)
+
+	Copyright (c) 2016 Mobile Essentials
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+-->
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+
+	<PropertyGroup>
+		<WriteItemsToFileImported>true</WriteItemsToFileImported>
+	</PropertyGroup>
+
+	<UsingTask TaskName="WriteItemsToFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)" Condition="'$(CodeTaskAssembly)' != ''">
+		<ParameterGroup>
+			<IncludeMetadata ParameterType="System.Nullable`1[[System.Boolean]]" />
+			<Items ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+			<ItemName />
+			<File ParameterType="Microsoft.Build.Framework.ITaskItem" Required="true" />
+		</ParameterGroup>
+		<Task>
+			<Reference Include="System.Core" />
+			<Reference Include="System.Xml" />
+			<Reference Include="System.Xml.Linq" />
+			<Using Namespace="Microsoft.Build.Framework" />
+			<Using Namespace="System.Linq" />
+			<Using Namespace="System.Xml" />
+			<Using Namespace="System.Xml.Linq" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[			
+					XNamespace XmlNs = XNamespace.Get("http://schemas.microsoft.com/developer/msbuild/2003");
+					XName ProjectElementName = XmlNs + "Project";
+					XName ItemGroupElementName = XmlNs + "ItemGroup";
+					string IncludeAttributeName = "Include";
+
+					var itemName = ItemName ?? "None";
+					var includeMetadata = IncludeMetadata ?? true;
+
+					var items = Items;
+					if (items == null)
+						items = new ITaskItem[0];
+
+					Func<ITaskItem, IEnumerable<XElement>> metadataFromItem;
+					if (includeMetadata)
+						metadataFromItem = item => item.CloneCustomMetadata()
+							.OfType<KeyValuePair<string, string>>()
+							.Select(entry => new XElement(XmlNs + entry.Key, entry.Value));
+					else
+						metadataFromItem = item => Enumerable.Empty<XElement>();
+
+					Func<ITaskItem, XElement> itemFromElement = item => new XElement(XmlNs + itemName,
+						new XAttribute(IncludeAttributeName, item.ItemSpec), metadataFromItem(item));
+
+					var document = new XDocument(
+						new XElement(ProjectElementName,
+							new XElement(ItemGroupElementName,
+								items.Select(item => itemFromElement(item)))));
+
+					var filePath = File.GetMetadata("FullPath");
+					if (System.IO.File.Exists(filePath))
+						System.IO.File.Delete(filePath);
+
+					if (!Directory.Exists(Path.GetDirectoryName(filePath)))
+						Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+					document.Save(filePath);
+				]]>
+			</Code>
+		</Task>
+	</UsingTask>
+</Project>
