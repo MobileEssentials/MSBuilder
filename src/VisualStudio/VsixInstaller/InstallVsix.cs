@@ -112,8 +112,8 @@ namespace MSBuilder
                             return false;
                         }
 
-                        managerType.InvokeMember("Uninstall", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { installedExtension });
-                        Log.LogMessage(importance, "Successfully uninstalled existing extension '{0}' (id={1}) version {2} found on {3}.", name, id, oldVersion, vsversion);
+                        // We got here because newVersion > oldVersion. The VSIX APIs should take care of upgrading.
+                        Log.LogMessage(importance, "Existing extension extension '{0}' (id={1}) found on {2} will be upgraded from version {3} to {4}.", name, id, vsversion, oldVersion, newVersion);
                     }
                     else
                     {
