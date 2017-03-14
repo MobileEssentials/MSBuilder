@@ -4,6 +4,7 @@ init:
 os: Visual Studio 2017
 
 build_script:
+  - msbuild src\MSBuilder.sln /t:Restore
   - build.cmd /v:normal
 
 # we run the tests ourselves in build.proj for coverage
