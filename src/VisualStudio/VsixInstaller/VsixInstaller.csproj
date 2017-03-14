@@ -58,6 +58,12 @@
   <ItemGroup>
     <Content Include="Readme.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VsixExp\VsixExp.csproj">
+      <Project>{690b6f99-f215-4540-860e-3d3eec9d0143}</Project>
+      <Name>VsixExp</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

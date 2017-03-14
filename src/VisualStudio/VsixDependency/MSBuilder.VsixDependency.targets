@@ -25,7 +25,36 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Import Project="MSBuilder.VsixDependency.tasks" />
 
-	<Target Name="AddVsixDependencies"
+	<!-- Only auto-install dependencies if the extension being built will be deployed too -->
+	<PropertyGroup Condition=" '$(DeployExtension)' == 'true' ">
+		<DeployVsixExtensionFilesDependsOn>
+			_CleanInstallVsixDependencies;
+			_CollectVsixPayloads;
+			_ExperimentalizeVsixPayloads;
+			InstallVsixDependencies;
+			$(DeployVsixExtensionFilesDependsOn)
+		</DeployVsixExtensionFilesDependsOn>
+	</PropertyGroup>
+
+	<!-- Install only once per VS + Instance, to enable incremental build -->
+	<Target Name="InstallVsixDependencies"
+			Condition=" '@(VsixDependency)' != '' and '$(InstallVsixDependencies)' != 'false' "
+			DependsOnTargets="_CollectVsixPayloads;_ExperimentalizeVsixPayloads"
+			Inputs="@(VsixPayload)"
+			Outputs="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt">
+
+		<InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
+						 VsixPath="%(VsixPayload.Exp)"
+						 MessageImportance="high"
+						 RootSuffix="$(RootSuffix)" />
+		<Touch Files="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt" AlwaysCreate="true" />
+		<ItemGroup>
+			<FileWrites Include="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt" />
+		</ItemGroup>
+	</Target>
+
+	<!-- Injects the @VsixDependency into the intermediate VSIX manifest -->
+	<Target Name="_AddVsixDependencies"
 			  Condition=" '@(VsixDependency)' != '' and Exists('$(IntermediateVsixManifest)') and '$(AddVsixDependencies)' != 'false' "
 			  AfterTargets="DetokenizeVsixManifestFile"
 			  Inputs="$(IntermediateVsixManifest)"
@@ -45,18 +74,8 @@
 		<Touch Files="$(IntermediateOutputPath)AddVsixDependencies.txt" AlwaysCreate="true" />
 	</Target>
 
-	<!-- Only auto-install dependencies if the extension being built will be deployed too -->
-	<PropertyGroup Condition=" '$(DeployExtension)' == 'true' ">
-		<DeployVsixExtensionFilesDependsOn>
-			CleanInstallVsixDependencies;
-			CollectVsixPayloads;
-			InstallVsixDependencies;
-			$(DeployVsixExtensionFilesDependsOn)
-		</DeployVsixExtensionFilesDependsOn>
-	</PropertyGroup>
-
 	<!-- If the entire Extensions folder doesn't exist, most likely the dev deleted the entire Exp directory -->
-	<Target Name="CleanInstallVsixDependencies"
+	<Target Name="_CleanInstallVsixDependencies"
 			  Condition=" Exists('$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt') ">
 		
 		<GetExtensionsPath 
@@ -75,26 +94,23 @@
 					Condition=" !Exists('$(ExtensionsPath)') " />
 	</Target>
 
-	<Target Name="CollectVsixPayloads">
+	<Target Name="_CollectVsixPayloads">
 		<ItemGroup>
 			<VsixPayload Include="@(VsixDependency -> '%(VsixPath)')" />
+			<VsixPayload>
+				<Exp>%(RootDir)%(Directory)%(Filename)-exp%(Extension)</Exp>
+			</VsixPayload>
 		</ItemGroup>
 	</Target>
 
-	<!-- Install only once per VS + Instance, to enable incremental build -->
-	<Target Name="InstallVsixDependencies"
+	<Target Name="_ExperimentalizeVsixPayloads"
 			Condition=" '@(VsixDependency)' != '' and '$(InstallVsixDependencies)' != 'false' "
-			DependsOnTargets="CollectVsixPayloads"
+			DependsOnTargets="_CollectVsixPayloads"
 			Inputs="@(VsixPayload)"
-			Outputs="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt">
-		<InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
-						 VsixPath="%(VsixPayload.FullPath)"
-						 MessageImportance="high"
-						 RootSuffix="$(RootSuffix)" />
-		<Touch Files="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt" AlwaysCreate="true" />
-		<ItemGroup>
-			<FileWrites Include="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt" />
-		</ItemGroup>
+			Outputs="@(VsixPayload -> '%(Exp)')">
+
+		<!-- Run the "Experimentalizer" which turns release VSIXes into Experimental ones -->
+		<Exec Command='"$(VsixExp)" "@(VsixPayload)" "%(VsixPayload.Exp)"' />
 	</Target>
 
 </Project>
