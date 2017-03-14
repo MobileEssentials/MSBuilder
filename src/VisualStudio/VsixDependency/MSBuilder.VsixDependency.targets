@@ -26,7 +26,7 @@
 	<Import Project="MSBuilder.VsixDependency.tasks" />
 
 	<!-- Only auto-install dependencies if the extension being built will be deployed too -->
-	<PropertyGroup Condition=" '$(DeployExtension)' == 'true' ">
+	<PropertyGroup>
 		<DeployVsixExtensionFilesDependsOn>
 			_CleanInstallVsixDependencies;
 			_CollectVsixPayloads;
@@ -38,7 +38,7 @@
 
 	<!-- Install only once per VS + Instance, to enable incremental build -->
 	<Target Name="InstallVsixDependencies"
-			Condition=" '@(VsixDependency)' != '' and '$(InstallVsixDependencies)' != 'false' "
+			Condition=" '$(DeployExtension)' == 'true' And '@(VsixDependency)' != '' And '$(InstallVsixDependencies)' != 'false' "
 			DependsOnTargets="_CollectVsixPayloads;_ExperimentalizeVsixPayloads"
 			Inputs="@(VsixPayload)"
 			Outputs="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt">
@@ -104,7 +104,7 @@
 	</Target>
 
 	<Target Name="_ExperimentalizeVsixPayloads"
-			Condition=" '@(VsixDependency)' != '' and '$(InstallVsixDependencies)' != 'false' "
+			Condition=" '$(DeployExtension)' == 'true' And '@(VsixDependency)' != '' and '$(InstallVsixDependencies)' != 'false' "
 			DependsOnTargets="_CollectVsixPayloads"
 			Inputs="@(VsixPayload)"
 			Outputs="@(VsixPayload -> '%(Exp)')">
