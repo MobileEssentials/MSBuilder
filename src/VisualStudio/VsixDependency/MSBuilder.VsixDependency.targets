@@ -47,6 +47,8 @@
 						 VsixPath="%(VsixPayload.Exp)"
 						 MessageImportance="high"
 						 RootSuffix="$(RootSuffix)" />
+		
+		<MakeDir Directories="$(IntermediateOutputPath)" Condition=" !Exists('$(IntermediateOutputPath)') " />
 		<Touch Files="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt" AlwaysCreate="true" />
 		<ItemGroup>
 			<FileWrites Include="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt" />
@@ -69,8 +71,9 @@
 		</ItemGroup>
 
 		<AddVsixDependency TargetVsixManifest="$(IntermediateVsixManifest)"
-							   VsixDependencyManifest="@(VsixDependency)" />
+				   VsixDependencyManifest="@(VsixDependency)" />
 
+		<MakeDir Directories="$(IntermediateOutputPath)" Condition=" !Exists('$(IntermediateOutputPath)') " />
 		<Touch Files="$(IntermediateOutputPath)AddVsixDependencies.txt" AlwaysCreate="true" />
 	</Target>
 
