@@ -41,7 +41,7 @@
 		<Message Importance="high" Text="RootSuffix='$(RootSuffix)'" />
 	</Target>
 
-	<Target Name="InstallVsix">
+	<Target Name="InstallVsix">		
 		<PropertyGroup>
 			<PerMachine Condition=" '$(PerMachine)' == '' ">false</PerMachine>
 			<MessageImportance Condition=" '$(MessageImportance)' == '' ">high</MessageImportance>

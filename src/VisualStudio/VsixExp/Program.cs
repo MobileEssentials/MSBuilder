@@ -18,38 +18,46 @@ namespace VsixExp
 
         static int Main(string[] args)
         {
-            if (!Tracer.Configuration.GetSource("*").Listeners.OfType<ConsoleTraceListener>().Any())
+            try
             {
-                Tracer.Configuration.AddListener("*", new ConsoleTraceListener());
-                Tracer.Configuration.SetTracingLevel("*", SourceLevels.Information);
-            }
-
-            var result = true;
-
-            if (args.Length == 0)
-            {
-                foreach (var vsixFile in Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.vsix", SearchOption.TopDirectoryOnly))
+                if (!Tracer.Configuration.GetSource("*").Listeners.OfType<ConsoleTraceListener>().Any())
                 {
-                    result &= Experimentalize(vsixFile);
+                    Tracer.Configuration.AddListener("*", new ConsoleTraceListener());
+                    Tracer.Configuration.SetTracingLevel("*", SourceLevels.Information);
                 }
+
+                var result = true;
+
+                if (args.Length == 0)
+                {
+                    foreach (var vsixFile in Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.vsix", SearchOption.TopDirectoryOnly))
+                    {
+                        result &= Experimentalize(vsixFile);
+                    }
+                }
+                else if (args.Length == 1)
+                {
+                    result = Experimentalize(args[0]);
+                }
+                else if (args.Length == 2)
+                {
+                    result = Experimentalize(args[0], args[1]);
+                }
+                else
+                {
+                    Console.WriteLine("Usage: VsixExp.exe [SourceVsix] [TargetVsix]");
+                    Console.WriteLine("If no VSIX arguments are provided, all VSIXes found in the current directory will be processed and experimentalized in-place.");
+                    return -1;
+                }
+
+                Console.WriteLine("Done. Double-click VSIXes to install.");
+                return result ? 0 : -1;
             }
-            else if (args.Length == 1)
+            catch (Exception e)
             {
-                result = Experimentalize(args[0]);
-            }
-            else if (args.Length == 2)
-            {
-                result = Experimentalize(args[0], args[1]);
-            }
-            else
-            {
-                Console.WriteLine("Usage: VsixExp.exe [SourceVsix] [TargetVsix]");
-                Console.WriteLine("If no VSIX arguments are provided, all VSIXes found in the current directory will be processed and experimentalized in-place.");
+                Console.WriteLine(e.ToString());
                 return -1;
             }
-
-            Console.WriteLine("Done. Double-click VSIXes to install.");
-            return result ? 0 : -1;
         }
 
         static bool Experimentalize(string sourceVsixFile, string targetVsixFile = null)
