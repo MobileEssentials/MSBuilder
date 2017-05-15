@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Xml.Linq;
 using System.Linq;
-using System.IO.Packaging;
 using System.Net.Mime;
 using System.Globalization;
 using System.Diagnostics;
@@ -13,6 +13,11 @@ namespace VsixExp
 {
     class Program
     {
+        /// <summary>
+        /// XML namespace of a VSIX extension manifest.
+        /// </summary>
+        public static XNamespace XmlNs => XNamespace.Get("http://schemas.microsoft.com/developer/vsx-schema/2011");
+
         static readonly ITracer tracer = Tracer.Get("*");
         static readonly Version MinVsixVersion = new Version("2.0.0");
 
@@ -63,18 +68,25 @@ namespace VsixExp
         static bool Experimentalize(string sourceVsixFile, string targetVsixFile = null)
         {
             var temp = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(sourceVsixFile));
-            if (!Directory.Exists(temp))
-                Directory.CreateDirectory(temp);
+            if (Directory.Exists(temp))
+                Directory.Delete(temp, true);
+
+            Directory.CreateDirectory(temp);
 
             tracer.Info($"Extracting {Path.GetFileName(sourceVsixFile)}...");
-            using (var stream = File.OpenRead(sourceVsixFile))
+            var completed = 0;
+            ProgressZipFile.ExtractToDirectory(sourceVsixFile, temp, new Progress<double>(d => 
             {
-                stream.Unpack(temp);
-            }
+                if ((int)Math.Round(d * 100) > completed)
+                {
+                    completed = (int)Math.Round(d * 100);
+                    tracer.Info($"{completed}% extraction complete");
+                }
+            }));
 
-            var manifest = XDocument.Load(Path.Combine(temp, "extension.vsixmanifest")).Root.ToDynamic();
+            var manifest = XDocument.Load(Path.Combine(temp, "extension.vsixmanifest")).Root;
 
-            var vsixVersion = new Version((string)manifest["Version"]);
+            var vsixVersion = new Version(manifest.Attribute("Version").Value);
             if (vsixVersion < MinVsixVersion)
             {
                 tracer.Warn($"VSIX {Path.GetFileName(sourceVsixFile)} has a manifest version lower than v{MinVsixVersion}, which is not unsupported.");
@@ -84,13 +96,24 @@ namespace VsixExp
             if (targetVsixFile == null)
                 targetVsixFile = sourceVsixFile;
 
+            var metadata = manifest.Element(XmlNs + "Metadata");
+            var identity = metadata.Element(XmlNs + "Identity");
+
             // Mark VSIX as experimental.
-            var experimental = manifest.Installation["Experimental"];
+            var installation = manifest.Element(XmlNs + "Installation");
+            if (installation == null)
+            {
+                installation = new XElement(XmlNs + "Installation");
+                metadata.AddAfterSelf(installation);
+            }
+
+            var experimental = installation.Attribute("Experimental");
             if (experimental == null)
             {
-                experimental = manifest.Installation["Experimental"] = new XAttribute("Experimental", "true");
+                experimental = new XAttribute("Experimental", "true");
+                installation.Add(experimental);
             }
-            else if (((XAttribute)experimental).Value.Equals("true", StringComparison.OrdinalIgnoreCase))
+            else if (experimental.Value.Equals("true", StringComparison.OrdinalIgnoreCase))
             {
                 tracer.Warn($"VSIX {Path.GetFileName(sourceVsixFile)} is already an experimental VSIX and will be skipped.");
                 // Only copy over if the source is newer than the target in this case.
@@ -101,18 +124,18 @@ namespace VsixExp
             }
             else
             {
-                ((XAttribute)experimental).SetValue("true");
+                experimental.SetValue("true");
             } 
 
             // Update the source manifest
-            ((XElement)manifest).Document.Save(Path.Combine(temp, "extension.vsixmanifest"));
+            manifest.Document.Save(Path.Combine(temp, "extension.vsixmanifest"));
 
-            var vsixId = (string)manifest.Metadata.Identity["Id"];
-            var packageId = (string)manifest.Metadata.PackageId;
+            var vsixId = identity.Attribute("Id").Value;
+            var packageId = identity.Attribute("PackageId")?.Value;
 
             dynamic package = new JObject();
             package.id = "Component." + (packageId ?? vsixId);
-            package.version = (string)manifest.Metadata.Identity["Version"];
+            package.version = identity.Attribute("Version").Value;
             package.type = "Component";
             package.extension = true;
             package.dependencies = new JObject();
@@ -123,23 +146,24 @@ namespace VsixExp
                 [packageId ?? vsixId] = package.version
             };
 
-            if (manifest.Prerequisites != null)
+            var prereqs = manifest.Element(XmlNs + "Prerequisites");
+            if (prereqs != null)
             {
                 // Grab dependencies
-                foreach (var dependency in manifest.Prerequisites)
+                foreach (var prereq in prereqs.Elements(XmlNs + "Prerequisite"))
                 {
-                    var version = NuGet.Versioning.VersionRange.Parse((string)dependency["Version"]);
+                    var version = NuGet.Versioning.VersionRange.Parse(prereq.Attribute("Version").Value);
 
-                    dependencies[(string)dependency["Id"]] = (version.HasLowerBound ? version.MinVersion.ToString() : version.MaxVersion.ToString());
+                    dependencies[prereq.Attribute("Id").Value] = (version.HasLowerBound ? version.MinVersion.ToString() : version.MaxVersion.ToString());
                 }
             }
 
             package.dependencies = dependencies;
             package.localizedResources = new JArray(new JObject
             {
-                ["language"] = (string)manifest.Metadata.Identity["Language"],
-                ["title"] = (string)manifest.Metadata.DisplayName,
-                ["description"] = (string)manifest.Metadata.Description,
+                ["language"] = identity.Attribute("Language").Value,
+                ["title"] = metadata.Element(XmlNs + "DisplayName").Value,
+                ["description"] = metadata.Element(XmlNs + "Description").Value,
             });
 
             if (File.Exists(Path.Combine(temp, "catalog.json")))
@@ -156,21 +180,20 @@ namespace VsixExp
             
             var rels = Path.Combine(temp, "_rels");
             var pkg = Path.Combine(temp, "package");
-            using (var vsixPackage = ZipPackage.Open(targetVsixFile, FileMode.Create))
-            {
-                foreach (var file in Directory.GetFiles(temp, "*.*", SearchOption.AllDirectories).Where(f => !f.StartsWith(rels) && !f.StartsWith(pkg)))
-                {
-                    tracer.Verbose($"Packing {file.Substring(temp.Length + 1)}...");
-                    var uri = PackUriHelper.CreatePartUri(new Uri(file.Substring(temp.Length + 1), UriKind.Relative));
-                    var part = vsixPackage.CreatePart(uri, GetMimeTypeFromExtension(Path.GetExtension(file)), CompressionOption.Normal);
-                    using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read))
-                    {
-                        stream.CopyTo(part.GetStream());
-                    }
-                }
 
-                vsixPackage.Close();
-            }
+            tracer.Info($"Compressing {Path.GetFileName(targetVsixFile)}...");
+            if (File.Exists(targetVsixFile))
+                File.Delete(targetVsixFile);
+
+            completed = 0;
+            ProgressZipFile.CreateFromDirectory(temp, targetVsixFile, new Progress<double>(d =>
+            {
+                if ((int)Math.Round(d * 100) > completed)
+                {
+                    completed = (int)Math.Round(d * 100);
+                    tracer.Info($"{completed}% compression complete");
+                }
+            }));
 
             tracer.Info($"Done writing final VSIX to {targetVsixFile}.");
             return true;
