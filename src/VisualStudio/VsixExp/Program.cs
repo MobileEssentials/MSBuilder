@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Globalization;
 using System.Diagnostics;
+using System.Configuration;
 
 namespace VsixExp
 {
@@ -17,6 +18,12 @@ namespace VsixExp
         /// XML namespace of a VSIX extension manifest.
         /// </summary>
         public static XNamespace XmlNs => XNamespace.Get("http://schemas.microsoft.com/developer/vsx-schema/2011");
+
+        /// <summary>
+        /// If the InstallationTargetVersion is specified in AppSettings, but no InstallationTargetId 
+        /// is specified, use this value as the default target.
+        /// </summary>
+        public const string DefaultInstallationTargetId = "Microsoft.VisualStudio.Community";
 
         static readonly ITracer tracer = Tracer.Get("*");
         static readonly Version MinVsixVersion = new Version("2.0.0");
@@ -105,6 +112,15 @@ namespace VsixExp
             {
                 installation = new XElement(XmlNs + "Installation");
                 metadata.AddAfterSelf(installation);
+            }
+
+            // Override extension's installation targets if specified via config.
+            var targetVersion = ConfigurationManager.AppSettings["InstallationTargetVersion"];
+            var targetId = ConfigurationManager.AppSettings["InstallationTargetId"] ?? DefaultInstallationTargetId;
+            if (!string.IsNullOrEmpty(targetVersion))
+            {
+                installation.RemoveNodes();
+                installation.Add(new XElement(XmlNs + "InstallationTarget", new XAttribute("Id", targetId), new XAttribute("Version", targetVersion)));
             }
 
             var experimental = installation.Attribute("Experimental");

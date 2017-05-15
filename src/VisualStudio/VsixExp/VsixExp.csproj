@@ -25,6 +25,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
@@ -38,7 +39,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ILRepack">
@@ -68,10 +71,10 @@
     <GetReferenceAssemblyPaths BypassFrameworkInstallChecks="False" TargetFrameworkMoniker="$(TargetFrameworkMoniker)">
       <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FullFrameworkReferenceAssemblyPaths" />
     </GetReferenceAssemblyPaths>
-	  <ItemGroup>
-		  <MergeAssemblies Include="@(ReferenceCopyLocalPaths)" Condition="'%(Extension)' == '.dll' And $([System.String]::new('%(Filename)').StartsWith('System.IO.Compression')) == 'false' " />
-	  </ItemGroup>
-	  <Exec Command="&quot;$(ILRepack)&quot; /targetplatform:&quot;v4,$(FullFrameworkReferenceAssemblyPaths.TrimEnd(\\))&quot; /out:&quot;@(IntermediateAssembly->'%(FullPath)')&quot; &quot;@(IntermediateAssembly->'%(FullPath)')&quot; @(MergeAssemblies->'&quot;%(FullPath)&quot;', ' ')" StandardErrorImportance="high" StandardOutputImportance="high" ConsoleToMSBuild="true" ContinueOnError="true">
+    <ItemGroup>
+      <MergeAssemblies Include="@(ReferenceCopyLocalPaths)" Condition="'%(Extension)' == '.dll' And $([System.String]::new('%(Filename)').StartsWith('System.IO.Compression')) == 'false' " />
+    </ItemGroup>
+    <Exec Command="&quot;$(ILRepack)&quot; /targetplatform:&quot;v4,$(FullFrameworkReferenceAssemblyPaths.TrimEnd(\\))&quot; /out:&quot;@(IntermediateAssembly->'%(FullPath)')&quot; &quot;@(IntermediateAssembly->'%(FullPath)')&quot; @(MergeAssemblies->'&quot;%(FullPath)&quot;', ' ')" StandardErrorImportance="high" StandardOutputImportance="high" ConsoleToMSBuild="true" ContinueOnError="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="ILRepackOutput" />
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Exec>
