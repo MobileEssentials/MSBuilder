@@ -147,7 +147,7 @@ namespace VsixExp
             manifest.Document.Save(Path.Combine(temp, "extension.vsixmanifest"));
 
             var vsixId = identity.Attribute("Id").Value;
-            var packageId = identity.Attribute("PackageId")?.Value;
+            var packageId = metadata.Element(XmlNs + "PackageId")?.Value;
 
             dynamic package = new JObject();
             package.id = "Component." + (packageId ?? vsixId);
