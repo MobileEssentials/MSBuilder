@@ -114,11 +114,15 @@ namespace MSBuilder
 
                 // If we are targetting exclusively 15+, we can't have the Dependency too. NOTE: if targeting 
                 // multiple VS versions, having both Prerequisite AND dependency might not work.
-                var shouldAddDependency = targetDoc.Root
-                    .Element(xmlns + "Installation")?
-                    .Elements(xmlns + "InstallationTarget")?
-                    .Select(x => x.Attribute("Version").Value)
-                    .Any(v => !v.StartsWith("[15"));
+                bool? shouldAddDependency = null;
+                var installation = targetDoc.Root.Element(xmlns + "Installation");
+                if (installation != null)
+                {
+                    shouldAddDependency = installation
+                        .Elements(xmlns + "InstallationTarget")
+                        .Select(x => x.Attribute("Version").Value)
+                        .Any(v => !v.StartsWith("[15"));
+                }
 
                 if (!shouldAddDependency.HasValue || shouldAddDependency == true)
                 {
