@@ -41,14 +41,30 @@ namespace MSBuilder
 				return false;
 			}
 
-			var deps = targetDoc.Root.Element(xmlns + "Dependencies");
-			if (deps == null)
-			{
-				deps = new XElement(xmlns + "Dependencies");
-				targetDoc.Root.Add(deps);
-			}
+            var deps = new Lazy<XElement>(() =>
+            {
+                var e = targetDoc.Root.Element(xmlns + "Dependencies");
+                if (e == null)
+                {
+                    e = new XElement(xmlns + "Dependencies");
+                    targetDoc.Root.Add(e);
+                }
 
-			foreach (var vsixDependency in VsixDependencyManifest)
+                return e;
+            });
+            var reqs = new Lazy<XElement>(() =>
+            {
+                var e = targetDoc.Root.Element(xmlns + "Prerequisites");
+                if (e == null)
+                {
+                    e = new XElement(xmlns + "Prerequisites");
+                    targetDoc.Root.Add(e);
+                }
+
+                return e;
+            });
+
+            foreach (var vsixDependency in VsixDependencyManifest)
 			{
 				var dependencyDoc = XDocument.Load(vsixDependency.GetMetadata("FullPath"));
 				var identity = dependencyDoc.Root
@@ -68,32 +84,71 @@ namespace MSBuilder
 					continue;
 				}
 
-				var dependency = deps.Elements(xmlns + "Dependency").FirstOrDefault(e => e.Attribute("Id").Value == id);
-				if (dependency == null)
-				{
-					Log.LogMessage("Adding new dependency on {0} version {1}.", id, version);
+                // Dependency can be a prerequisite or a dependency, depending on the presence of 
+                // the JsonPath file.
+                var jsonPath = vsixDependency.GetMetadata("JsonPath");
+                if (!string.IsNullOrEmpty(jsonPath))
+                {
+                    var componentId = Path.GetFileNameWithoutExtension(jsonPath);
+                    var req = reqs.Value.Elements(xmlns + "Prerequisite").FirstOrDefault(e => e.Attribute("Id").Value == id);
+                    if (req == null)
+                    {
+                        Log.LogMessage("Adding new prerequisite on {0} version {1}.", id, version);
 
-					// <Dependency DisplayName="NAME" Id="ID" Version="[VERSION,)" Location="[VSIXPATH]" />
-					dependency = new XElement(xmlns + "Dependency",
-						new XAttribute("DisplayName", name),
-						new XAttribute("Id", id),
-						new XAttribute("Version", "[" + version + ",)"),
-						// NOTE: we always assume the file will be embedded as content inside the parent VSIX
-						new XAttribute("Location", Path.GetFileName(vsixPath)));
+                        // <Prerequisite Id="ID" Version="[VERSION,)" DisplayName="NAME" />
+                        req = new XElement(xmlns + "Prerequisite",
+                            new XAttribute("DisplayName", name),
+                            new XAttribute("Id", componentId),
+                            new XAttribute("Version", "[" + version + ",)"));
 
-					deps.Add(dependency);
-				}
-				else
-				{
-					Log.LogMessage("Updating existing dependency on {0} to version {1}", id, version);
+                        reqs.Value.Add(req);
+                    }
+                    else
+                    {
+                        Log.LogMessage("Updating existing prerequisite on {0} to version {1}", id, version);
 
-					dependency.Attribute("DisplayName").Value = name;
-					dependency.Attribute("Version").Value = "[" + version + ",)";
-					dependency.Attribute("Location").Value = Path.GetFileName(vsixPath);
-				}
-			}
+                        req.Attribute("DisplayName").Value = name;
+                        req.Attribute("Version").Value = "[" + version + ",)";
+                    }
+                }
 
-			if (Log.HasLoggedErrors)
+                // If we are targetting exclusively 15+, we can't have the Dependency too. NOTE: if targeting 
+                // multiple VS versions, having both Prerequisite AND dependency might not work.
+                var shouldAddDependency = targetDoc.Root
+                    .Element(xmlns + "Installation")?
+                    .Elements(xmlns + "InstallationTarget")?
+                    .Select(x => x.Attribute("Version").Value)
+                    .Any(v => !v.StartsWith("[15"));
+
+                if (!shouldAddDependency.HasValue || shouldAddDependency == true)
+                {
+                    var dependency = deps.Value.Elements(xmlns + "Dependency").FirstOrDefault(e => e.Attribute("Id").Value == id);
+                    if (dependency == null)
+                    {
+                        Log.LogMessage("Adding new dependency on {0} version {1}.", id, version);
+
+                        // <Dependency DisplayName="NAME" Id="ID" Version="[VERSION,)" Location="[VSIXPATH]" />
+                        dependency = new XElement(xmlns + "Dependency",
+                            new XAttribute("DisplayName", name),
+                            new XAttribute("Id", id),
+                            new XAttribute("Version", "[" + version + ",)"),
+                            // NOTE: we always assume the file will be embedded as content inside the parent VSIX
+                            new XAttribute("Location", Path.GetFileName(vsixPath)));
+
+                        deps.Value.Add(dependency);
+                    }
+                    else
+                    {
+                        Log.LogMessage("Updating existing dependency on {0} to version {1}", id, version);
+
+                        dependency.Attribute("DisplayName").Value = name;
+                        dependency.Attribute("Version").Value = "[" + version + ",)";
+                        dependency.Attribute("Location").Value = Path.GetFileName(vsixPath);
+                    }
+                }
+            }
+
+            if (Log.HasLoggedErrors)
 				return false;
 
 			targetDoc.Save(TargetVsixManifest.GetMetadata("FullPath"));

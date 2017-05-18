@@ -7,4 +7,7 @@
 		<DisplayName>Merq.SampleExtension</DisplayName>
 		<Description>Sample Extension</Description>
 	</Metadata>
+	<Installation>
+		<InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,)" />
+	</Installation>
 </PackageManifest>
