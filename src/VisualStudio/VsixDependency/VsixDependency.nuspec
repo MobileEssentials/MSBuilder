@@ -2,7 +2,7 @@
 <package>
 	<metadata>
 		<id>MSBuilder.VsixDependency</id>
-		<version>0.2.6</version>
+		<version>0.2.11</version>
 		<title>MSBuilder: VsixDependency</title>
 		<authors>Mobile Essentials</authors>
 		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -20,6 +20,7 @@
 	</metadata>
 	<files>
 		<file src="Readme.txt" />
+		<file src="_._" target="lib" />
 		<file src="bin\MSBuilder.VsixDependency.targets" target="build" />
 		<file src="bin\MSBuilder.VsixDependency.tasks" target="build" />
 		<file src="bin\MSBuilder.VsixDependency.dll" target="build" />
