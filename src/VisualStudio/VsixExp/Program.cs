@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
+using System.IO.Packaging;
 using System.Xml.Linq;
 using System.Linq;
 using System.Net.Mime;
@@ -201,15 +201,21 @@ namespace VsixExp
             if (File.Exists(targetVsixFile))
                 File.Delete(targetVsixFile);
 
-            completed = 0;
-            ProgressZipFile.CreateFromDirectory(temp, targetVsixFile, new Progress<double>(d =>
+            using (var vsixPackage = ZipPackage.Open(targetVsixFile, FileMode.Create))
             {
-                if ((int)Math.Round(d * 100) > completed)
+                foreach (var file in Directory.GetFiles(temp, "*.*", SearchOption.AllDirectories).Where(f => !f.StartsWith(rels) && !f.StartsWith(pkg)))
                 {
-                    completed = (int)Math.Round(d * 100);
-                    tracer.Info($"{completed}% compression complete");
+                    tracer.Verbose($"Packing {file.Substring(temp.Length + 1)}...");
+                    var uri = PackUriHelper.CreatePartUri(new Uri(file.Substring(temp.Length + 1), UriKind.Relative));
+                    var part = vsixPackage.CreatePart(uri, GetMimeTypeFromExtension(Path.GetExtension(file)), CompressionOption.NotCompressed);
+                    using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read))
+                    {
+                        stream.CopyTo(part.GetStream());
+                    }
                 }
-            }));
+
+                vsixPackage.Close();
+            }
 
             tracer.Info($"Done writing final VSIX to {targetVsixFile}.");
             return true;
