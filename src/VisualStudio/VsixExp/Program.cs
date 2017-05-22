@@ -129,19 +129,8 @@ namespace VsixExp
                 experimental = new XAttribute("Experimental", "true");
                 installation.Add(experimental);
             }
-            else if (experimental.Value.Equals("true", StringComparison.OrdinalIgnoreCase))
-            {
-                tracer.Warn($"VSIX {Path.GetFileName(sourceVsixFile)} is already an experimental VSIX and will be skipped.");
-                // Only copy over if the source is newer than the target in this case.
-                if (sourceVsixFile != targetVsixFile && File.GetLastWriteTime(sourceVsixFile) > File.GetLastWriteTime(targetVsixFile))
-                    File.Copy(sourceVsixFile, targetVsixFile, true);
 
-                return true;
-            }
-            else
-            {
-                experimental.SetValue("true");
-            } 
+            experimental.SetValue("true");
 
             // Update the source manifest
             manifest.Document.Save(Path.Combine(temp, "extension.vsixmanifest"));
