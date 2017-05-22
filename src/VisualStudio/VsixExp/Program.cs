@@ -190,13 +190,18 @@ namespace VsixExp
             if (File.Exists(targetVsixFile))
                 File.Delete(targetVsixFile);
 
+            var compressionSetting = ConfigurationManager.AppSettings["CompressionOption"];
+            var compressionOption = string.IsNullOrEmpty(compressionSetting) ?
+                CompressionOption.NotCompressed :
+                (CompressionOption)Enum.Parse(typeof(CompressionOption), compressionSetting);
+                
             using (var vsixPackage = ZipPackage.Open(targetVsixFile, FileMode.Create))
             {
                 foreach (var file in Directory.GetFiles(temp, "*.*", SearchOption.AllDirectories).Where(f => !f.StartsWith(rels) && !f.StartsWith(pkg)))
                 {
                     tracer.Verbose($"Packing {file.Substring(temp.Length + 1)}...");
                     var uri = PackUriHelper.CreatePartUri(new Uri(file.Substring(temp.Length + 1), UriKind.Relative));
-                    var part = vsixPackage.CreatePart(uri, GetMimeTypeFromExtension(Path.GetExtension(file)), CompressionOption.NotCompressed);
+                    var part = vsixPackage.CreatePart(uri, GetMimeTypeFromExtension(Path.GetExtension(file)), compressionOption);
                     using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read))
                     {
                         stream.CopyTo(part.GetStream());
