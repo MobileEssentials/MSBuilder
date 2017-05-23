@@ -94,7 +94,19 @@ namespace MSBuilder
 
                     if (oldVersion == newVersion)
                     {
-                        Log.LogMessage(importance, "Existing extension '{0}' (id={1}) version {2} found on {3} matches version to install. Assuming the existing extension is the right one.", name, id, newVersion, vsversion);
+                        var state = (int)extension.GetType().InvokeMember("State", BindingFlags.GetProperty, null, extension, null);
+                        if (state != 1)
+                        {
+                            Log.LogMessage(importance, "Existing extension '{0}' (id={1}) version {2} found on {3} matches version to install but it is not enabled. Enabling it now...", name, id, newVersion, vsversion);
+                            managerType.InvokeMember("Enable", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new[] { extension });
+                            managerType.InvokeMember("UpdateLastExtensionsChange", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, manager, new object[0]);
+                            Log.LogMessage(importance, "Successfully enabled extension '{0}' on {1}.", id, vsversion);
+                        }
+                        else
+                        {
+                            Log.LogMessage(importance, "Existing extension '{0}' (id={1}) version {2} found on {3} matches version to install and is already enabled. Assuming the existing extension is the right one.", name, id, newVersion, vsversion);
+                        }
+
                         return true;
                     }
                     if (oldVersion > newVersion)

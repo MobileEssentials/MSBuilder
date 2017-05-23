@@ -45,20 +45,21 @@ namespace MSBuilder
                         let vsdir = (string)key.GetValue(name)
                         // VSSDK is required
                         where Directory.Exists(Path.Combine(vsdir, @"VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0"))
-                        select new[] { name }
+                        select new[] { name, vsdir.TrimEnd(Path.DirectorySeparatorChar) }
                        ).ToArray();
             }
         }
 
         [MemberData(nameof(GetInstalledVisualStudio))]
         [Theory]
-        public void Install(string visualStudioVersion)
+        public void Install(string visualStudioVersion, string installRoot)
 		{
             try
             {
                 var task = new InstallVsix
                 {
                     VisualStudioVersion = visualStudioVersion,
+                    VsInstallRoot = installRoot,
                     VsixPath = vsixPathV1,
                     RootSuffix = "Exp",
                     BuildEngine = new MockBuildEngine(output, true)
@@ -71,6 +72,7 @@ namespace MSBuilder
                 var task = new UninstallVsix
                 {
                     VisualStudioVersion = visualStudioVersion,
+                    VsInstallRoot = installRoot,
                     VsixId = vsixId,
                     RootSuffix = "Exp",
                     BuildEngine = new MockBuildEngine(output, true)

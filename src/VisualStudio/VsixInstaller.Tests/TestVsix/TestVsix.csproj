@@ -30,13 +30,6 @@
     <WarningLevel>4</WarningLevel>
     <Version Condition="'$(Version)' == ''">1.0.0</Version>
     <TargetVsixContainerName Condition="'$(TargetVsixContainerName)' == ''">$(AssemblyName).$(Version).vsix</TargetVsixContainerName>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>14.0</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " />
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
