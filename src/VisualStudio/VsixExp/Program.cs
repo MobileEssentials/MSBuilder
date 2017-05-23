@@ -2,13 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
+using System.IO.Packaging;
 using System.Xml.Linq;
 using System.Linq;
 using System.Net.Mime;
 using System.Globalization;
 using System.Diagnostics;
 using System.Configuration;
+using System.IO.Compression;
+using System.Threading;
+using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling;
 
 namespace VsixExp
 {
@@ -75,23 +78,46 @@ namespace VsixExp
         static bool Experimentalize(string sourceVsixFile, string targetVsixFile = null)
         {
             var temp = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(sourceVsixFile));
-            if (Directory.Exists(temp))
+            if (Directory.Exists(temp) && !Debugger.IsAttached)
                 Directory.Delete(temp, true);
 
             Directory.CreateDirectory(temp);
 
-            tracer.Info($"Extracting {Path.GetFileName(sourceVsixFile)}...");
-            var completed = 0;
-            ProgressZipFile.ExtractToDirectory(sourceVsixFile, temp, new Progress<double>(d => 
-            {
-                if ((int)Math.Round(d * 100) > completed)
-                {
-                    completed = (int)Math.Round(d * 100);
-                    tracer.Info($"{completed}% extraction complete");
-                }
-            }));
+            var manifestFile = Path.Combine(temp, "extension.vsixmanifest");
+            var catalogFile = Path.Combine(temp, "catalog.json");
 
-            var manifest = XDocument.Load(Path.Combine(temp, "extension.vsixmanifest")).Root;
+            tracer.Info($"Processing {Path.GetFileName(sourceVsixFile)}...");
+
+            using (var zipFile = ZipFile.OpenRead(sourceVsixFile))
+            {
+                var manifestEntry = zipFile.GetEntry("extension.vsixmanifest");
+                if (File.Exists(manifestFile))
+                    File.Delete(manifestFile);
+
+                var retryStrategy = new ExponentialBackoff(5, TimeSpan.FromMilliseconds(20), TimeSpan.FromMilliseconds(200), TimeSpan.FromSeconds(20));
+                var retryPolicy = new RetryPolicy(DetectionStrategy.Create(ex => ex is DirectoryNotFoundException), retryStrategy);
+
+                retryPolicy.ExecuteAction(() =>
+                {
+                    Directory.CreateDirectory(temp);
+                    manifestEntry.ExtractToFile(manifestFile);
+                });
+
+                var catalogEntry = zipFile.GetEntry("catalog.json");
+                if (catalogEntry != null)
+                {
+                    if (File.Exists(catalogFile))
+                        File.Delete(catalogFile);
+
+                    retryPolicy.ExecuteAction(() =>
+                    {
+                        Directory.CreateDirectory(temp);
+                        catalogEntry.ExtractToFile(catalogFile);
+                    });
+                }
+            }
+
+            var manifest = XDocument.Load(manifestFile).Root;
 
             var vsixVersion = new Version(manifest.Attribute("Version").Value);
             if (vsixVersion < MinVsixVersion)
@@ -171,90 +197,61 @@ namespace VsixExp
                 ["description"] = metadata.Element(XmlNs + "Description").Value,
             });
 
-            if (File.Exists(Path.Combine(temp, "catalog.json")))
-            {
-                dynamic catalog = JObject.Parse(File.ReadAllText(Path.Combine(temp, "catalog.json")));
-                catalog.packages = new JArray(new[] { package }.Concat((IEnumerable<object>)catalog.packages).ToArray());
+            tracer.Verbose($"Updating VSIX contents...");
+            if (sourceVsixFile != targetVsixFile)
+                File.Copy(sourceVsixFile, targetVsixFile, true);
 
-                File.WriteAllText(Path.Combine(temp, "catalog.json"), ((JObject)catalog).ToString(Newtonsoft.Json.Formatting.Indented));
-            }
-            else
+            using (var vsixPackage = ZipPackage.Open(targetVsixFile, FileMode.Open))
             {
-                tracer.Warn($"VSIX {Path.GetFileName(sourceVsixFile)} is not a VSIX v3 since it lacks a catalog.json.");
-            }
-            
-            var rels = Path.Combine(temp, "_rels");
-            var pkg = Path.Combine(temp, "package");
-
-            tracer.Info($"Compressing {Path.GetFileName(targetVsixFile)}...");
-            if (File.Exists(targetVsixFile))
-                File.Delete(targetVsixFile);
-
-            completed = 0;
-            ProgressZipFile.CreateFromDirectory(temp, targetVsixFile, new Progress<double>(d =>
-            {
-                if ((int)Math.Round(d * 100) > completed)
+                var uri = PackUriHelper.CreatePartUri(new Uri("extension.vsixmanifest", UriKind.Relative));
+                var manifestPart = vsixPackage.GetPart(uri);
+                using (var stream = manifestPart.GetStream(FileMode.Open))
+                using (var input = File.OpenRead(manifestFile))
                 {
-                    completed = (int)Math.Round(d * 100);
-                    tracer.Info($"{completed}% compression complete");
+                    tracer.Verbose($"Updating extension.vsixmanifest in VSIX...");
+                    input.CopyTo(stream);
                 }
-            }));
+
+                if (File.Exists(catalogFile))
+                {
+                    dynamic catalog = JObject.Parse(File.ReadAllText(catalogFile));
+                    catalog.packages = new JArray(new[] { package }.Concat((IEnumerable<object>)catalog.packages).ToArray());
+
+                    tracer.Verbose($"Writing catalog.json...");
+                    File.WriteAllText(catalogFile, ((JObject)catalog).ToString(Newtonsoft.Json.Formatting.Indented));
+
+                    var catalogUri = PackUriHelper.CreatePartUri(new Uri("catalog.json", UriKind.Relative));
+                    var catalogPart = vsixPackage.GetPart(catalogUri);
+                    using (var stream = catalogPart.GetStream(FileMode.Create))
+                    using (var writer = new StreamWriter(stream))
+                    {
+                        tracer.Verbose($"Updating catalog.json in VSIX...");
+                        writer.Write(((JObject)catalog).ToString(Newtonsoft.Json.Formatting.Indented));
+                    }
+                }
+                else
+                {
+                    tracer.Warn($"VSIX {Path.GetFileName(sourceVsixFile)} is not a VSIX v3 since it lacks a catalog.json.");
+                }
+
+                vsixPackage.Flush();
+                vsixPackage.Close();
+            }
 
             tracer.Info($"Done writing final VSIX to {targetVsixFile}.");
             return true;
         }
 
-        static string GetMimeTypeFromExtension(string extension)
+        class DetectionStrategy : ITransientErrorDetectionStrategy
         {
-            switch (extension.ToLower(CultureInfo.InvariantCulture))
-            {
-                case KnownFileExtensions.Json:
-                    return "application/json";
-                case KnownFileExtensions.Txt:
-                case KnownFileExtensions.Pkgdef:
-                    return MediaTypeNames.Text.Plain;
-                case KnownFileExtensions.VsixManifest:
-                case KnownFileExtensions.Xml:
-                    return MediaTypeNames.Text.Xml;
-                case KnownFileExtensions.Htm:
-                case KnownFileExtensions.Html:
-                    return MediaTypeNames.Text.Html;
-                case KnownFileExtensions.Pdf:
-                    return MediaTypeNames.Application.Pdf;
-                case KnownFileExtensions.Rtf:
-                    return MediaTypeNames.Text.RichText;
-                case KnownFileExtensions.Gif:
-                    return MediaTypeNames.Image.Gif;
-                case KnownFileExtensions.Jpg:
-                case KnownFileExtensions.Jpeg:
-                    return MediaTypeNames.Image.Jpeg;
-                case KnownFileExtensions.Tiff:
-                    return MediaTypeNames.Image.Tiff;
-                case KnownFileExtensions.Vsix:
-                case KnownFileExtensions.Zip:
-                    return MediaTypeNames.Application.Zip;
-                default:
-                    return MediaTypeNames.Application.Octet;
-            }
-        }
+            public static ITransientErrorDetectionStrategy Create(Func<Exception, bool> isTransient)
+                => new DetectionStrategy(isTransient);
 
-        class KnownFileExtensions
-        {
-            internal const string VsixManifest = ".vsixmanifest";
-            internal const string Xml = ".xml";
-            internal const string Txt = ".txt";
-            internal const string Json = ".json";
-            internal const string Pkgdef = ".pkgdef";
-            internal const string Pdf = ".pdf";
-            internal const string Htm = ".htm";
-            internal const string Html = ".html";
-            internal const string Rtf = ".rtf";
-            internal const string Vsix = ".vsix";
-            internal const string Zip = ".zip";
-            internal const string Jpg = ".jpg";
-            internal const string Jpeg = ".jpeg";
-            internal const string Gif = ".gif";
-            internal const string Tiff = ".tiff";
+            Func<Exception, bool> isTransient;
+
+            DetectionStrategy(Func<Exception, bool> isTransient) => this.isTransient = isTransient;
+
+            public bool IsTransient(Exception ex) => isTransient(ex);
         }
     }
 }
