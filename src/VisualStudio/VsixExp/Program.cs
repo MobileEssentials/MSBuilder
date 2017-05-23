@@ -9,6 +9,8 @@ using System.Net.Mime;
 using System.Globalization;
 using System.Diagnostics;
 using System.Configuration;
+using System.IO.Compression;
+using System.Threading;
 
 namespace VsixExp
 {
@@ -75,23 +77,37 @@ namespace VsixExp
         static bool Experimentalize(string sourceVsixFile, string targetVsixFile = null)
         {
             var temp = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(sourceVsixFile));
-            if (Directory.Exists(temp))
+            if (Directory.Exists(temp) && !Debugger.IsAttached)
                 Directory.Delete(temp, true);
 
             Directory.CreateDirectory(temp);
+            while (!Directory.Exists(temp))
+                Thread.Sleep(20);
 
-            tracer.Info($"Extracting {Path.GetFileName(sourceVsixFile)}...");
-            var completed = 0;
-            ProgressZipFile.ExtractToDirectory(sourceVsixFile, temp, new Progress<double>(d => 
+            var manifestFile = Path.Combine(temp, "extension.vsixmanifest");
+            var catalogFile = Path.Combine(temp, "catalog.json");
+
+            tracer.Info($"Processing {Path.GetFileName(sourceVsixFile)}...");
+
+            using (var zipFile = ZipFile.OpenRead(sourceVsixFile))
             {
-                if ((int)Math.Round(d * 100) > completed)
-                {
-                    completed = (int)Math.Round(d * 100);
-                    tracer.Info($"{completed}% extraction complete");
-                }
-            }));
+                var manifestEntry = zipFile.GetEntry("extension.vsixmanifest");
+                if (File.Exists(manifestFile))
+                    File.Delete(manifestFile);
 
-            var manifest = XDocument.Load(Path.Combine(temp, "extension.vsixmanifest")).Root;
+                manifestEntry.ExtractToFile(manifestFile);
+
+                var catalogEntry = zipFile.GetEntry("catalog.json");
+                if (catalogEntry != null)
+                {
+                    if (File.Exists(catalogFile))
+                        File.Delete(catalogFile);
+
+                    catalogEntry.ExtractToFile(catalogFile);
+                }
+            }
+
+            var manifest = XDocument.Load(manifestFile).Root;
 
             var vsixVersion = new Version(manifest.Attribute("Version").Value);
             if (vsixVersion < MinVsixVersion)
@@ -171,47 +187,48 @@ namespace VsixExp
                 ["description"] = metadata.Element(XmlNs + "Description").Value,
             });
 
-            if (File.Exists(Path.Combine(temp, "catalog.json")))
-            {
-                dynamic catalog = JObject.Parse(File.ReadAllText(Path.Combine(temp, "catalog.json")));
-                catalog.packages = new JArray(new[] { package }.Concat((IEnumerable<object>)catalog.packages).ToArray());
+            tracer.Verbose($"Updating VSIX contents...");
+            if (sourceVsixFile != targetVsixFile)
+                File.Copy(sourceVsixFile, targetVsixFile, true);
 
-                File.WriteAllText(Path.Combine(temp, "catalog.json"), ((JObject)catalog).ToString(Newtonsoft.Json.Formatting.Indented));
-            }
-            else
+            using (var vsixPackage = ZipPackage.Open(targetVsixFile, FileMode.Open))
             {
-                tracer.Warn($"VSIX {Path.GetFileName(sourceVsixFile)} is not a VSIX v3 since it lacks a catalog.json.");
-            }
-            
-            var rels = Path.Combine(temp, "_rels");
-            var pkg = Path.Combine(temp, "package");
-
-            tracer.Info($"Compressing {Path.GetFileName(targetVsixFile)}...");
-            if (File.Exists(targetVsixFile))
-                File.Delete(targetVsixFile);
-
-            var compressionSetting = ConfigurationManager.AppSettings["CompressionOption"];
-            var compressionOption = string.IsNullOrEmpty(compressionSetting) ?
-                CompressionOption.NotCompressed :
-                (CompressionOption)Enum.Parse(typeof(CompressionOption), compressionSetting);
-                
-            using (var vsixPackage = ZipPackage.Open(targetVsixFile, FileMode.Create))
-            {
-                foreach (var file in Directory.GetFiles(temp, "*.*", SearchOption.AllDirectories).Where(f => !f.StartsWith(rels) && !f.StartsWith(pkg)))
+                var uri = PackUriHelper.CreatePartUri(new Uri("extension.vsixmanifest", UriKind.Relative));
+                var manifestPart = vsixPackage.GetPart(uri);
+                using (var stream = manifestPart.GetStream(FileMode.Open))
+                using (var input = File.OpenRead(manifestFile))
                 {
-                    tracer.Verbose($"Packing {file.Substring(temp.Length + 1)}...");
-                    var uri = PackUriHelper.CreatePartUri(new Uri(file.Substring(temp.Length + 1), UriKind.Relative));
-                    var part = vsixPackage.CreatePart(uri, GetMimeTypeFromExtension(Path.GetExtension(file)), compressionOption);
-                    using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read))
-                    {
-                        stream.CopyTo(part.GetStream());
-                    }
+                    tracer.Verbose($"Updating extension.vsixmanifest in VSIX...");
+                    input.CopyTo(stream);
                 }
 
+                if (File.Exists(catalogFile))
+                {
+                    dynamic catalog = JObject.Parse(File.ReadAllText(catalogFile));
+                    catalog.packages = new JArray(new[] { package }.Concat((IEnumerable<object>)catalog.packages).ToArray());
+
+                    tracer.Verbose($"Writing catalog.json...");
+                    File.WriteAllText(catalogFile, ((JObject)catalog).ToString(Newtonsoft.Json.Formatting.Indented));
+
+                    var catalogUri = PackUriHelper.CreatePartUri(new Uri("catalog.json", UriKind.Relative));
+                    var catalogPart = vsixPackage.GetPart(catalogUri);
+                    using (var stream = catalogPart.GetStream(FileMode.Create))
+                    using (var writer = new StreamWriter(stream))
+                    {
+                        tracer.Verbose($"Updating catalog.json in VSIX...");
+                        writer.Write(((JObject)catalog).ToString(Newtonsoft.Json.Formatting.Indented));
+                    }
+                }
+                else
+                {
+                    tracer.Warn($"VSIX {Path.GetFileName(sourceVsixFile)} is not a VSIX v3 since it lacks a catalog.json.");
+                }
+
+                vsixPackage.Flush();
                 vsixPackage.Close();
             }
 
-            tracer.Info($"Done writing final VSIX to {targetVsixFile}.");
+            tracer.Info($"Done writing final VSIX to {sourceVsixFile}.");
             return true;
         }
 
