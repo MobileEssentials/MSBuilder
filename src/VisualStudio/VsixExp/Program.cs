@@ -205,7 +205,7 @@ namespace VsixExp
             {
                 var uri = PackUriHelper.CreatePartUri(new Uri("extension.vsixmanifest", UriKind.Relative));
                 var manifestPart = vsixPackage.GetPart(uri);
-                using (var stream = manifestPart.GetStream(FileMode.Open))
+                using (var stream = manifestPart.GetStream(FileMode.Create))
                 using (var input = File.OpenRead(manifestFile))
                 {
                     tracer.Verbose($"Updating extension.vsixmanifest in VSIX...");
