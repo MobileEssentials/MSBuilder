@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Configuration;
 using System.IO.Compression;
 using System.Threading;
+using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling;
 
 namespace VsixExp
 {
@@ -81,8 +82,6 @@ namespace VsixExp
                 Directory.Delete(temp, true);
 
             Directory.CreateDirectory(temp);
-            while (!Directory.Exists(temp))
-                Thread.Sleep(20);
 
             var manifestFile = Path.Combine(temp, "extension.vsixmanifest");
             var catalogFile = Path.Combine(temp, "catalog.json");
@@ -95,7 +94,14 @@ namespace VsixExp
                 if (File.Exists(manifestFile))
                     File.Delete(manifestFile);
 
-                manifestEntry.ExtractToFile(manifestFile);
+                var retryStrategy = new ExponentialBackoff(5, TimeSpan.FromMilliseconds(20), TimeSpan.FromMilliseconds(200), TimeSpan.FromSeconds(20));
+                var retryPolicy = new RetryPolicy(DetectionStrategy.Create(ex => ex is DirectoryNotFoundException), retryStrategy);
+
+                retryPolicy.ExecuteAction(() =>
+                {
+                    Directory.CreateDirectory(temp);
+                    manifestEntry.ExtractToFile(manifestFile);
+                });
 
                 var catalogEntry = zipFile.GetEntry("catalog.json");
                 if (catalogEntry != null)
@@ -103,7 +109,11 @@ namespace VsixExp
                     if (File.Exists(catalogFile))
                         File.Delete(catalogFile);
 
-                    catalogEntry.ExtractToFile(catalogFile);
+                    retryPolicy.ExecuteAction(() =>
+                    {
+                        Directory.CreateDirectory(temp);
+                        catalogEntry.ExtractToFile(catalogFile);
+                    });
                 }
             }
 
@@ -228,61 +238,20 @@ namespace VsixExp
                 vsixPackage.Close();
             }
 
-            tracer.Info($"Done writing final VSIX to {sourceVsixFile}.");
+            tracer.Info($"Done writing final VSIX to {targetVsixFile}.");
             return true;
         }
 
-        static string GetMimeTypeFromExtension(string extension)
+        class DetectionStrategy : ITransientErrorDetectionStrategy
         {
-            switch (extension.ToLower(CultureInfo.InvariantCulture))
-            {
-                case KnownFileExtensions.Json:
-                    return "application/json";
-                case KnownFileExtensions.Txt:
-                case KnownFileExtensions.Pkgdef:
-                    return MediaTypeNames.Text.Plain;
-                case KnownFileExtensions.VsixManifest:
-                case KnownFileExtensions.Xml:
-                    return MediaTypeNames.Text.Xml;
-                case KnownFileExtensions.Htm:
-                case KnownFileExtensions.Html:
-                    return MediaTypeNames.Text.Html;
-                case KnownFileExtensions.Pdf:
-                    return MediaTypeNames.Application.Pdf;
-                case KnownFileExtensions.Rtf:
-                    return MediaTypeNames.Text.RichText;
-                case KnownFileExtensions.Gif:
-                    return MediaTypeNames.Image.Gif;
-                case KnownFileExtensions.Jpg:
-                case KnownFileExtensions.Jpeg:
-                    return MediaTypeNames.Image.Jpeg;
-                case KnownFileExtensions.Tiff:
-                    return MediaTypeNames.Image.Tiff;
-                case KnownFileExtensions.Vsix:
-                case KnownFileExtensions.Zip:
-                    return MediaTypeNames.Application.Zip;
-                default:
-                    return MediaTypeNames.Application.Octet;
-            }
-        }
+            public static ITransientErrorDetectionStrategy Create(Func<Exception, bool> isTransient)
+                => new DetectionStrategy(isTransient);
 
-        class KnownFileExtensions
-        {
-            internal const string VsixManifest = ".vsixmanifest";
-            internal const string Xml = ".xml";
-            internal const string Txt = ".txt";
-            internal const string Json = ".json";
-            internal const string Pkgdef = ".pkgdef";
-            internal const string Pdf = ".pdf";
-            internal const string Htm = ".htm";
-            internal const string Html = ".html";
-            internal const string Rtf = ".rtf";
-            internal const string Vsix = ".vsix";
-            internal const string Zip = ".zip";
-            internal const string Jpg = ".jpg";
-            internal const string Jpeg = ".jpeg";
-            internal const string Gif = ".gif";
-            internal const string Tiff = ".tiff";
+            Func<Exception, bool> isTransient;
+
+            DetectionStrategy(Func<Exception, bool> isTransient) => this.isTransient = isTransient;
+
+            public bool IsTransient(Exception ex) => isTransient(ex);
         }
     }
 }

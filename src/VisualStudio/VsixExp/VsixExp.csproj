@@ -42,6 +42,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="EnterpriseLibrary.TransientFaultHandling">
+      <Version>6.0.1304</Version>
+    </PackageReference>
     <PackageReference Include="ILRepack">
       <Version>2.0.13</Version>
     </PackageReference>
