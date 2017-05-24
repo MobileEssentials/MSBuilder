@@ -1,36 +1,34 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using VsixExp;
 
-// General Information about an assembly is controlled through the following
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("Vsix")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("VsixExp")]
+[assembly: AssemblyDescription("Experimentalizes VSIXes")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Vsix")]
-[assembly: AssemblyCopyright("Copyright ©  2017")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+[assembly: AssemblyCompany("MobileEssentials")]
+[assembly: AssemblyProduct("VsixExp")]
+[assembly: AssemblyCopyright("Copyright © MobileEssentials 2017")]
 
-// Setting ComVisible to false makes the types in this assembly not visible
-// to COM components.  If you need to access a type in this assembly from
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("690b6f99-f215-4540-860e-3d3eec9d0143")]
+[assembly: AssemblyVersion(ThisAssembly.SimpleVersion)]
+[assembly: AssemblyFileVersion(ThisAssembly.FullVersion)]
+[assembly: AssemblyInformationalVersion(ThisAssembly.InformationalVersion)]
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+partial class ThisAssembly
+{
+    /// <summary>
+    /// Simple release-like version number, with just major, minor and ending up in '0'.
+    /// </summary>
+    public const string SimpleVersion = Git.SemVer.Major + "." + Git.SemVer.Minor + ".0";
+
+    /// <summary>
+    /// Full version, including commits since base version file, like 4.0.598
+    /// </summary>
+    public const string FullVersion = SimpleVersion + "." + Git.SemVer.Patch;
+
+    /// <summary>
+    /// Full version, plus branch and commit short sha.
+    /// </summary>
+    public const string InformationalVersion = FullVersion + "-" + Git.Branch + "+" + Git.Commit;
+}
