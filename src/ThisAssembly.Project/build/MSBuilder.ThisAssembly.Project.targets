@@ -137,7 +137,7 @@ namespace $(ThisAssemblyNamespace)
 		<!-- Write property -->
 		<WriteLinesToFile Lines='				  
 				/// &lt;summary&gt;$(PropertyName)=$(PropertyValue)&lt;/summary&gt;
-				public const string $(PropertyName) = "$(PropertyValue)"%3B
+				public const string $(PropertyName) = @"$(PropertyValue)"%3B
 ' Overwrite='false' File='$(ThisProjectPropertiesFile)' />
 	</Target>
 
