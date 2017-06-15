@@ -84,7 +84,7 @@ namespace MSBuilder
 
         [MemberData(nameof(GetInstalledVisualStudio))]
         [Theory]
-        public void Disable(string visualStudioVersion)
+        public void Disable(string visualStudioVersion, string installRoot)
 		{
             try
             {
@@ -119,7 +119,7 @@ namespace MSBuilder
 
         [MemberData(nameof(GetInstalledVisualStudio))]
         [Theory]
-        public void Enable(string visualStudioVersion)
+        public void Enable(string visualStudioVersion, string installRoot)
         {
             try
             {
@@ -163,7 +163,7 @@ namespace MSBuilder
 
         [MemberData(nameof(GetInstalledVisualStudio))]
         [Theory]
-        public void ListInstalled(string visualStudioVersion)
+        public void ListInstalled(string visualStudioVersion, string installRoot)
         {
             try
             {
