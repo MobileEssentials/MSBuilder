@@ -183,9 +183,9 @@ namespace VsixExp
                 // Grab dependencies
                 foreach (var prereq in prereqs.Elements(XmlNs + "Prerequisite"))
                 {
-                    var version = NuGet.Versioning.VersionRange.Parse(prereq.Attribute("Version").Value);
-
-                    dependencies[prereq.Attribute("Id").Value] = (version.HasLowerBound ? version.MinVersion.ToString() : version.MaxVersion.ToString());
+                    //var version = NuGet.Versioning.VersionRange.Parse(prereq.Attribute("Version").Value);
+                    //dependencies[prereq.Attribute("Id").Value] = (version.HasLowerBound ? version.MinVersion.ToString() : version.MaxVersion.ToString());
+                    dependencies[prereq.Attribute("Id").Value] = prereq.Attribute("Version").Value;
                 }
             }
 
@@ -215,7 +215,13 @@ namespace VsixExp
                 if (File.Exists(catalogFile))
                 {
                     dynamic catalog = JObject.Parse(File.ReadAllText(catalogFile));
+                    if (Debugger.IsAttached)
+                        File.WriteAllText(Path.Combine(Path.GetDirectoryName(sourceVsixFile), "catalog.json"), catalog.ToString(Newtonsoft.Json.Formatting.Indented));
+
                     catalog.packages = new JArray(new[] { package }.Concat((IEnumerable<object>)catalog.packages).ToArray());
+
+                    if (Debugger.IsAttached)
+                        File.WriteAllText(Path.Combine(Path.GetDirectoryName(targetVsixFile), "catalog-exp.json"), catalog.ToString(Newtonsoft.Json.Formatting.Indented));
 
                     tracer.Verbose($"Writing catalog.json...");
                     File.WriteAllText(catalogFile, ((JObject)catalog).ToString(Newtonsoft.Json.Formatting.Indented));

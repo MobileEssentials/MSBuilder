@@ -2,7 +2,7 @@
 <package>
 	<metadata>
 		<id>MSBuilder.DownloadFile</id>
-		<version>0.1.4</version>
+		<version>0.1.6</version>
 		<title>MSBuilder: DownloadFile Task</title>
 		<authors>Mobile Essentials</authors>
 		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -12,8 +12,7 @@
 		<copyright>Copyright 2015</copyright>
 		<tags>msbuild inline download</tags>
 		<dependencies>
-			<dependency id="MSBuilder" />
-			<dependency id="MSBuilder.CodeTaskAssembly" />
+			<dependency id="MSBuilder.CodeTaskAssembly" version="[0.2.5,)" />
 		</dependencies>
 	</metadata>
 	<files>

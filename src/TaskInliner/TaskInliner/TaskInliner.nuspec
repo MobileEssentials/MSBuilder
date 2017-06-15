@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>MSBuilder.TaskInliner</id>
-        <version>0.3.0</version>
+        <version>0.3.3</version>
         <title>MSBuilder: Inline Code Tasks Generator</title>
         <authors>Mobile Essentials</authors>
         <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -16,8 +16,7 @@ Unit testing your custom tasks becomes straight-forward while maintaining the tr
         <tags>msbuild inline</tags>
 		<developmentDependency>true</developmentDependency>
 		<dependencies>
-			<dependency id="MSBuilder" />
-			<dependency id="MSBuilder.CodeTaskAssembly" />
+			<dependency id="MSBuilder.CodeTaskAssembly" version="[0.2.5,)" />
 		</dependencies>
     </metadata>
 	<files>

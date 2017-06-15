@@ -28,8 +28,7 @@ Example (tasks used inside a target):
 		<copyright>Copyright 2015</copyright>
 		<tags>msbuild inline vssdk vsix vsixinstaller</tags>
 		<dependencies>
-			<dependency id="MSBuilder" version="0.1.0" />
-			<dependency id="MSBuilder.CodeTaskAssembly" version="0.2.3" />
+			<dependency id="MSBuilder.CodeTaskAssembly" version="[0.2.5,)" />
 		</dependencies>
 	</metadata>
 	<files>
