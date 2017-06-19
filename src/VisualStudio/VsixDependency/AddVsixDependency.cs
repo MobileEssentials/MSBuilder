@@ -86,6 +86,7 @@ namespace MSBuilder
 
                 // Dependency can be a prerequisite or a dependency, depending on the presence of 
                 // the JsonPath file.
+                bool? shouldAddDependency = null;
                 var jsonPath = vsixDependency.GetMetadata("JsonPath");
                 if (!string.IsNullOrEmpty(jsonPath))
                 {
@@ -110,18 +111,17 @@ namespace MSBuilder
                         req.Attribute("DisplayName").Value = name;
                         req.Attribute("Version").Value = "[" + version + ",)";
                     }
-                }
 
-                // If we are targetting exclusively 15+, we can't have the Dependency too. NOTE: if targeting 
-                // multiple VS versions, having both Prerequisite AND dependency might not work.
-                bool? shouldAddDependency = null;
-                var installation = targetDoc.Root.Element(xmlns + "Installation");
-                if (installation != null)
-                {
-                    shouldAddDependency = installation
-                        .Elements(xmlns + "InstallationTarget")
-                        .Select(x => x.Attribute("Version").Value)
-                        .Any(v => !v.StartsWith("[15"));
+                    // If we are targetting exclusively 15+, we can't have the Dependency too. NOTE: if targeting 
+                    // multiple VS versions, having both Prerequisite AND dependency might not work.
+                    var installation = targetDoc.Root.Element(xmlns + "Installation");
+                    if (installation != null)
+                    {
+                        shouldAddDependency = installation
+                            .Elements(xmlns + "InstallationTarget")
+                            .Select(x => x.Attribute("Version").Value)
+                            .Any(v => !v.StartsWith("[15"));
+                    }
                 }
 
                 if (!shouldAddDependency.HasValue || shouldAddDependency == true)
