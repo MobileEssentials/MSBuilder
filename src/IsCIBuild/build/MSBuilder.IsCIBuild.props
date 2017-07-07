@@ -48,7 +48,7 @@
                    '$(IsMyGetBuild)' == 'true' or 
                    '$(IsJenkinsBuild)' == 'true' or
                    '$(IsTeamCityBuild)' == 'true' or
-                   '$(TF_BUILD )' == 'true' or
+                   '$(TF_BUILD )' == 'true'
                    ">true</IsCIBuild>
     </PropertyGroup>
 
