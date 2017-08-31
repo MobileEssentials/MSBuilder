@@ -27,6 +27,8 @@
 
 	<!-- Only auto-install dependencies if the extension being built will be deployed too -->
 	<PropertyGroup>
+		<DevVersion Condition="'$(DevVersion)' == ''">$(VisualStudioVersion)</DevVersion>
+		<DevDir Condition="'$(DevDir)' =''">$(VsInstallRoot)</DevDir>
 		<DeployVsixExtensionFilesDependsOn>
 			_CleanInstallVsixDependencies;
 			_CollectVsixPayloads;
@@ -41,18 +43,18 @@
 			Condition=" '$(DeployExtension)' == 'true' And '@(VsixDependency)' != '' And '$(InstallVsixDependencies)' != 'false' "
 			DependsOnTargets="_CollectVsixPayloads;_ExperimentalizeVsixPayloads"
 			Inputs="@(VsixPayload)"
-			Outputs="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt">
+			Outputs="$(IntermediateOutputPath)InstallVsixDependencies-$(DevVersion)$(RootSuffix).txt">
 
-		<InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
-						 VsInstallRoot="$(VsInstallRoot)"
+		<InstallVsix VisualStudioVersion="$(DevVersion)"
+						 VsInstallRoot="$(DevDir)"
 						 VsixPath="%(VsixPayload.Exp)"
 						 MessageImportance="high"
 						 RootSuffix="$(RootSuffix)" />
 		
 		<MakeDir Directories="$(IntermediateOutputPath)" Condition=" !Exists('$(IntermediateOutputPath)') " />
-		<Touch Files="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt" AlwaysCreate="true" />
+		<Touch Files="$(IntermediateOutputPath)InstallVsixDependencies-$(DevVersion)$(RootSuffix).txt" AlwaysCreate="true" />
 		<ItemGroup>
-			<FileWrites Include="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt" />
+			<FileWrites Include="$(IntermediateOutputPath)InstallVsixDependencies-$(DevVersion)$(RootSuffix).txt" />
 		</ItemGroup>
 	</Target>
 
@@ -80,21 +82,21 @@
 
 	<!-- If the entire Extensions folder doesn't exist, most likely the dev deleted the entire Exp directory -->
 	<Target Name="_CleanInstallVsixDependencies"
-			  Condition=" Exists('$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt') ">
+			  Condition=" Exists('$(IntermediateOutputPath)InstallVsixDependencies-$(DevVersion)$(RootSuffix).txt') ">
 		
 		<GetExtensionsPath 
-			Condition="'$(ExtensionsPath)' == '' And '$(VisualStudioVersion)' &gt;= '15.0'"
+			Condition="'$(ExtensionsPath)' == '' And '$(DevVersion)' &gt;= '15.0'"
 			RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" >
 		  <Output TaskParameter="LocalExtensionsPath" PropertyName="ExtensionsPath"/>
 		</GetExtensionsPath>
 		
 		<GetExtensionsPath 
-			Condition="'$(ExtensionsPath)' == '' And '$(VisualStudioVersion)' &lt; '15.0'"
+			Condition="'$(ExtensionsPath)' == '' And '$(DevVersion)' &lt; '15.0'"
 			SubPath="$(ExtensionsDeploymentSubPath)">
 			<Output TaskParameter="LocalExtensionsPath" PropertyName="ExtensionsPath"/>
 		</GetExtensionsPath>
 		
-		<Delete Files="$(IntermediateOutputPath)InstallVsixDependencies-$(VisualStudioVersion)$(RootSuffix).txt"
+		<Delete Files="$(IntermediateOutputPath)InstallVsixDependencies-$(DevVersion)$(RootSuffix).txt"
 					Condition=" !Exists('$(ExtensionsPath)') " />
 	</Target>
 
