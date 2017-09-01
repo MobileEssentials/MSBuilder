@@ -28,7 +28,7 @@
 	<!-- Only auto-install dependencies if the extension being built will be deployed too -->
 	<PropertyGroup>
 		<Dev Condition="'$(Dev)' == ''">$(VisualStudioVersion)</Dev>
-		<DevDir Condition="'$(DevDir)' =''">$(VsInstallRoot)</DevDir>
+		<DevDir Condition="'$(DevDir)' == ''">$(VsInstallRoot)</DevDir>
 		<DeployVsixExtensionFilesDependsOn>
 			_CleanInstallVsixDependencies;
 			_CollectVsixPayloads;
