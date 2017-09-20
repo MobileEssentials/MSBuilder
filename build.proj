@@ -71,7 +71,8 @@
 			<TestProject Include="$(TestProject)" Condition=" '$(TestProject)' != '' " />
 		</ItemGroup>
 		<MSBuild Projects="@(TestProject)" BuildInParallel="true" Properties="Configuration=$(Configuration)" Targets="GetTargetPath"
-             Condition="'%(TestProject.FileName)' != 'Roslyn.Tests'"><!-- Fail randomly on CI, but work locally :( -->
+             Condition="'%(TestProject.FileName)' != 'Roslyn.Tests' and '%(TestProject.FileName)' != 'VsixInstaller.Tests'">
+             <!-- Roslyn.Tests fails randomly on CI, but work locally, VsixInstaller.Tests takes forever and sometimes hangs the build -->
 			<Output TaskParameter="TargetOutputs" ItemName="_TestAssembly" />
 		</MSBuild>
 
