@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>MSBuilder.PR</id>
+        <version>0.1.0</version>
+        <title>MSBuilder: PR Property</title>
+        <authors>Mobile Essentials</authors>
+        <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Provides the $(PR) property with the pull request number that triggered a continuous integration build (or empty otherwise). Supports VSTS, Travis, AppVeyor and Jenkins.</description>
+        <copyright>Copyright 2017</copyright>
+        <tags>msbuild vsts travis appveyor jenkins</tags>
+    </metadata>
+</package>
