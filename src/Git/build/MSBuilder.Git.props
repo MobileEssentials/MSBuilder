@@ -22,27 +22,48 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 -->
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+<Project InitialTargets="_GitWhereWindows" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
 
 	<!--
-    ============================================================
+  ============================================================
               Git Property
 	
-	Cascading probing mechanism will try to locate an installed 
-	version of git, msysgit or cygwin git.
+	Provides the location of the Git executable
 	============================================================
 	-->
-	<PropertyGroup Condition="'$(Git)' == '' And '$(OS)' == 'Windows_NT'">
-		<!-- We probe multiple places, with the first matching one winning -->
-		<Git Condition="'$(Git)' == '' And Exists('C:\Program Files\Git\bin\git.exe')">C:\Program Files\Git\bin\git.exe</Git>
-		<Git Condition="'$(Git)' == '' And Exists('C:\Program Files (x86)\Git\bin\git.exe')">C:\Program Files (x86)\Git\bin\git.exe</Git>
-		<Git Condition="'$(Git)' == '' And Exists('C:\msysgit\bin\git.exe')">C:\msysgit\bin\git.exe</Git>
-		<Git Condition="'$(Git)' == '' And Exists('C:\cygwin\bin\git.exe')">C:\cygwin\bin\git.exe</Git>
-		<!-- Ultimately, just try the exe and hope it exists in the PATH already -->
-		<Git Condition="'$(Git)' == ''">git.exe</Git>
-	</PropertyGroup>
 	<PropertyGroup Condition="'$(Git)' == '' And '$(OS)' != 'Windows_NT'">
 		<Git>git</Git>
 	</PropertyGroup>
+
+  <Target Name="GetGit" Returns="$(Git)">
+    <Message Importance="high" Text="Git=$(Git)" />
+  </Target>
+
+  <Target Name="_GitWhereWindows" Condition="'$(Git)' == '' And '$(OS)' == 'Windows_NT'">
+    <!-- git in PATH should always win -->
+		<Exec Command='where git'
+					EchoOff='true'
+			    ContinueOnError='true'
+					ConsoleToMSBuild='true'
+          IgnoreExitCode='true'
+					StandardErrorImportance='low'
+					StandardOutputImportance='low'>
+			<Output TaskParameter="ConsoleOutput" PropertyName="_GitWhere"/>
+      <Output TaskParameter="ExitCode" PropertyName="_WhereExitCode" />
+    </Exec>
+    <PropertyGroup Condition="'$(_WhereExitCode)' == '0'">
+      <Git>$([System.Text.RegularExpressions.Regex]::Split('$(_GitWhere)', ';')[0])</Git>
+    </PropertyGroup>
+
+    <!-- otherwise, probe multiple known locations, with the first matching one winning -->
+    <PropertyGroup Condition="'$(Git)' == ''">
+      <Git Condition="'$(Git)' == '' and Exists('C:\Program Files\Git\bin\git.exe')">C:\Program Files\Git\bin\git.exe</Git>
+      <Git Condition="'$(Git)' == '' and Exists('C:\Program Files (x86)\Git\bin\git.exe')">C:\Program Files (x86)\Git\bin\git.exe</Git>
+      <Git Condition="'$(Git)' == '' and Exists('C:\msysgit\bin\git.exe')">C:\msysgit\bin\git.exe</Git>
+      <Git Condition="'$(Git)' == '' and Exists('C:\cygwin\bin\git.exe')">C:\cygwin\bin\git.exe</Git>
+    </PropertyGroup>
+
+    <Error Condition="'$(Git)' == ''" Code="MSBGIT001" Text="Failed to locate 'git.exe' executable. Please provide a known location via the 'Git' property." />
+  </Target>
 
 </Project>

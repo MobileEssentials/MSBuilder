@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>MSBuilder.Git</id>
-        <version>0.2.0</version>
+        <version>0.3.0</version>
         <title>MSBuilder: Git Executable Property</title>
         <authors>Mobile Essentials</authors>
         <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -11,5 +11,12 @@
         <description>Provides the $(Git) property which properly locates the Git executable in the current machine.</description>
         <copyright>Copyright 2015</copyright>
         <tags>msbuild git</tags>
+        <releaseNotes>v0.3.0
+* [Win] Git.exe in %PATH% takes precedence to the probing
+
+v0.2.0
+* [Win] Probe known git, msysgit and cygwin install paths
+* [Mac] Default to just 'git' on Mac.
+        </releaseNotes>
     </metadata>
 </package>
