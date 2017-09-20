@@ -24,7 +24,7 @@
 -->
 <Project TreatAsLocalProperty="PR" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
 
-    <!--
+  <!--
     ============================================================
                 PR Property
 	
@@ -32,23 +32,24 @@
     or empty otherwise.
     ==============================================================
     -->
-    <PropertyGroup>
-        <!-- VSTS -->
-        <PR Condition="'$(PR)' == '' and '$(SYSTEM_PULLREQUEST_PULLREQUESTID)' != ''">$(SYSTEM_PULLREQUEST_PULLREQUESTID)</PR>
-        <!-- Travis -->
-        <PR Condition="'$(PR)' == '' and '$(TRAVIS_PULL_REQUEST)' != 'false'">$(TRAVIS_PULL_REQUEST)</PR>
-        <!-- AppVeyor -->
-        <PR Condition="'$(PR)' == '' and '$(APPVEYOR_PULL_REQUEST_NUMBER)' != 'false'">$(APPVEYOR_PULL_REQUEST_NUMBER)</PR>
-        <!-- Jenkins -->
-        <PR Condition="'$(PR)' == '' and '$(CHANGE_ID)' != ''">$(CHANGE_ID)</PR>
-        <PR Condition="'$(PR)' == '' and '$(ghprbPullId)' != ''">$(ghprbPullId)</PR>
-        <!-- Seems like TeamCity support isn't trivial, see
+  <PropertyGroup>
+    <!-- VSTS -->
+    <PR Condition="'$(PR)' == '' and '$(TF_BUILD)' == 'true'">$([System.Text.RegularExpressions.Regex]::Match($(BUILD_SOURCEBRANCH), '(?&lt;=refs/pull/)\d+(?=/merge)'))</PR>
+    <PR Condition="'$(PR)' == '' and '$(SYSTEM_PULLREQUEST_PULLREQUESTID)' != ''">$(SYSTEM_PULLREQUEST_PULLREQUESTID)</PR>
+    <!-- Travis -->
+    <PR Condition="'$(PR)' == '' and '$(TRAVIS_PULL_REQUEST)' != 'false'">$(TRAVIS_PULL_REQUEST)</PR>
+    <!-- AppVeyor -->
+    <PR Condition="'$(PR)' == '' and '$(APPVEYOR_PULL_REQUEST_NUMBER)' != 'false'">$(APPVEYOR_PULL_REQUEST_NUMBER)</PR>
+    <!-- Jenkins -->
+    <PR Condition="'$(PR)' == '' and '$(CHANGE_ID)' != ''">$(CHANGE_ID)</PR>
+    <PR Condition="'$(PR)' == '' and '$(ghprbPullId)' != ''">$(ghprbPullId)</PR>
+    <!-- Seems like TeamCity support isn't trivial, see
            https://stackoverflow.com/questions/12838333/how-do-i-pass-branch-name-to-an-msbuild-script-in-teamcity
            https://stackoverflow.com/questions/23675718/git-pull-request-branch-name-in-teamcity
         -->
-    </PropertyGroup>
+  </PropertyGroup>
 
-    <Target Name="IsPR" Returns="$(PR)">
-        <Message Importance="high" Text="PR=$(PR)" />
-    </Target>
+  <Target Name="GetPR" Returns="$(PR)">
+    <Message Importance="high" Text="PR=$(PR)" />
+  </Target>
 </Project>
