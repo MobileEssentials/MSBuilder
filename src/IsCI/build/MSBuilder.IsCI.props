@@ -54,9 +54,10 @@
                 '$(IsTeamFoundationBuild)' == 'true' or
                 '$(IsTravisBuild)' == 'true'
                 ">true</IsCI>
+        <IsCI Condition="'$(IsCI)' == ''">false</IsCI>
     </PropertyGroup>
 
-    <Target Name="IsCIBuild" Returns="$(IsCIBuild)">
-        <Message Importance="high" Text="IsCIBuild=$(IsCIBuild)" />
+    <Target Name="IsCI" Returns="$(IsCI)">
+        <Message Importance="high" Text="IsCI=$(IsCI)" />
     </Target>
 </Project>
