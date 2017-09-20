@@ -42,10 +42,9 @@
       <IsTravisBuild Condition="'$(IsTravisBuild)' == '' and '$(TRAVIS)' == 'true'">true</IsTravisBuild>
     </PropertyGroup>
     <!-- Always allow explicitly overriding the value via environment variable/build property from unknown CI systems or command line -->
-    <PropertyGroup Condition="'$(IsCI)' == ''">
+    <PropertyGroup Condition="'$(CI)' == ''">
         <!-- CI is a common variable used by CI systems -->
-        <IsCI Condition="
-                '$(CI)' == 'true' or
+        <CI Condition="
                 '$(IsTeamCityBuild)' == 'true' or 
                 '$(IsWrenchBuild)' == 'true' or 
                 '$(IsAppVeyorBuild)' == 'true' or 
@@ -54,10 +53,10 @@
                 '$(IsTeamFoundationBuild)' == 'true' or
                 '$(IsTravisBuild)' == 'true'
                 ">true</IsCI>
-        <IsCI Condition="'$(IsCI)' == ''">false</IsCI>
+        <CI Condition="'$(CI)' == ''">false</CI>
     </PropertyGroup>
 
-    <Target Name="IsCI" Returns="$(IsCI)">
-        <Message Importance="high" Text="IsCI=$(IsCI)" />
+    <Target Name="GetCI" Returns="$(CI)">
+        <Message Importance="high" Text="CI=$(CI)" />
     </Target>
 </Project>

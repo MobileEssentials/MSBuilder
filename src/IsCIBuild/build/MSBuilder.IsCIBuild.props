@@ -34,7 +34,7 @@
     -->
     <!-- Always allow explicitly overriding the value via environment variable/build property from unknown CI systems or command line -->
     <PropertyGroup Condition="'$(IsCIBuild)' == ''">
-        <IsCIBuild>$(IsCI)</IsCIBuild>
+        <IsCIBuild>$(CI)</IsCIBuild>
     </PropertyGroup>
 
     <Target Name="IsCIBuild" Returns="$(IsCIBuild)">

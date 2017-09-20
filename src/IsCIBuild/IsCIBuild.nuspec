@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>MSBuilder.IsCIBuild</id>
-        <version>0.1.4</version>
+        <version>0.1.5</version>
         <title>MSBuilder: IsCIBuild Property</title>
         <authors>Mobile Essentials</authors>
         <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -12,7 +12,7 @@
         <copyright>Copyright 2016</copyright>
         <tags>msbuild teamcity appveyor myget jenkins wrench</tags>
         <dependencies>
-          <dependency id="MSBuilder.IsCI" version="0.1.0" />
+          <dependency id="MSBuilder.CI" version="0.1.0" />
         </dependencies>
     </metadata>
 </package>
