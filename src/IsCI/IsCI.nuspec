@@ -8,8 +8,8 @@
         <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Provides the $(IsCI) property which allows detecting that the current build is being performed in a continuous integration server. Supports TeamCity, AppVeyor, MyGet, Jenkins, Wrench and VSTS.</description>
+        <description>Provides the $(IsCI) property which allows detecting that the current build is being performed in a continuous integration server. Supports TeamCity, AppVeyor, MyGet, Jenkins, Wrench, VSTS and Travis.</description>
         <copyright>Copyright 2017</copyright>
-        <tags>msbuild vsts teamcity appveyor myget jenkins wrench</tags>
+        <tags>msbuild vsts teamcity appveyor myget jenkins wrench travis</tags>
     </metadata>
 </package>
