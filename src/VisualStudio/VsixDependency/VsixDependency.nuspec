@@ -14,7 +14,7 @@
 		<tags>msbuild inline vssdk vsix dependency</tags>
 		<dependencies>
 			<dependency id="MSBuilder.CodeTaskAssembly" version="[0.2.5,)" />
-			<dependency id="MSBuilder.VsixInstaller" version="0.2.11" />
+			<dependency id="MSBuilder.VsixInstaller" version="0.2.18" />
 		</dependencies>
 	</metadata>
 	<files>
