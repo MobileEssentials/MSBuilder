@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
     <metadata>
-        <id>MSBuilder.ReadItemFromFile</id>
+        <id>MSBuilder.ReadItemsFromFile</id>
         <version>0.1.0</version>
         <title>MSBuilder: ReadItemFromFile reads items and their metadata to an XML file in MSBuild format.</title>
         <authors>Mobile Essentials</authors>
