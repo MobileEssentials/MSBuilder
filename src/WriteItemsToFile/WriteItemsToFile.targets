@@ -31,6 +31,7 @@
 	<UsingTask TaskName="WriteItemsToFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)" Condition="'$(CodeTaskAssembly)' != ''">
 		<ParameterGroup>
 			<IncludeMetadata ParameterType="System.Nullable`1[[System.Boolean]]" />
+			<UseFullPath ParameterType="System.Boolean" />
 			<Items ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
 			<ItemName />
 			<File ParameterType="Microsoft.Build.Framework.ITaskItem" Required="true" />
@@ -66,7 +67,7 @@
 						metadataFromItem = item => Enumerable.Empty<XElement>();
 
 					Func<ITaskItem, XElement> itemFromElement = item => new XElement(XmlNs + itemName,
-						new XAttribute(IncludeAttributeName, item.ItemSpec), metadataFromItem(item));
+						new XAttribute(IncludeAttributeName, UseFullPath ? item.GetMetadata("FullPath") : item.ItemSpec), metadataFromItem(item));
 
 					var document = new XDocument(
 						new XElement(ProjectElementName,
