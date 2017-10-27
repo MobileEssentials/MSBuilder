@@ -32,6 +32,7 @@
 		<ParameterGroup>
 			<IncludeMetadata ParameterType="System.Nullable`1[[System.Boolean]]" />
 			<UseFullPath ParameterType="System.Boolean" />
+			<Overwrite ParameterType="System.Boolean" />
 			<Items ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
 			<ItemName />
 			<File ParameterType="Microsoft.Build.Framework.ITaskItem" Required="true" />
@@ -69,13 +70,19 @@
 					Func<ITaskItem, XElement> itemFromElement = item => new XElement(XmlNs + itemName,
 						new XAttribute(IncludeAttributeName, UseFullPath ? item.GetMetadata("FullPath") : item.ItemSpec), metadataFromItem(item));
 
-					var document = new XDocument(
-						new XElement(ProjectElementName,
-							new XElement(ItemGroupElementName,
-								items.Select(item => itemFromElement(item)))));
-
 					var filePath = File.GetMetadata("FullPath");
-					if (System.IO.File.Exists(filePath))
+          
+					XDocument document;
+					if(!Overwrite && System.IO.File.Exists(filePath))
+						document = XDocument.Load(filePath);
+					else
+						document = new XDocument(new XElement(ProjectElementName));
+		
+					document.Root.Add(
+						new XElement(ItemGroupElementName,
+							items.Select(item => itemFromElement(item))));
+
+					if (Overwrite && System.IO.File.Exists(filePath))
 						System.IO.File.Delete(filePath);
 
 					if (!Directory.Exists(Path.GetDirectoryName(filePath)))
