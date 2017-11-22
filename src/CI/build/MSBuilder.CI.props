@@ -26,7 +26,7 @@
 
     <!--
     ============================================================
-                IsCI Property
+                CI Property
 	
     Determines if the current build is a CI build by checking for 
     various well-known CI systems environment variables.
@@ -54,7 +54,7 @@
                 '$(IsTeamFoundationBuild)' == 'true' or
                 '$(IsVSTSBuild)' == 'true' or
                 '$(IsTravisBuild)' == 'true'
-                ">true</IsCI>
+                ">true</CI>
         <CI Condition="'$(CI)' == ''">false</CI>
     </PropertyGroup>
 
