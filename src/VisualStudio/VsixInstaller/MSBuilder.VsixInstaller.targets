@@ -152,6 +152,9 @@
 
   <Target Name="_DeployVsix" Inputs="%(Vsix.Inputs)" Outputs="%(Vsix.Outputs)" Returns="@(Vsix)">
 
+    <!-- If the target directory is out of date, delete it entirely before unzipping again -->
+    <Exec Command='rd /s /q "%(Vsix.DeploymentPath)"' Condition="Exists('%(Vsix.DeploymentPath)')" />
+
     <Exec Command="&quot;$(_PS)&quot; -NoProfile -Command &quot;&amp; { Add-Type -assembly 'System.IO.Compression.FileSystem'; [System.IO.Compression.ZipFile]::ExtractToDirectory('%(Vsix.FullPath)', '%(Vsix.DeploymentPath)') }&quot;"
 			  StandardOutputImportance="high"
 			  EchoOff="false">
