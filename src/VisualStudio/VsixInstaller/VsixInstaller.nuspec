@@ -2,45 +2,38 @@
 <package>
 	<metadata>
 		<id>MSBuilder.VsixInstaller</id>
-		<version>0.2.17</version>
-		<title>MSBuilder: VsixInstaller+ Tasks</title>
+		<version>1.0.0</version>
+		<title>MSBuilder: VsixInstaller</title>
 		<authors>Mobile Essentials</authors>
 		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
 		<projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<summary>Provides full control of install/uninstall/enable/disable for extensions in arbitrary Visual Studio versions and instances (a.k.a hives).</summary>
-		<description>This NuGet package provides the various tasks to handle all operations 
-related to Visual Studio extensions via MSBuild, which goes beyond what 
-VSIXInstaller.exe supports by allowing not only to work against arbitrary
-Visual Studio versions but also experimental and custom instances (also 
-known as -registry- hives).
+    <developmentDependency>true</developmentDependency>
+		<summary>Provides automated installation of VSIXes to the VSSDK-supported target Visual Studio version and instance (a.k.a hives).</summary>
+		<description>On a project that references the Microsoft.VSSDK.BuildTools 
+package, enables installing extra VSIXes to the targetted Visual Studio 
+version and instance by simply declaring them as @(Vsix) items:
 
-Example (tasks used inside a target):
-&lt;InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
-                VsixPath="MyExtension.vsix"
-                RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" /&gt;
-&lt;UninstallVsix VisualStudioVersion="$(VisualStudioVersion)" 
-                  VsixId="MyExtension"
-                  RootSuffix="Exp" /&gt;
-&lt;EnableVsix VisualStudioVersion="$(VisualStudioVersion)" VsixId="MyExtension" /&gt;
-&lt;DisableVsix VisualStudioVersion="$(VisualStudioVersion)" VsixId="MyExtension" /&gt;
+&lt;ItemGroup&gt;
+  &lt;Vsix Include="MyOtherExtension.vsix" /&gt;
+&lt;/ItemGroup&gt;
+
+The items will be installed only if needed so that incremental 
+builds are fast, and only if the current project's $(DeployExtension) 
+is set to 'true'.
+
+The installation happens automatically before the DeployVsixExtensionFiles 
+runs, but can also be manually invoked by running the InstallVsix target.
 </description>
 		<copyright>Copyright 2015</copyright>
 		<tags>msbuild inline vssdk vsix vsixinstaller</tags>
 		<dependencies>
-			<dependency id="MSBuilder.CodeTaskAssembly" version="[0.2.5,)" />
-		</dependencies>
+      <dependency id="Microsoft.VisualStudio.SlowCheetah" version="3.0.61" />
+    </dependencies>
 	</metadata>
 	<files>
 		<file src="Readme.txt" />
-		<file src="bin\MSBuilder.VsixInstaller.targets" target="build" />
-		<file src="bin\MSBuilder.VsixInstaller.tasks" target="build" />
-		<file src="bin\MSBuilder.VsixInstaller.dll" target="build" />
-		<file src="bin\MSBuilder.VsixInstaller.xml" target="build" />
-		<file src="bin\MSBuilder.VsixInstaller.Inline.tasks" target="build" />
-		<file src="bin\MSBuilder.VsixInstaller.Compiled.tasks" target="build" />
-		<file src="..\VsixExp\bin\VsixExp.exe" target="tools" />
-		<file src="..\VsixExp\bin\VsixExp.pdb" target="tools" />
-		<file src="..\VsixExp\bin\VsixExp.exe.config" target="tools" />
-	</files>
+		<file src="MSBuilder.VsixInstaller.props" target="build" />
+    <file src="MSBuilder.VsixInstaller.targets" target="build" />
+  </files>
 </package>

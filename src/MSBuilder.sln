@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26504.1
+VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2AF55F73-4FE0-46B1-B5C4-534F028A90C1}"
 	ProjectSection(SolutionItems) = preProject
@@ -120,10 +120,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roslyn.ProjectReader", "Ros
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VisualStudio", "VisualStudio", "{E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsixInstaller", "VisualStudio\VsixInstaller\VsixInstaller.csproj", "{4D0F4438-9F2F-4E9F-B9A0-58DD7EC90C03}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsixInstaller.Tests", "VisualStudio\VsixInstaller.Tests\VsixInstaller.Tests.csproj", "{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IsAdministrator", "IsAdministrator", "{A1A40953-D0CF-4102-8466-3E35F26FF60F}"
 	ProjectSection(SolutionItems) = preProject
 		IsAdministrator\IsAdministrator.nuspec = IsAdministrator\IsAdministrator.nuspec
@@ -147,10 +143,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{306A59B2
 		ThisAssembly.Vsix\build\MSBuilder.ThisAssembly.Vsix.vb.pp = ThisAssembly.Vsix\build\MSBuilder.ThisAssembly.Vsix.vb.pp
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsixDependency", "VisualStudio\VsixDependency\VsixDependency.csproj", "{CC42BF6A-8D4E-45C6-9E5A-3C101189FE30}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsixDependency.Tests", "VisualStudio\VsixDependency.Tests\VsixDependency.Tests.csproj", "{0ED378F8-5926-4CC8-B8DD-6BAD21976B86}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dump", "Dump", "{45DA62BC-59F3-44C1-ADB4-8CDB0837D38D}"
 	ProjectSection(SolutionItems) = preProject
 		Dump\Dump.nuspec = Dump\Dump.nuspec
@@ -165,6 +157,15 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpItems", "DumpItems\DumpItems.csproj", "{BD5E546D-7334-4F49-8CA9-0EA4F38BD3F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsixExp", "VisualStudio\VsixExp\VsixExp.csproj", "{690B6F99-F215-4540-860E-3D3EEC9D0143}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VsixInstaller", "VsixInstaller", "{316DD05A-A0F9-4AD5-ACDB-766654D56AE9}"
+	ProjectSection(SolutionItems) = preProject
+		VisualStudio\VsixInstaller\build.cmd = VisualStudio\VsixInstaller\build.cmd
+		VisualStudio\VsixInstaller\MSBuilder.VsixInstaller.props = VisualStudio\VsixInstaller\MSBuilder.VsixInstaller.props
+		VisualStudio\VsixInstaller\MSBuilder.VsixInstaller.targets = VisualStudio\VsixInstaller\MSBuilder.VsixInstaller.targets
+		VisualStudio\VsixInstaller\Readme.txt = VisualStudio\VsixInstaller\Readme.txt
+		VisualStudio\VsixInstaller\VsixInstaller.nuspec = VisualStudio\VsixInstaller\VsixInstaller.nuspec
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -228,22 +229,6 @@ Global
 		{87645A85-FA11-456B-9678-903431536108}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87645A85-FA11-456B-9678-903431536108}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87645A85-FA11-456B-9678-903431536108}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4D0F4438-9F2F-4E9F-B9A0-58DD7EC90C03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4D0F4438-9F2F-4E9F-B9A0-58DD7EC90C03}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4D0F4438-9F2F-4E9F-B9A0-58DD7EC90C03}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4D0F4438-9F2F-4E9F-B9A0-58DD7EC90C03}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CC42BF6A-8D4E-45C6-9E5A-3C101189FE30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC42BF6A-8D4E-45C6-9E5A-3C101189FE30}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CC42BF6A-8D4E-45C6-9E5A-3C101189FE30}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CC42BF6A-8D4E-45C6-9E5A-3C101189FE30}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0ED378F8-5926-4CC8-B8DD-6BAD21976B86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0ED378F8-5926-4CC8-B8DD-6BAD21976B86}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0ED378F8-5926-4CC8-B8DD-6BAD21976B86}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0ED378F8-5926-4CC8-B8DD-6BAD21976B86}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BD5E546D-7334-4F49-8CA9-0EA4F38BD3F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BD5E546D-7334-4F49-8CA9-0EA4F38BD3F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD5E546D-7334-4F49-8CA9-0EA4F38BD3F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -277,14 +262,14 @@ Global
 		{14BA7028-5B05-43BD-9913-39E1940A56FD} = {F27D9312-4D46-47F0-AF97-3FA7F1232B17}
 		{3ACD0C50-917C-4328-B063-906AC4FC03E9} = {F27D9312-4D46-47F0-AF97-3FA7F1232B17}
 		{87645A85-FA11-456B-9678-903431536108} = {F27D9312-4D46-47F0-AF97-3FA7F1232B17}
-		{4D0F4438-9F2F-4E9F-B9A0-58DD7EC90C03} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
-		{1093D012-E0F8-4EDD-B593-D3EF3EB5D9B6} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
 		{F86E683D-C8B0-4133-954F-35B42BD72054} = {A1A40953-D0CF-4102-8466-3E35F26FF60F}
 		{306A59B2-C608-4E2E-B0A1-AE2E7A64A356} = {FED20470-D2AA-4C15-B396-1DC6ED7561BE}
-		{CC42BF6A-8D4E-45C6-9E5A-3C101189FE30} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
-		{0ED378F8-5926-4CC8-B8DD-6BAD21976B86} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
 		{6FB34D8B-D0AA-4E0C-9304-202BA85F4D11} = {45DA62BC-59F3-44C1-ADB4-8CDB0837D38D}
 		{BD5E546D-7334-4F49-8CA9-0EA4F38BD3F8} = {8B3AD949-9952-4A54-9023-B127123A3132}
 		{690B6F99-F215-4540-860E-3D3EEC9D0143} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
+		{316DD05A-A0F9-4AD5-ACDB-766654D56AE9} = {E6D646DD-CFA5-4ADC-9EAB-0E25DD72B0E6}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0A111905-D9C7-4A23-9484-79F4DB25E0F8}
 	EndGlobalSection
 EndGlobal
