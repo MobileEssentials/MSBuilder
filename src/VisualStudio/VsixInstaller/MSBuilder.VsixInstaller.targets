@@ -152,7 +152,7 @@
 
   <Target Name="_DeployVsix" Inputs="%(Vsix.Inputs)" Outputs="%(Vsix.Outputs)" Returns="@(Vsix)">
 
-    <Exec Command="&quot;$(PS)&quot; -NoProfile -Command &quot;&amp; { Add-Type -assembly 'System.IO.Compression.FileSystem'; [System.IO.Compression.ZipFile]::ExtractToDirectory('%(Vsix.FullPath)', '%(Vsix.DeploymentPath)') }&quot;"
+    <Exec Command="&quot;$(_PS)&quot; -NoProfile -Command &quot;&amp; { Add-Type -assembly 'System.IO.Compression.FileSystem'; [System.IO.Compression.ZipFile]::ExtractToDirectory('%(Vsix.FullPath)', '%(Vsix.DeploymentPath)') }&quot;"
 			  StandardOutputImportance="high"
 			  EchoOff="false">
       <!-- We can't declare a PropertyGroup because that gets evaluated even if the entire targets is skipped in an incremental build -->
