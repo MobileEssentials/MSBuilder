@@ -167,7 +167,7 @@
 
     <TransformTask Source="%(Vsix.Outputs)"
                    Destination="%(Vsix.Outputs)"
-                   Transform="extension.vsixmanifest.xdt" />
+                   Transform="$(MSBuildThisFileDirectory)extension.vsixmanifest.xdt" />
 
     <!-- Just in case no replacements were performed (i.e. it was already SystemComponent=false and Experimental=true) -->
     <Touch Files="%(Vsix.Outputs)" ForceTouch="true" />

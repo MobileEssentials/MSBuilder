@@ -1,0 +1,4 @@
+<PackageManifest xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" 
+                 xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <Installation SystemComponent="false" Experimental="true" xdt:Transform="SetAttributes" />
+</PackageManifest>

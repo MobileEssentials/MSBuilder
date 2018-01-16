@@ -2,7 +2,7 @@
 <package>
 	<metadata>
 		<id>MSBuilder.VsixInstaller</id>
-		<version>1.0.0</version>
+		<version>1.0.3</version>
 		<title>MSBuilder: VsixInstaller</title>
 		<authors>Mobile Essentials</authors>
 		<licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -35,5 +35,6 @@ runs, but can also be manually invoked by running the InstallVsix target.
 		<file src="Readme.txt" />
 		<file src="MSBuilder.VsixInstaller.props" target="build" />
     <file src="MSBuilder.VsixInstaller.targets" target="build" />
+    <file src="extension.vsixmanifest.xdt" target="build" />
   </files>
 </package>
