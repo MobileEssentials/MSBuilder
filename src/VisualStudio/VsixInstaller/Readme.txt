@@ -8,9 +8,9 @@ On a project that references the Microsoft.VSSDK.BuildTools
 package, enables installing extra VSIXes to the targetted Visual Studio 
 version and instance by simply declaring them as @(Vsix) items:
 
-&lt;ItemGroup&gt;
-  &lt;Vsix Include="MyOtherExtension.vsix" /&gt;
-&lt;/ItemGroup&gt;
+<ItemGroup>
+  <Vsix Include="MyOtherExtension.vsix" />
+</ItemGroup>
 
 The items will be installed only if needed so that incremental 
 builds are fast, and only if the current project's $(DeployExtension) 
