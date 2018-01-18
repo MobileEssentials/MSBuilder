@@ -25,12 +25,11 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
-    <!-- The Visual Studio root suffix to install VSIXes to. Defaults to 'Exp'. 
-         This is a shorthand for setting the lengthy VSSDKTargetPlatformRegRootSuffix property. -->
+    <!-- The Visual Studio root suffix to install VSIXes to. Defaults to $(VSSDKTargetPlatformRegRootSuffix). -->
     <RootSuffix Condition="'$(RootSuffix)' == ''"/>
 
-    <!-- @hidden -->
-		<VSSDKTargetPlatformRegRootSuffix Condition="'$(RootSuffix)' != ''">$(RootSuffix)</VSSDKTargetPlatformRegRootSuffix>
+    <!-- Whether to attempt to install the available @(Vsix) items. Defaults to 'true'. -->
+    <InstallVsix Condition="'$(InstallVsix)' == ''">true</InstallVsix>
 	</PropertyGroup>
   
 </Project>

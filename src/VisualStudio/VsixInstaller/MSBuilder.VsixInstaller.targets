@@ -22,7 +22,7 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 -->
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" TreatAsLocalProperty="RootSuffix">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
     <_PS Condition="'$(_PS)' == ''">$(SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe</_PS>
@@ -31,8 +31,8 @@
 
   <ItemDefinitionGroup>
     <Vsix>
-      <Deployed>false</Deployed>
-      <Updated>false</Updated>
+      <ShouldDeploy>false</ShouldDeploy>
+      <ShouldEnable>false</ShouldEnable>
       <AllUsers>false</AllUsers>
     </Vsix>
   </ItemDefinitionGroup>
@@ -47,16 +47,67 @@
       _DevEnvUpdate
     </InstallVsixDependsOn>
   </PropertyGroup>
-  
-  <!-- Installs the @(Vsix) item(s) that have been declared if needed -->
+
+  <!-- Explicitly attempts to enable a VSIX given a $(VsixID) and $(RootSuffix), which can be '.' for the normal instance -->
+  <Target Name="EnableVsix">
+
+    <PropertyGroup>
+      <_RootSuffix Condition="'$(RootSuffix)' == '.'" />
+      <_RootSuffix Condition="'$(RootSuffix)' == ''">$(VSSDKTargetPlatformRegRootSuffix)</_RootSuffix>
+    </PropertyGroup>
+
+    <!-- We pass in 42.42.42 to avoid an error if the version to install is lower or equal 
+         to the existing one -->
+    <FindInstalledExtension VsixIdentifier="$(VsixID)"
+                            InstallableExtensionVersion="42.42.42"
+                            RootSuffix="$(_RootSuffix)"
+                            FailIfNotInstalled="true">
+      <Output TaskParameter="DeploymentPath" PropertyName="_VsixExistingDeploymentPath" />
+      <Output TaskParameter="AllUsers" PropertyName="_VsixAllUsers" />
+    </FindInstalledExtension>
+
+    <PropertyGroup Condition="'$(_VsixExistingDeploymentPath)' != '' and '$(VsSDKVersion)' &gt;= '15.0'">
+      <_VsixExistingManifest>$([System.IO.File]::ReadAllText('$(_VsixExistingDeploymentPath)\extension.vsixmanifest'))</_VsixExistingManifest>
+    </PropertyGroup>
+
+    <XmlPeek Namespaces="$(_VsixNamespace)"
+             XmlContent="$(_VsixExistingManifest)"
+             Query="/vsix:PackageManifest/vsix:Metadata/vsix:Identity/@Version"
+             Condition="'$(_VsixExistingDeploymentPath)' != '' and '$(VsSDKVersion)' &gt;= '15.0'">
+      <Output PropertyName="_VsixExistingVersion" TaskParameter="Result" />
+    </XmlPeek>
+
+    <!-- Enable this extension via Extension Manager in Dev14 -->
+    <EnableExtension
+        Condition="'$(VsSDKVersion)' &lt; '15.0'"
+        VsixIdentifier="$(VsixID)"
+        RootSuffix="$(_RootSuffix)"
+        FailIfNotInstalled="true" />
+
+    <!-- Enable this extension via Extension Manager in Dev15+ -->
+    <EnableExtension
+        Condition="'$(VsSDKVersion)' &gt;= '15.0'"
+        VsixIdentifier="$(VsixID)"
+        VsixVersion="$(_VsixExistingVersion)"
+        RootSuffix="$(_RootSuffix)"
+        FailIfNotInstalled="true" />
+
+  </Target>
+
+  <!-- Installs the @(Vsix) item(s) that have been declared as needed, if DeployExtension=true and InstallVsix=true -->
   <Target Name="InstallVsix" 
           DependsOnTargets="$(InstallVsixDependsOn)"
           BeforeTargets="DeployVsixExtensionFiles" 
-          Condition="'$(DeployExtension)' == 'true'" />
+          Condition="'$(DeployExtension)' == 'true' and '$(InstallVsix)' == 'true'" />
 
   <Target Name="_PrepareVsix">
 
-    <GetExtensionsPath RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" Condition="'$(ExtensionsPath)' == '' and '$(VsSDKVersion)' &gt;= '15.0'">
+    <PropertyGroup>
+      <_RootSuffix Condition="'$(RootSuffix)' == '.'" />
+      <_RootSuffix Condition="'$(RootSuffix)' == ''">$(VSSDKTargetPlatformRegRootSuffix)</_RootSuffix>
+    </PropertyGroup>
+    
+    <GetExtensionsPath RootSuffix="$(_RootSuffix)" Condition="'$(ExtensionsPath)' == '' and '$(VsSDKVersion)' &gt;= '15.0'">
       <Output TaskParameter="LocalExtensionsPath" PropertyName="ExtensionsPath"/>
     </GetExtensionsPath>
 
@@ -68,7 +119,7 @@
       <ExtensionsPath>$([MSBuild]::EnsureTrailingSlash($(ExtensionsPath)))</ExtensionsPath>
     </PropertyGroup>
 
-    <EnableLoadingAllExtensions RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" />
+    <EnableLoadingAllExtensions RootSuffix="$(_RootSuffix)" />
 
   </Target>
 
@@ -93,78 +144,116 @@
     <XmlPeek Namespaces="$(_VsixNamespace)"
              XmlContent="$(_VsixManifest)"
              Query="/vsix:PackageManifest/vsix:Metadata/vsix:Identity/@Version">
-      <Output PropertyName="_VsixDependencyVersion" TaskParameter="Result" />
+      <Output PropertyName="_VsixVersion" TaskParameter="Result" />
     </XmlPeek>
 
+    <!-- We pass in 42.42.42 to avoid an error if the version to install is lower or equal 
+         to the existing one -->
     <FindInstalledExtension VsixIdentifier="$(_VsixID)"
                             InstallableExtensionVersion="42.42.42"
-                            RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)"
+                            RootSuffix="$(_RootSuffix)"
                             FailIfNotInstalled="false">
       <Output TaskParameter="DeploymentPath" PropertyName="_VsixExistingDeploymentPath" />
       <Output TaskParameter="AllUsers" PropertyName="_VsixAllUsers" />
     </FindInstalledExtension>
 
+    <PropertyGroup Condition="'$(_VsixExistingDeploymentPath)' != ''">
+      <_VsixExistingManifest>$([System.IO.File]::ReadAllText('$(_VsixExistingDeploymentPath)\extension.vsixmanifest'))</_VsixExistingManifest>
+    </PropertyGroup>
+
+    <XmlPeek Namespaces="$(_VsixNamespace)"
+             XmlContent="$(_VsixExistingManifest)"
+             Query="/vsix:PackageManifest/vsix:Metadata/vsix:Identity/@Version"
+             Condition="'$(_VsixExistingDeploymentPath)' != ''">
+      <Output PropertyName="_VsixExistingVersion" TaskParameter="Result" />
+    </XmlPeek>
+
     <ItemGroup>
       <Vsix>
         <Publisher>$(_VsixPublisher)</Publisher>
         <Identifier>$(_VsixID)</Identifier>
-        <Version>$(_VsixDependencyVersion)</Version>
-        <DeploymentPath>$(ExtensionsPath)$(_VsixPublisher)\$(_VsixID)\$(_VsixDependencyVersion)</DeploymentPath>
+        <Version>$(_VsixVersion)</Version>
+        <DeploymentPath>$(ExtensionsPath)$(_VsixPublisher)\$(_VsixID)\$(_VsixVersion)</DeploymentPath>
         <ExistingDeploymentPath>$(_VsixExistingDeploymentPath.TrimEnd('\').TrimEnd('/'))</ExistingDeploymentPath>
+        <ExistingVersion>$(_VsixExistingVersion)</ExistingVersion>
+        <ShouldDeploy Condition="'$(_VsixExistingDeploymentPath)' == '' or $(_VsixVersion) &gt; $(_VsixExistingVersion)">true</ShouldDeploy>
         <AllUsers>$(_VsixAllUsers)</AllUsers>
       </Vsix>
-      <Vsix>
+      <!-- With no inputs/outputs, the Vsix won't be incrementally installed -->
+      <Vsix Condition="'%(ShouldDeploy)' == 'true'">
         <Inputs>%(FullPath)</Inputs>
         <Outputs>%(DeploymentPath)\extension.vsixmanifest</Outputs>
       </Vsix>
     </ItemGroup>
+
+    <Message Importance="normal" Text="Skipping deployment of '$(_VsixID)' v$(_VsixVersion) because an existing extension was found at '$(_VsixExistingDeploymentPath)' and its version '$(_VsixExistingVersion)' &gt;= '$(_VsixVersion)'."
+             Condition="'$(_VsixExistingDeploymentPath)' != '' and $(_VsixExistingVersion) &gt;= $(_VsixVersion)  " />
 
   </Target>
 
   <Target Name="_UninstallOudatedVsix" Inputs="@(Vsix)" Outputs="%(Vsix.Identity)-BATCH">
 
     <PropertyGroup>
-      <_ShouldUninstallVsix Condition="'%(Vsix.AllUsers)' != 'true' and '%(Vsix.ExistingDeploymentPath)' != '' and $([MSBuild]::ValueOrDefault('%(Vsix.ExistingDeploymentPath)', '').Equals('%(Vsix.DeploymentPath)', StringComparison.OrdinalIgnoreCase)) == 'false'">true</_ShouldUninstallVsix>
+      <_ShouldUninstallVsix>false</_ShouldUninstallVsix>
+      <_ShouldUninstallVsix Condition="'%(Vsix.AllUsers)' != 'true' and '%(Vsix.ExistingDeploymentPath)' != '' and $([MSBuild]::ValueOrDefault('%(Vsix.ExistingDeploymentPath)', '').Equals('%(Vsix.DeploymentPath)', StringComparison.OrdinalIgnoreCase)) == 'false' and %(Vsix.Version) &gt; %(Vsix.ExistingVersion)">true</_ShouldUninstallVsix>
     </PropertyGroup>
 
+    <Message Importance="high" Text="Uninstalling existing '%(Vsix.Identifier)' from '%(Vsix.ExistingDeploymentPath)'."
+             Condition="'$(_ShouldUninstallVsix)' == 'true'" />
+
     <UninstallExtension VsixIdentifier="%(Vsix.Identifier)"
-                        RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)"
+                        RootSuffix="$(_RootSuffix)"
                         FailIfNotInstalled="false"
                         Condition="'$(_ShouldUninstallVsix)' == 'true'"/>
 
-    <!-- This case means that for whatever reason, the output manifest exists, but the VSIX isn't installed, meaning 
-          we need to re-deploy. This can happen if you uninstall from the EM, but don't start VS afterwards. The extension 
+    <!-- This case means that for whatever reason, the output manifest exists, but the VSIX isn't installed (its ExistingDeploymentPath == '')
+         meaning we need to re-deploy. This can happen if you uninstall from the EM, but don't start VS afterwards. The extension 
           will just be marked for deletion, but the file would still exist on disk. -->
     <Exec Command='rd /s /q "%(Vsix.DeploymentPath)"'
           Condition="'%(Vsix.ExistingDeploymentPath)' == '' and Exists('%(Vsix.Outputs)')" />
 
     <ItemGroup Condition="'$(_ShouldUninstallVsix)' == 'true'">
       <Vsix>
-        <Updated>true</Updated>
+        <!-- Whether deployment should be done or not depends on the inputs/outputs -->
+        <ShouldEnable>true</ShouldEnable>
       </Vsix>
     </ItemGroup>
 
     <PropertyGroup Condition="'$(_ShouldUninstallVsix)' == 'true'">
-      <_UpdatedVsix>true</_UpdatedVsix>
+      <_UpdateDevEnv>true</_UpdateDevEnv>
     </PropertyGroup>
     
   </Target>
 
   <Target Name="_DeployVsix" Inputs="%(Vsix.Inputs)" Outputs="%(Vsix.Outputs)" Returns="@(Vsix)">
 
+    <PropertyGroup>
+      <_DeployedVsix />
+    </PropertyGroup>
+
+    <Message Importance="high" Text="Deploying '%(Vsix.Identifier)' to '%(Vsix.DeploymentPath)'." />
+
     <!-- If the target directory is out of date, delete it entirely before unzipping again -->
-    <Exec Command='rd /s /q "%(Vsix.DeploymentPath)"' Condition="Exists('%(Vsix.DeploymentPath)')" />
+    <Exec Command='rd /s /q "%(Vsix.DeploymentPath)"' 
+          StandardOutputImportance="low" 
+          StandardErrorImportance="high" 
+          Condition="Exists('%(Vsix.DeploymentPath)')" />
 
     <Exec Command="&quot;$(_PS)&quot; -NoProfile -Command &quot;&amp; { Add-Type -assembly 'System.IO.Compression.FileSystem'; [System.IO.Compression.ZipFile]::ExtractToDirectory('%(Vsix.FullPath)', '%(Vsix.DeploymentPath)') }&quot;"
-			  StandardOutputImportance="high"
+			  StandardOutputImportance="low"
+			  StandardErrorImportance="high"
 			  EchoOff="false">
       <!-- We can't declare a PropertyGroup because that gets evaluated even if the entire targets is skipped in an incremental build -->
       <Output TaskParameter="ExitCode" PropertyName="_DeployedVsix" />
     </Exec>
 
+    <PropertyGroup Condition="'$(_DeployedVsix)' == '0'">
+      <_UpdateDevEnv>true</_UpdateDevEnv>
+    </PropertyGroup>
+    
     <ItemGroup>
       <Vsix>
-        <Deployed Condition="'$(_DeployedVsix)' != ''">true</Deployed>
+        <ShouldEnable Condition="'$(_DeployedVsix)' != ''">true</ShouldEnable>
       </Vsix>
     </ItemGroup>
 
@@ -177,26 +266,26 @@
 
   </Target>
 
-  <Target Name="_EnableVsix" Condition="'$(_DeployedVsix)' != '' or '$(_UpdatedVsix)' != ''">
+  <Target Name="_EnableVsix">
 
     <!--Enable this extension via Extension Manager in Dev14 -->
     <EnableExtension
-        Condition="'$(VsSDKVersion)' &lt; '15.0' and ('%(Vsix.Updated)' == 'true' or '%(Vsix.Deployed)' == 'true')"
+        Condition="'$(VsSDKVersion)' &lt; '15.0' and '%(Vsix.ShouldEnable)' == 'true'"
         VsixIdentifier="%(Vsix.Identifier)"
-        RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)"
+        RootSuffix="$(_RootSuffix)"
         FailIfNotInstalled="true" />
 
     <!--Enable this extension via Extension Manager in Dev15+ -->
     <EnableExtension
-        Condition="'$(VsSDKVersion)' &gt;= '15.0' and ('%(Vsix.Updated)' == 'true' or '%(Vsix.Deployed)' == 'true')"
+        Condition="'$(VsSDKVersion)' &gt;= '15.0' and '%(Vsix.ShouldEnable)' == 'true'"
         VsixIdentifier="%(Vsix.Identifier)"
         VsixVersion="%(Vsix.Version)"
-        RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)"
+        RootSuffix="$(_RootSuffix)"
         FailIfNotInstalled="true" />
 
   </Target>
 
-  <Target Name="_DevEnvUpdate" Condition="'$(_DeployedVsix)' != '' or '$(_UpdatedVsix)' != ''">
+  <Target Name="_DevEnvUpdate" Condition="'$(_UpdateDevEnv)' == 'true'">
 
     <PropertyGroup>
       <_VsRootDir Condition="'$(VsSDKVersion)' &gt;= '15.0'">$(VsInstallRoot)</_VsRootDir>
@@ -210,7 +299,10 @@
       <_VsRootDir>$([MSBuild]::EnsureTrailingSlash($(_VsRootDir)))</_VsRootDir>
     </PropertyGroup>
 
-    <Exec Command='"$(_VsRootDir)Common7\IDE\devenv.exe" /updateConfiguration /rootSuffix $(VSSDKTargetPlatformRegRootSuffix)' />
+    <Message Importance="high" Text="Updating devenv configuration to refresh recent changes." />
+
+    <Exec Command='"$(_VsRootDir)Common7\IDE\devenv.exe" /updateConfiguration' Condition="'$(_RootSuffix)' == ''" />
+    <Exec Command='"$(_VsRootDir)Common7\IDE\devenv.exe" /updateConfiguration /rootSuffix $(_RootSuffix)' Condition="'$(_RootSuffix)' != ''" />
 
   </Target>
 
