@@ -38,8 +38,8 @@
 	<!-- For whatever reason, you can just force compiled tasks just by setting $(UseCompiledTasks) = 'true' -->
 	<PropertyGroup Condition="'$(UseCompiledTasks)' == ''">
 		<!-- Never attempt to use inline tasks if we can't find a CodeTaskAssembly -->
-		<!-- Mac/XBuild does not support inline code tasks -->
-		<UseCompiledTasks  Condition="'$(CodeTaskAssembly)' == '' Or '$(IsXBuild)' == 'true'">true</UseCompiledTasks>
+		<!-- XBuild does not support inline code tasks -->
+		<UseCompiledTasks  Condition="'$(CodeTaskAssembly)' == '' Or '$(MSBuildRuntimeVersion)' == ''">true</UseCompiledTasks>
 	</PropertyGroup>
 
 </Project>
