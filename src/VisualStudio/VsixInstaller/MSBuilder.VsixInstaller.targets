@@ -29,6 +29,8 @@
          Defaults to $(VSSDKTargetPlatformRegRootSuffix) or 'Exp' if empty.
          To deploy to the normal hive, use /p:RootSuffix=. -->
     <RootSuffix Condition="'$(RootSuffix)' == ''">$(VSSDKTargetPlatformRegRootSuffix)</RootSuffix>
+    <RootSuffix Condition="'$(RootSuffix)' == ''">Exp</RootSuffix>
+    <RootSuffix Condition="'$(RootSuffix)' == '.'" />
 
     <!-- Whether to attempt to install the available @(Vsix) items. Defaults to '$(DeployExtension)'. -->
     <InstallVsix Condition="'$(InstallVsix)' == ''">$(DeployExtension)</InstallVsix>
@@ -56,20 +58,15 @@
     </InstallVsixDependsOn>
   </PropertyGroup>
 
-  <!-- Explicitly attempts to enable a VSIX given a $(VsixID) and $(RootSuffix), which can be '.' for the normal instance -->
+  <!-- Explicitly attempts to enable a VSIX given a $(VsixID) and $(RootSuffix), 
+       which can be '.' for the normal instance -->
   <Target Name="EnableVsix">
-
-    <PropertyGroup>
-      <_RootSuffix Condition="'$(RootSuffix)' == ''">$(VSSDKTargetPlatformRegRootSuffix)</_RootSuffix>
-      <_RootSuffix Condition="'$(RootSuffix)' == ''">Exp</_RootSuffix>
-      <_RootSuffix Condition="'$(RootSuffix)' == '.'" />
-    </PropertyGroup>
 
     <!-- We pass in 42.42.42 to avoid an error if the version to install is lower or equal 
          to the existing one -->
     <FindInstalledExtension VsixIdentifier="$(VsixID)"
                             InstallableExtensionVersion="42.42.42"
-                            RootSuffix="$(_RootSuffix)"
+                            RootSuffix="$(RootSuffix)"
                             FailIfNotInstalled="true">
       <Output TaskParameter="DeploymentPath" PropertyName="_VsixExistingDeploymentPath" />
       <Output TaskParameter="AllUsers" PropertyName="_VsixAllUsers" />
@@ -90,7 +87,7 @@
     <EnableExtension
         Condition="'$(VsSDKVersion)' &lt; '15.0'"
         VsixIdentifier="$(VsixID)"
-        RootSuffix="$(_RootSuffix)"
+        RootSuffix="$(RootSuffix)"
         FailIfNotInstalled="true" />
 
     <!-- Enable this extension via Extension Manager in Dev15+ -->
@@ -98,12 +95,12 @@
         Condition="'$(VsSDKVersion)' &gt;= '15.0'"
         VsixIdentifier="$(VsixID)"
         VsixVersion="$(_VsixExistingVersion)"
-        RootSuffix="$(_RootSuffix)"
+        RootSuffix="$(RootSuffix)"
         FailIfNotInstalled="true" />
 
   </Target>
 
-  <!-- Installs the @(Vsix) item(s) that have been declared as needed, if DeployExtension=true and InstallVsix=true -->
+  <!-- Installs the declared @(Vsix) item(s) as needed, if InstallVsix=true -->
   <Target Name="InstallVsix"
           DependsOnTargets="$(InstallVsixDependsOn)"
           BeforeTargets="DeployVsixExtensionFiles"
@@ -111,12 +108,7 @@
 
   <Target Name="_PrepareVsix">
 
-    <PropertyGroup>
-      <_RootSuffix Condition="'$(RootSuffix)' == '.'" />
-      <_RootSuffix Condition="'$(RootSuffix)' == ''">$(VSSDKTargetPlatformRegRootSuffix)</_RootSuffix>
-    </PropertyGroup>
-
-    <GetExtensionsPath RootSuffix="$(_RootSuffix)" Condition="'$(ExtensionsPath)' == '' and '$(VsSDKVersion)' &gt;= '15.0'">
+    <GetExtensionsPath RootSuffix="$(RootSuffix)" Condition="'$(ExtensionsPath)' == '' and '$(VsSDKVersion)' &gt;= '15.0'">
       <Output TaskParameter="LocalExtensionsPath" PropertyName="ExtensionsPath"/>
     </GetExtensionsPath>
 
@@ -128,7 +120,7 @@
       <ExtensionsPath>$([MSBuild]::EnsureTrailingSlash($(ExtensionsPath)))</ExtensionsPath>
     </PropertyGroup>
 
-    <EnableLoadingAllExtensions RootSuffix="$(_RootSuffix)" />
+    <EnableLoadingAllExtensions RootSuffix="$(RootSuffix)" />
 
   </Target>
 
@@ -160,7 +152,7 @@
          to the existing one -->
     <FindInstalledExtension VsixIdentifier="$(_VsixID)"
                             InstallableExtensionVersion="42.42.42"
-                            RootSuffix="$(_RootSuffix)"
+                            RootSuffix="$(RootSuffix)"
                             FailIfNotInstalled="false">
       <Output TaskParameter="DeploymentPath" PropertyName="_VsixExistingDeploymentPath" />
       <Output TaskParameter="AllUsers" PropertyName="_VsixAllUsers" />
@@ -211,7 +203,7 @@
              Condition="'$(_ShouldUninstallVsix)' == 'true'" />
 
     <UninstallExtension VsixIdentifier="%(Vsix.Identifier)"
-                        RootSuffix="$(_RootSuffix)"
+                        RootSuffix="$(RootSuffix)"
                         FailIfNotInstalled="false"
                         Condition="'$(_ShouldUninstallVsix)' == 'true'"/>
 
@@ -281,7 +273,7 @@
     <EnableExtension
         Condition="'$(VsSDKVersion)' &lt; '15.0' and '%(Vsix.ShouldEnable)' == 'true'"
         VsixIdentifier="%(Vsix.Identifier)"
-        RootSuffix="$(_RootSuffix)"
+        RootSuffix="$(RootSuffix)"
         FailIfNotInstalled="true" />
 
     <!--Enable this extension via Extension Manager in Dev15+ -->
@@ -289,7 +281,7 @@
         Condition="'$(VsSDKVersion)' &gt;= '15.0' and '%(Vsix.ShouldEnable)' == 'true'"
         VsixIdentifier="%(Vsix.Identifier)"
         VsixVersion="%(Vsix.Version)"
-        RootSuffix="$(_RootSuffix)"
+        RootSuffix="$(RootSuffix)"
         FailIfNotInstalled="true" />
 
   </Target>
@@ -310,8 +302,8 @@
 
     <Message Importance="high" Text="Updating devenv configuration to refresh recent changes." />
 
-    <Exec Command='"$(_VsRootDir)Common7\IDE\devenv.exe" /updateConfiguration' Condition="'$(_RootSuffix)' == ''" />
-    <Exec Command='"$(_VsRootDir)Common7\IDE\devenv.exe" /updateConfiguration /rootSuffix $(_RootSuffix)' Condition="'$(_RootSuffix)' != ''" />
+    <Exec Command='"$(_VsRootDir)Common7\IDE\devenv.exe" /updateConfiguration' Condition="'$(RootSuffix)' == ''" />
+    <Exec Command='"$(_VsRootDir)Common7\IDE\devenv.exe" /updateConfiguration /rootSuffix $(RootSuffix)' Condition="'$(RootSuffix)' != ''" />
 
   </Target>
 
