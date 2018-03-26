@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- SDK-style already support the @(AssemblyAttribute) item. We detect legacy by checking for LanguageTargets,
+       which is set by the .NET Sdk.targets: https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/sdk/Sdk.targets#L28 -->
+  <Import Project="$(MSBuildThisFileDirectory)MSBuilder.AssemblyAttribute.Legacy.targets" Condition="'$(LanguageTargets)' == ''" />
+
+</Project>

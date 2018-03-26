@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Duplicates https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/targets/Microsoft.NET.GenerateAssemblyInfo.targets#L40-L99
+       for legacy project types.
+  -->
+
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <GenerateAssemblyInfo Condition="'$(GenerateAssemblyInfo )' == ''">true</GenerateAssemblyInfo>
+    <GeneratedAssemblyInfoMetadataFile Condition="'$(GeneratedAssemblyInfoMetadataFile)' == ''">$(IntermediateOutputPath)$(MSBuildProjectName).AssemblyInfo.Attributes$(DefaultLanguageSourceExtension)</GeneratedAssemblyInfoMetadataFile>
+  </PropertyGroup>
+
+  <Target Name="GenerateAssemblyInfoMetadata"
+          Condition="'$(GenerateAssemblyInfo)' == 'true'"
+          BeforeTargets="CoreCompile"
+          DependsOnTargets="PrepareForBuild;CoreGenerateAssemblyInfoMetadata" />
+
+  <Target Name="CoreGenerateAssemblyInfoMetadata"
+          Condition="'$(Language)' == 'VB' or '$(Language)' == 'C#'"
+          Inputs="$(MSBuildAllProjects)"
+          Outputs="$(GeneratedAssemblyInfoMetadataFile)">
+
+    <ItemGroup>
+      <!-- Ensure the generated assemblyinfo file is not already part of the Compile sources, as a workaround for https://github.com/dotnet/sdk/issues/114 -->
+      <Compile Remove="$(GeneratedAssemblyInfoSessionIdFile)" />
+    </ItemGroup>
+
+    <WriteCodeFragment AssemblyAttributes="@(AssemblyAttribute)" Language="$(Language)" OutputFile="$(GeneratedAssemblyInfoMetadataFile)">
+      <Output TaskParameter="OutputFile" ItemName="Compile" />
+      <Output TaskParameter="OutputFile" ItemName="FileWrites" />
+    </WriteCodeFragment>
+  </Target>
+
+</Project>
