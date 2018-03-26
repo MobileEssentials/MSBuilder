@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>MSBuilder.GenerateAssemblyInfo</id>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <title>MSBuilder: GenerateAssemblyInfo</title>
     <authors>Mobile Essentials</authors>
     <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -18,6 +18,35 @@ Usage: declare @(AssemblyAttribute) items to include, such as:
   &lt;/ItemGroup&gt;
 
 The `_ParameterN` attributes must match the attribute constructor arguments.
+
+Use the following properties to customize what is generated:
+
+  &lt;ItemGroup&gt;
+    &lt;GenerateAssemblyCompanyAttribute&gt;true|false&lt;/GenerateAssemblyCompanyAttribute&gt;
+    &lt;GenerateAssemblyConfigurationAttribute&gt;true|false&lt;/GenerateAssemblyConfigurationAttribute&gt;
+    &lt;GenerateAssemblyCopyrightAttribute&gt;true|false&lt;/GenerateAssemblyCopyrightAttribute&gt;
+    &lt;GenerateAssemblyDescriptionAttribute&gt;true|false&lt;/GenerateAssemblyDescriptionAttribute&gt;
+    &lt;GenerateAssemblyFileVersionAttribute&gt;true|false&lt;/GenerateAssemblyFileVersionAttribute&gt;
+    &lt;GenerateAssemblyInformationalVersionAttribute&gt;true|false&lt;/GenerateAssemblyInformationalVersionAttribute&gt;
+    &lt;GenerateAssemblyProductAttribute&gt;true|false&lt;/GenerateAssemblyProductAttribute&gt;
+    &lt;GenerateAssemblyTitleAttribute&gt;true|false&lt;/GenerateAssemblyTitleAttribute&gt;
+    &lt;GenerateAssemblyVersionAttribute&gt;true|false&lt;/GenerateAssemblyVersionAttribute&gt;
+    &lt;GenerateNeutralResourcesLanguageAttribute&gt;true|false&lt;/GenerateNeutralResourcesLanguageAttribute&gt;
+  &lt;/ItemGroup&gt;
+
+And their corresponding values
+  
+  * AssemblyCompanyAttribute: $(Company)
+  * AssemblyConfigurationAttribute: $(Configuration)
+  * AssemblyCopyrightAttribute: $(Copyright)
+  * AssemblyDescriptionAttribute: $(Description)
+  * AssemblyFileVersionAttribute: $(FileVersion)
+  * AssemblyInformationalVersionAttribute: $(InformationalVersion)
+  * AssemblyProductAttribute: $(Product)
+  * AssemblyTitleAttribute: $(AssemblyTitle)
+  * AssemblyVersionAttribute: $(AssemblyVersion)
+  * NeutralResourcesLanguageAttribute: $(NeutralLanguage)
+
 </description>
     <copyright>Copyright 2018</copyright>
     <tags>msbuild project assembly metadata attribute</tags>
