@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- SDK-style already support the @(AssemblyAttribute) item. We just need to add the GetAssemblyVersion task -->
+
+  <Import Project="$(MSBuildSDKsPath)\Microsoft.NET.Sdk\build\Microsoft.NET.Sdk.Common.targets"/>
+
+  <UsingTask TaskName="GetAssemblyVersion" AssemblyFile="$(MicrosoftNETBuildTasksAssembly)" />
+  
+  <Import Project="$(MSBuildSDKsPath)\Microsoft.NET.Sdk\build\Microsoft.NET.GenerateAssemblyInfo.targets" />
+
+</Project>

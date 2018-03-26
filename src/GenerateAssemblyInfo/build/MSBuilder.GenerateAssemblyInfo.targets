@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- SDK-style already support the @(AssemblyAttribute) item. We detect legacy by checking for LanguageTargets,
+       which is the first thing set by the .NET Sdk.targets: 
+       https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/sdk/Sdk.targets#L28 -->
+
+  <PropertyGroup>
+    <SdkGenerateAssemblyInfo Condition="'$(SdkGenerateAssemblyInfo)' == ''">$(MSBuildSDKsPath)\Microsoft.NET.Sdk\build\Microsoft.NET.GenerateAssemblyInfo.targets</SdkGenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)MSBuilder.GenerateAssemblyInfo.Sdk.targets"
+          Condition="'$(LanguageTargets)' == '' and Exists('$(SdkGenerateAssemblyInfo)')" />
+
+  <Target Name="_EnsureSdk" BeforeTargets="PrepareForBuild" Condition="'$(LanguageTargets)' == ''">
+    <Error Text="This package requires MSBuild version 15.0 or higher." Condition="'$(MSBuildVersion)' &lt; '15.0'" />
+    <Error Text="This package requires the MSBuild SDK 'Microsoft.NET.Sdk'. Please add the '.NET Core' workload or the '.NET Core 2.0 development tools' component to Visual Studio. You can also run this command to add it:
+&quot;C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installershell.exe&quot; modify --passive --installPath &quot;$(VsInstallRoot)&quot; --add Microsoft.NetCore.ComponentGroup.DevelopmentTools" 
+           Condition="!Exists('$(SdkGenerateAssemblyInfo)')" />
+  </Target>
+
+</Project>
