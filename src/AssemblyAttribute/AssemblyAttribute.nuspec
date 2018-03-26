@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>MSBuilder.AssemblyAttribute</id>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <title>MSBuilder: AssemblyAttribute</title>
     <authors>Mobile Essentials</authors>
     <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
@@ -14,7 +14,7 @@
 Usage: declare @(AssemblyAttribute) items to include, such as:
 
   &lt;ItemGroup&gt;
-    &lt;AssemblyAttribute Include="[ATTRIBUTE_FULL_TYPENAME]" Visible="false" _Parameter1="[CTOR_ARG]" _ParameterN="[CTOR_ARG_N]" /&gt;
+    &lt;AssemblyAttribute Include="[ATTRIBUTE_FULL_TYPENAME]" _Parameter1="[CTOR_ARG]" _ParameterN="[CTOR_ARG_N]" /&gt;
   &lt;/ItemGroup&gt;
 
 The `ParameterN` attributes must match the attribute constructor arguments.
