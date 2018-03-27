@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	The MIT License (MIT)
+
+	Copyright (c) 2018 Mobile Essentials
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <GeneratedThisAssemblyMetadataFile Condition="'$(GeneratedThisAssemblyMetadataFile)' == ''">$(IntermediateOutputPath)$(MSBuildProjectName).ThisAssemblyMetadata$(DefaultLanguageSourceExtension)</GeneratedThisAssemblyMetadataFile>
+    <GenerateThisAssemblyMetadata Condition="'$(GenerateThisAssemblyMetadata)' == ''">true</GenerateThisAssemblyMetadata>
+  </PropertyGroup>
+
+  <!-- 
+    Note that this must run before every invocation of CoreCompile to ensure that all compiler
+    runs see the generated assembly info. There is at least one scenario involving Xaml 
+    where CoreCompile is invoked without other potential hooks such as Compile or CoreBuild,
+    etc., so we hook directly on to CoreCompile. Furthermore, we  must run *after* 
+    PrepareForBuild to ensure that the intermediate directory has been created.
+   -->
+  <Target Name="GenerateThisAssemblyMetadata"
+          BeforeTargets="CoreCompile"
+          DependsOnTargets="PrepareForBuild;CoreGenerateThisAssemblyMetadata"
+          Condition="'$(GenerateThisAssemblyMetadata)' == 'true'" />
+
+  <!-- 
+    To allow version changes to be respected on incremental builds (e.g. through CLI parameters),
+    create a hash of all assembly attributes so that the cache file will change with the calculated
+    assembly attribute values and msbuild will then execute CoreGenerateThisAssemblyMetadata to generate a new file.
+  -->
+  <Target Name="CreateGeneratedThisAssemblyMetadataInputsCacheFile">
+    <PropertyGroup>
+      <GeneratedThisAssemblyMetadataInputsCacheFile>$(IntermediateOutputPath)$(MSBuildProjectName).ThisAssemblyMetadataInputs.cache</GeneratedThisAssemblyMetadataInputsCacheFile>
+    </PropertyGroup>
+
+    <Hash ItemsToHash="@(AssemblyAttribute->'%(Identity)%(_Parameter1)%(_Parameter2)')"
+          Condition="'%(AssemblyAttribute.Identity)' == 'System.Reflection.AssemblyMetadataAttribute' or '%(AssemblyAttribute.Identity)' == 'System.Reflection.AssemblyMetadata'">
+      <Output TaskParameter="HashResult" PropertyName="_ThisAssemblyMetadataAttributesHash" />
+    </Hash>
+
+    <WriteLinesToFile Lines="$(_ThisAssemblyMetadataAttributesHash)" File="$(GeneratedThisAssemblyMetadataInputsCacheFile)" Overwrite="True" WriteOnlyWhenDifferent="True" />
+
+    <ItemGroup>
+      <FileWrites Include="$(GeneratedThisAssemblyMetadataInputsCacheFile)" />
+      <_AssemblyMetadata Include="@(AssemblyAttribute)" Condition="'%(AssemblyAttribute.Identity)' == 'System.Reflection.AssemblyMetadataAttribute' or '%(AssemblyAttribute.Identity)' == 'System.Reflection.AssemblyMetadata'" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CoreGenerateThisAssemblyMetadata"
+          Condition="'$(Language)' == 'VB' or '$(Language)' == 'C#'"
+          DependsOnTargets="CreateGeneratedThisAssemblyMetadataInputsCacheFile;CoreGenerateThisAssemblyMetadataCS;CoreGenerateThisAssemblyMetadataVB"
+          Inputs="$(MSBuildAllProjects);$(GeneratedThisAssemblyMetadataInputsCacheFile)"
+          Outputs="$(GeneratedThisAssemblyMetadataFile)">
+    <ItemGroup>
+      <!-- Ensure the generated thisassemblymetadata file is not already part of the Compile sources, as a workaround for https://github.com/dotnet/sdk/issues/114 -->
+      <Compile Remove="$(GeneratedThisAssemblyMetadataFile)" />
+      <Compile Include="$(GeneratedThisAssemblyMetadataFile)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- C# version of the ThisAssembly.Metadata class -->
+  <Target Name="CoreGenerateThisAssemblyMetadataCS" Condition="'$(Language)' == 'C#'">
+    <WriteLinesToFile Lines='
+partial class ThisAssembly
+{
+%20%20public static partial class Metadata
+%20%20{' Overwrite='true' File='$(GeneratedThisAssemblyMetadataFile)' />
+
+    <WriteLinesToFile Lines='%20%20%20%20public const string %(_AssemblyMetadata._Parameter1) = @"%(_AssemblyMetadata._Parameter2)"%3B
+' Overwrite='false' File='$(GeneratedThisAssemblyMetadataFile)' Condition="'@(_AssemblyMetadata)' != ''" />
+
+    <WriteLinesToFile Lines='%20%20}
+}
+' Overwrite='false' File='$(GeneratedThisAssemblyMetadataFile)' />
+  </Target>
+
+  <!-- VB version of the ThisAssembly.Metadata class -->
+  <Target Name="CoreGenerateThisAssemblyMetadataVB" Condition="'$(Language)' == 'VB'">
+    <WriteLinesToFile Lines='
+Namespace Global
+%20%20Partial Class ThisAssembly
+%20%20%20%20Partial Class Metadata' Overwrite='true' File='$(GeneratedThisAssemblyMetadataFile)' />
+
+    <WriteLinesToFile Lines="				  
+%20%20%20%20%20%20Public Const %(_AssemblyMetadata._Parameter1) = &quot;%(_AssemblyMetadata._Parameter2)&quot;
+" Overwrite="false" File="$(GeneratedThisAssemblyMetadataFile)" />
+
+    <WriteLinesToFile Lines='
+%20%20%20%20End Class
+%20%20End Class
+End Namespace
+' Overwrite='false' File='$(GeneratedThisAssemblyMetadataFile)' />
+
+  </Target>
+
+</Project>

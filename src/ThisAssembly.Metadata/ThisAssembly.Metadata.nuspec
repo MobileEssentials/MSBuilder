@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>MSBuilder.ThisAssembly.Metadata</id>
+    <version>0.1.0</version>
+    <title>MSBuilder: ThisAssembly.Metadata Information</title>
+    <authors>Mobile Essentials</authors>
+    <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>Extends the MSBuilder.GenerateAssemblyInfo package by also generating a ThisAssembly.Metadata class with constants for using them from code.</summary>
+    <description>Turns the assembly metadata attributes into constants for use from code, such as:
+        
+    &lt;ItemGroup&gt;
+      &lt;AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute"&gt;
+        &lt;_Parameter1&gt;Foo&lt;/_Parameter1&gt;
+        &lt;_Parameter2&gt;Bar&lt;/_Parameter2&gt;
+      &lt;/AssemblyAttribute&gt;
+    &lt;/ItemGroup&gt;
+
+Generates:
+
+    partial class ThisAssembly
+    {
+      public static partial class Metadata
+      {
+        public const string Foo = "Bar";
+      }
+    }
+
+    </description>
+    <copyright>Copyright 2015</copyright>
+    <tags>msbuild project assembly metadata</tags>
+    <dependencies>
+      <dependency id="MSBuilder.GenerateAssemblyInfo" version="0.1.1" />
+    </dependencies>
+  </metadata>
+</package>
