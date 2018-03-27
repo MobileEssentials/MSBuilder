@@ -2,15 +2,25 @@
 <package>
   <metadata>
     <id>MSBuilder.ThisAssembly.Metadata</id>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <title>MSBuilder: ThisAssembly.Metadata Information</title>
     <authors>Mobile Essentials</authors>
     <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
+    <projectUrl>https://github.com/MobileEssentials/MSBuilder/tree/master/src/ThisAssembly.Metadata</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Extends the MSBuilder.GenerateAssemblyInfo package by also generating a ThisAssembly.Metadata class with constants for using them from code.</summary>
-    <description>Turns the assembly metadata attributes into constants for use from code, such as:
-        
+    <description>This package extends MSBuilder.GenerateAssemblyInfo to also generate a static 
+`ThisAssembly.Metadata` class with the `@(AssemblyAttribute)` attributes that 
+have `Include="System.Reflection.AssemblyMetadataAttribute"`.
+
+So for an attribute like:
+
+  [assembly: System.Reflection.AssemblyMetadataAttribute("Foo", "Bar")]
+
+You get a corresponding `ThisAssembly.Metadata.Foo` constant with the value `Bar`.
+
+Example:
+
     &lt;ItemGroup&gt;
       &lt;AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute"&gt;
         &lt;_Parameter1&gt;Foo&lt;/_Parameter1&gt;
@@ -18,16 +28,25 @@
       &lt;/AssemblyAttribute&gt;
     &lt;/ItemGroup&gt;
 
-Generates:
+Generates (C#):
 
-    partial class ThisAssembly
-    {
+  partial class ThisAssembly
+  {
       public static partial class Metadata
       {
-        public const string Foo = "Bar";
+          public const string Foo = "Bar";
       }
-    }
+  }
 
+or (VB):
+
+Namespace Global
+  Partial Class ThisAssembly
+        Partial Class Metadata
+            Public Const Foo = "Bar"
+        End Class
+    End Class
+End Namespace
     </description>
     <copyright>Copyright 2015</copyright>
     <tags>msbuild project assembly metadata</tags>
