@@ -2,11 +2,11 @@
 <package>
   <metadata>
     <id>MSBuilder.GenerateAssemblyInfo</id>
-    <version>0.1.2</version>
+    <version>0.1.3</version>
     <title>MSBuilder: GenerateAssemblyInfo</title>
     <authors>Mobile Essentials</authors>
     <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
+    <projectUrl>https://github.com/MobileEssentials/MSBuilder/tree/master/src/GenerateAssemblyInfo</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Brings in the SDK-style GenerateAssemblyInfo behavior to classic projects.</summary>
     <description>Allows emitting arbitrary assembly attributes, compatible with SDK-style projects and classic ones.
