@@ -5,7 +5,8 @@
   <Import Project="$(MSBuildSDKsPath)\Microsoft.NET.Sdk\build\Microsoft.NET.Sdk.Common.targets"/>
 
   <UsingTask TaskName="GetAssemblyVersion" AssemblyFile="$(MicrosoftNETBuildTasksAssembly)" />
-  
+
+  <Import Project="$(MSBuildSDKsPath)\Microsoft.NET.Sdk\build\Microsoft.NET.DefaultAssemblyInfo.targets"/>
   <Import Project="$(MSBuildSDKsPath)\Microsoft.NET.Sdk\build\Microsoft.NET.GenerateAssemblyInfo.targets" />
 
 </Project>
