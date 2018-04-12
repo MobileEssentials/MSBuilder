@@ -9,6 +9,7 @@
     <projectUrl>https://github.com/MobileEssentials/MSBuilder/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Emit arbitrary assembly attributes by simply declaring AssemblyAttribute MSBuild items.</summary>
+    <developmentDependency>true</developmentDependency>
     <description>Allows emitting arbitrary assembly attributes, compatible between SDK-style projects and classic ones.
 
 Usage: declare @(AssemblyAttribute) items to include, such as:

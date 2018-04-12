@@ -17,6 +17,7 @@
           DependsOnTargets="PrepareForBuild;CoreGenerateAssemblyInfoMetadata" />
 
   <Target Name="CoreGenerateAssemblyInfoMetadata"
+          DependsOnTargets="GetAssemblyAttributes"
           Condition="'$(Language)' == 'VB' or '$(Language)' == 'C#'"
           Inputs="$(MSBuildAllProjects)"
           Outputs="$(GeneratedAssemblyInfoMetadataFile)">
@@ -30,6 +31,10 @@
       <Output TaskParameter="OutputFile" ItemName="Compile" />
       <Output TaskParameter="OutputFile" ItemName="FileWrites" />
     </WriteCodeFragment>
+  </Target>
+  
+  <Target Name="GetAssemblyAttributes">
+    <!-- Take a dependency on this target to build your assembly attributes -->
   </Target>
 
 </Project>
