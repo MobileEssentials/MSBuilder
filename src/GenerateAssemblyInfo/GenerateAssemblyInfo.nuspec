@@ -21,7 +21,7 @@ The `_ParameterN` attributes must match the attribute constructor arguments.
 
 Use the following properties to customize what is generated:
 
-  &lt;ItemGroup&gt;
+  &lt;PropertyGroup&gt;
     &lt;GenerateAssemblyCompanyAttribute&gt;true|false&lt;/GenerateAssemblyCompanyAttribute&gt;
     &lt;GenerateAssemblyConfigurationAttribute&gt;true|false&lt;/GenerateAssemblyConfigurationAttribute&gt;
     &lt;GenerateAssemblyCopyrightAttribute&gt;true|false&lt;/GenerateAssemblyCopyrightAttribute&gt;
@@ -32,7 +32,7 @@ Use the following properties to customize what is generated:
     &lt;GenerateAssemblyTitleAttribute&gt;true|false&lt;/GenerateAssemblyTitleAttribute&gt;
     &lt;GenerateAssemblyVersionAttribute&gt;true|false&lt;/GenerateAssemblyVersionAttribute&gt;
     &lt;GenerateNeutralResourcesLanguageAttribute&gt;true|false&lt;/GenerateNeutralResourcesLanguageAttribute&gt;
-  &lt;/ItemGroup&gt;
+  &lt;/PropertyGroup&gt;
 
 And their corresponding values
   
