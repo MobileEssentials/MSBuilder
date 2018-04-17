@@ -48,6 +48,13 @@
 			<Output TaskParameter="Result" PropertyName="VsixID" />
 		</XmlPeek>
 
+		<XmlPeek Condition="'$(VsixVersion)' == ''" Namespaces="$(Vsix2010)" XmlInputPath="@(SourceVsixManifest)" Query="/vs:Vsix/vs:Identifier/@Version">
+			<Output TaskParameter="Result" PropertyName="VsixVersion" />
+		</XmlPeek>
+		<XmlPeek Condition="'$(VsixVersion)' == ''" Namespaces="$(Vsix2011)" XmlInputPath="@(SourceVsixManifest)" Query="/vs:PackageManifest/vs:Metadata/vs:Identity/@Version">
+			<Output TaskParameter="Result" PropertyName="VsixVersion" />
+		</XmlPeek>
+
 		<XmlPeek Condition="'$(VsixName)' == ''" Namespaces="$(Vsix2010)" XmlInputPath="@(SourceVsixManifest)" Query="/vs:Vsix/vs:Identifier/vs:Name/text()">
 			<Output TaskParameter="Result" PropertyName="VsixName" />
 		</XmlPeek>
@@ -97,6 +104,7 @@
 
 			<!-- Actual exposed values here -->
 			<_ThisVsixInfoContent>$(_ThisVsixInfoContent.Replace('$VsixID$', '$(VsixID)'))</_ThisVsixInfoContent>
+			<_ThisVsixInfoContent>$(_ThisVsixInfoContent.Replace('$VsixVersion$', '$(VsixVersion)'))</_ThisVsixInfoContent>
 			<_ThisVsixInfoContent>$(_ThisVsixInfoContent.Replace('$VsixName$', '$(VsixName)'))</_ThisVsixInfoContent>
 			<_ThisVsixInfoContent>$(_ThisVsixInfoContent.Replace('$VsixDescription$', '$(VsixDescription)'))</_ThisVsixInfoContent>
 			<_ThisVsixInfoContent>$(_ThisVsixInfoContent.Replace('$VsixAuthor$', '$(VsixAuthor)'))</_ThisVsixInfoContent>
