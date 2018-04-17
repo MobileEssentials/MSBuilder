@@ -4,6 +4,7 @@
 
 #if ADDMETADATA
 [assembly: System.Reflection.AssemblyMetadata("Vsix.Identifier", RootNamespace.ThisAssembly.Vsix.Identifier)]
+[assembly: System.Reflection.AssemblyMetadata("Vsix.Version", RootNamespace.ThisAssembly.Vsix.Version)]
 [assembly: System.Reflection.AssemblyMetadata("Vsix.Name", RootNamespace.ThisAssembly.Vsix.Name)]
 [assembly: System.Reflection.AssemblyMetadata("Vsix.Description", RootNamespace.ThisAssembly.Vsix.Description)]
 [assembly: System.Reflection.AssemblyMetadata("Vsix.Author", RootNamespace.ThisAssembly.Vsix.Author)]
@@ -20,6 +21,9 @@ namespace _RootNamespace_
     {
       /// <summary>Identifier: $VsixID$</summary>
       public const string Identifier = "$VsixID$";
+
+      /// <summary>Version: $VsixVersion$</summary>
+      public const string Version = "$VsixVersion$";
           
       /// <summary>Name: $VsixName$</summary>
       public const string Name = "$VsixName$";
