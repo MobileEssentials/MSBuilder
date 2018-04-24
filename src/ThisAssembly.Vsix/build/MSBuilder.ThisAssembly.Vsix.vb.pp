@@ -3,8 +3,9 @@
 
 #If ADDMETADATA
 <Assembly: System.Reflection.AssemblyMetadata("Vsix.Identifier", Global.RootNamespace.ThisAssembly.Vsix.Identifier)>
+<Assembly: System.Reflection.AssemblyMetadata("Vsix.Version", Global.RootNamespace.ThisAssembly.Vsix.Version)>
 <Assembly: System.Reflection.AssemblyMetadata("Vsix.Name", Global.RootNamespace.ThisAssembly.Vsix.Name)>
-<Assembly: System.Reflection.AssemblyMetadata("Vsix.Description", Global.RootNamespace.ThisAssembly.Vsix.DEscription)>
+<Assembly: System.Reflection.AssemblyMetadata("Vsix.Description", Global.RootNamespace.ThisAssembly.Vsix.Description)>
 <Assembly: System.Reflection.AssemblyMetadata("Vsix.Author", Global.RootNamespace.ThisAssembly.Vsix.Author)>
 #End If
 
@@ -18,6 +19,9 @@ Namespace Global
         Partial Public Class Vsix
             ''' <summary>Identifier: $VsixID$</summary>
             Public Const Identifier = "$VsixID$"
+
+            ''' <summary>Version: $VsixVersion$</summary>
+            Public Const Version = "$VsixVersion$"
 
             ''' <summary>Name: $VsixName$</summary>
             Public Const Name = "$VsixName$"
