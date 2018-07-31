@@ -1,0 +1,61 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <GeneratedAssemblyMetadataInfoFile Condition="'$(GeneratedAssemblyMetadataInfoFile)' ==''">$(IntermediateOutputPath)$(MSBuildProjectName).AssemblyMetadata$(DefaultLanguageSourceExtension)</GeneratedAssemblyMetadataInfoFile>
+    <GenerateAssemblyMetadataInfo Condition="'$(GenerateAssemblyMetadataInfo)' == ''">true</GenerateAssemblyMetadataInfo>
+  </PropertyGroup>
+
+  <!-- Pretty much copied from https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/targets/Microsoft.NET.GenerateAssemblyInfo.targets -->
+
+  <!-- 
+    Note that this must run before every invocation of CoreCompile to ensure that all compiler
+    runs see the generated assembly info. There is at least one scenario involving Xaml 
+    where CoreCompile is invoked without other potential hooks such as Compile or CoreBuild,
+    etc., so we hook directly on to CoreCompile. Furthermore, we  must run *after* 
+    PrepareForBuild to ensure that the intermediate directory has been created.
+   -->
+  <Target Name="GenerateAssemblyMetadataInfo"
+          BeforeTargets="CoreCompile"
+          DependsOnTargets="PrepareForBuild;CoreGenerateAssemblyMetadataInfo"
+          Condition="'$(GenerateAssemblyMetadataInfo)' == 'true'" />
+
+  <!-- 
+    To allow metadata changes to be respected on incremental builds (e.g. through CPS/IDE parameters),
+    create a hash of all assembly attributes so that the cache file will change with the calculated
+    assembly attribute values and msbuild will then execute CoreGenerateAssembly to generate a new file.
+  -->
+  <Target Name="CreateGeneratedAssemblyMetadataInfoInputsCacheFile"
+          DependsOnTargets="GetAssemblyMetadataAttributes">
+    <PropertyGroup>
+      <GeneratedAssemblyMetadataInfoInputsCacheFile>$(IntermediateOutputPath)$(MSBuildProjectName).AssemblyMetadataInputs.cache</GeneratedAssemblyMetadataInfoInputsCacheFile>
+    </PropertyGroup>
+
+    <!-- AssemblyMetadata attribute always provides two parameters -->
+    <Hash ItemsToHash="@(AssemblyAttribute->'%(Identity)%(_Parameter1)%(_Parameter2)')">
+      <Output TaskParameter="HashResult" PropertyName="_AssemblyMetadataAttributesHash" />
+    </Hash>
+
+    <WriteLinesToFile Lines="$(_AssemblyMetadataAttributesHash)" File="$(GeneratedAssemblyMetadataInfoInputsCacheFile)" Overwrite="True" WriteOnlyWhenDifferent="True" />
+
+    <ItemGroup>
+      <FileWrites Include="$(GeneratedAssemblyMetadataInfoInputsCacheFile)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CoreGenerateAssemblyMetadataInfo"
+          Condition="'$(Language)'=='VB' or '$(Language)'=='C#'"
+          DependsOnTargets="CreateGeneratedAssemblyMetadataInfoInputsCacheFile"
+          Inputs="$(GeneratedAssemblyMetadataInfoInputsCacheFile)"
+          Outputs="$(GeneratedAssemblyMetadataInfoFile)">
+    <ItemGroup>
+      <!-- Ensure the generated assemblyinfo file is not already part of the Compile sources, as a workaround for https://github.com/dotnet/sdk/issues/114 -->
+      <Compile Remove="$(GeneratedAssemblyMetadataInfoFile)" />
+    </ItemGroup>
+
+    <WriteCodeFragment AssemblyAttributes="@(AssemblyAttribute)" Language="$(Language)" OutputFile="$(GeneratedAssemblyMetadataInfoFile)">
+      <Output TaskParameter="OutputFile" ItemName="Compile" />
+      <Output TaskParameter="OutputFile" ItemName="FileWrites" />
+    </WriteCodeFragment>
+  </Target>
+
+</Project>
