@@ -1,12 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!-- SDK-style already supports the @(AssemblyAttribute) item. -->
   <PropertyGroup>
     <!-- Sdk.props imports Microsoft.NET.Sdk.props which defines Configurations and Platforms, which is the SDK-style way -->
     <IsSdkStyle Condition="'$(IsSdkStyle)' == '' and '$(Configurations)' != '' and '$(Platforms)' != ''">true</IsSdkStyle>
   </PropertyGroup>
 
-  <Import Project="MSBuilder.GenerateAssemblyInfo.Legacy.targets" Condition="'$(IsSdkStyle)' != 'true' or '$(GenerateAssemblyInfo)' == 'false'"/>
+  <Import Project="Microsoft.NET.GenerateAssemblyInfo.targets" Condition="'$(IsSdkStyle)' != 'true'" />
 
 </Project>
