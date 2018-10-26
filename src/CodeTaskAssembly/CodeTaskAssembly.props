@@ -39,7 +39,7 @@
 		<!-- In VS2013, the assembly contains the VS version. -->
 		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '12.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll</CodeTaskAssembly>
 		<!-- In VS2015+, the assembly was renamed, hopefully this will be the last condition! -->
-		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' != '' And '$(MSBuildAssemblyVersion)' &gt;= '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</CodeTaskAssembly>
+		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildVersion)' != '' And '$(MSBuildVersion)' &gt;= '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</CodeTaskAssembly>
 	</PropertyGroup>
 
 </Project>

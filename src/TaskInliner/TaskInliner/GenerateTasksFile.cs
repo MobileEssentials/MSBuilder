@@ -107,7 +107,7 @@ namespace MSBuilder.TaskInliner
 			properties.AddProperty("CodeTaskAssembly", "$" + @"(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll")
 				.Condition = "'$" + "(CodeTaskAssembly)' == '' And '$" + "(MSBuildAssemblyVersion)' == '12.0'";
 			properties.AddProperty("CodeTaskAssembly", "$" + @"(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll")
-				.Condition = "'$" + "(CodeTaskAssembly)' == '' And '$" + "(MSBuildAssemblyVersion)' != '' and '$" + "(MSBuildAssemblyVersion)' >= '14.0'";
+				.Condition = "'$" + "(CodeTaskAssembly)' == '' And '$" + "(MSBuildVersion)' != '' and '$" + "(MSBuildVersion)' >= '14.0'";
 
 			var projectXml = XDocument.Parse(project.RawXml);
 			var tasks = new List<ITaskItem>();
