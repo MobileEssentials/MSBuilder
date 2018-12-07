@@ -111,4 +111,13 @@ End Namespace
 
   </Target>
 
+  <Target Name="AddGeneratedThisAssemblyForXAML" 
+          Condition="'$(GenerateThisAssemblyMetadata)' == 'true' and '$(_RequireMCPass2ForMainAssembly)' == 'true'"
+          BeforeTargets="GenerateTemporaryTargetAssembly" 
+          DependsOnTargets="GenerateThisAssemblyMetadata">
+    <ItemGroup>
+      <_GeneratedCodeFiles Include="$(GeneratedThisAssemblyMetadataFile)" />
+    </ItemGroup>
+  </Target>
+	
 </Project>
