@@ -9,6 +9,7 @@
     <projectUrl>https://github.com/MobileEssentials/MSBuilder/tree/master/src/GenerateAssemblyInfo</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Brings in the SDK-style GenerateAssemblyInfo behavior to classic projects.</summary>
+    <developmentDependency>true</developmentDependency>
     <description>Allows emitting arbitrary assembly attributes, compatible with SDK-style projects and classic ones.
 
 Usage: declare @(AssemblyAttribute) items to include, such as:
