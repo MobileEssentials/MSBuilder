@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>MSBuilder.GenerateAssemblyInfo</id>
-    <version>0.2.0</version>
+    <version>0.2.2</version>
     <title>MSBuilder: GenerateAssemblyInfo</title>
     <authors>Mobile Essentials</authors>
     <licenseUrl>https://github.com/MobileEssentials/MSBuilder/blob/master/LICENSE</licenseUrl>
