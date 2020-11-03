@@ -13,7 +13,7 @@ test: off
 deploy:
   - provider: NuGet
     api_key:
-      secure: 7MS5+XWaFchMXFqzgneQCqo9U0DlxiPXe/KWWUnbCBDEizVn06EjdQZkWu1gbNOJ
+      secure: W18advsNhfB3JmNtzw90CoPpD5FXsZ9EzEsuYn+P3iHonpyYzk90wqN8aB0Tlxh1
     artifact: /.*\.nupkg/
     on:
       branch: master
